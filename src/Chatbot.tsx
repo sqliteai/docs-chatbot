@@ -11,6 +11,7 @@ import {
   PromptInputToolbar,
   PromptInputTools,
   PromptInputSubmit,
+  type PromptInputMessage,
 } from "./components/ai-elements/prompt-input";
 import { DefaultChatTransport } from "ai";
 
@@ -22,11 +23,11 @@ export const Chatbot = () => {
   });
 
   const handleSubmit = (
-    message: { text?: string; files?: any[] },
+    message: PromptInputMessage,
     event: React.FormEvent<HTMLFormElement>
   ) => {
     if (message.text?.trim()) {
-      sendMessage({ text: message.text });
+      void sendMessage({ text: message.text });
       event.currentTarget.reset();
     }
   };
@@ -43,8 +44,8 @@ export const Chatbot = () => {
               name={message.role === "user" ? "You" : "Assistant"}
             />
             <MessageContent>
-              {message.parts.map((part, index) => (
-                <span key={index}>
+              {message.parts.map((part) => (
+                <span key={`${message.id}-part-${part.type}`}>
                   {part.type === "text" || part.type === "reasoning"
                     ? part.text
                     : part.type === "file"

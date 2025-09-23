@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       plugins: [
         react(),
         tailwindcss(),
-        ...(mode === "component" ? [libInjectCss()] : [])
+        ...(mode === "component" ? [libInjectCss()] : []),
       ],
       resolve: {
         alias: {
@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
             mode === "component"
               ? path.resolve(__dirname, "src/index.ts")
               : path.resolve(__dirname, "src/widget.ts"),
-          name: mode === "component" ? "SqliteAiChatbot" : "SqliteAiChatbot",
+          name: "SqliteAiChatbot",
           fileName: (format) => {
             if (mode === "component") {
               return `index.${format}.js`;

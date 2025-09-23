@@ -21,7 +21,6 @@ export default defineConfig(({ mode }) => {
       },
       define: {
         "process.env.NODE_ENV": '"production"',
-        "process.env": "{}",
         global: "globalThis",
       },
       build: {

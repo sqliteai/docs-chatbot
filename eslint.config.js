@@ -10,6 +10,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores([
     'dist',
+    'examples',
     'src/components/ai-elements/**/*',
     'src/components/ui/**/*',
   ]),

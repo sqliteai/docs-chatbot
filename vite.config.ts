@@ -2,18 +2,13 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
-import { libInjectCss } from "vite-plugin-lib-inject-css";
 
 export default defineConfig(({ mode }) => {
   const isLibrary = mode === "component" || mode === "widget";
 
   if (isLibrary) {
     return {
-      plugins: [
-        react(),
-        tailwindcss(),
-        ...(mode === "component" ? [libInjectCss()] : []),
-      ],
+      plugins: [react()],
       resolve: {
         alias: {
           "@": path.resolve(__dirname, "./src"),
@@ -22,6 +17,9 @@ export default defineConfig(({ mode }) => {
       define: {
         "process.env.NODE_ENV": '"production"',
         global: "globalThis",
+      },
+      css: {
+        postcss: "./postcss.config.js",
       },
       build: {
         outDir: mode === "component" ? "dist/component" : "dist/widget",
@@ -40,9 +38,13 @@ export default defineConfig(({ mode }) => {
           },
           formats: mode === "widget" ? ["umd"] : ["es"],
         },
-        emitCss: false,
+        emitCss: true,
+        cssCodeSplit: false,
         rollupOptions: {
-          external: mode === "component" ? ["react", "react-dom"] : [],
+          external:
+            mode === "component"
+              ? ["react", "react/jsx-runtime", "react-dom", "react-dom/client"]
+              : [],
           output:
             mode === "component"
               ? {

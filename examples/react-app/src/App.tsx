@@ -1,4 +1,5 @@
 import { Chatbot } from "../../../dist/component/index.es";
+import "../../../dist/component/chatbot.css";
 
 function App() {
   return (

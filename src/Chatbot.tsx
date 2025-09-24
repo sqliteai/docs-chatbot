@@ -41,7 +41,7 @@ export const Chatbot = () => {
               src={
                 message.role === "user" ? "/user-avatar.png" : "/bot-avatar.png"
               }
-              name={message.role === "user" ? "You" : "Assistant"}
+              name={message.role === "user" ? "DY" : "Assistant"}
             />
             <MessageContent>
               {message.parts.map((part) => (

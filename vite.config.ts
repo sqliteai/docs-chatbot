@@ -4,7 +4,7 @@ import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig(({ mode }) => {
-  const isLibrary = mode === "component" || mode === "widget";
+  const isLibrary = mode === "react" || mode === "web";
 
   if (isLibrary) {
     return {
@@ -22,31 +22,31 @@ export default defineConfig(({ mode }) => {
         postcss: "./postcss.config.js",
       },
       build: {
-        outDir: mode === "component" ? "dist/component" : "dist/widget",
+        outDir: mode === "react" ? "dist/esm" : "dist/umd",
         lib: {
           entry:
-            mode === "component"
-              ? path.resolve(__dirname, "src/index.ts")
-              : path.resolve(__dirname, "src/widget.ts"),
+            mode === "react"
+              ? path.resolve(__dirname, "src/lib/react.ts")
+              : path.resolve(__dirname, "src/lib/web.ts"),
           name: "SqliteAiChatbot",
           fileName: (format) => {
-            if (mode === "component") {
-              return `index.${format}.js`;
+            if (mode === "react") {
+              return format === "es" ? "index.esm.js" : "index.cjs.js";
             } else {
-              return format === "es" ? "chatbot.js" : "chatbot.min.js";
+              return "chatbot.min.js";
             }
           },
-          formats: mode === "widget" ? ["umd"] : ["es"],
+          formats: mode === "react" ? ["es", "cjs"] : ["umd"],
         },
         emitCss: true,
         cssCodeSplit: false,
         rollupOptions: {
           external:
-            mode === "component"
+            mode === "react"
               ? ["react", "react/jsx-runtime", "react-dom", "react-dom/client"]
               : [],
           output:
-            mode === "component"
+            mode === "react"
               ? {
                   globals: {
                     react: "React",

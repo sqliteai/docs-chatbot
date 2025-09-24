@@ -3,7 +3,7 @@ import {
   Message,
   MessageContent,
   MessageAvatar,
-} from "./components/ai-elements/message";
+} from "../components/ai-elements/message";
 import {
   PromptInput,
   PromptInputBody,
@@ -12,7 +12,7 @@ import {
   PromptInputTools,
   PromptInputSubmit,
   type PromptInputMessage,
-} from "./components/ai-elements/prompt-input";
+} from "../components/ai-elements/prompt-input";
 import { DefaultChatTransport } from "ai";
 
 export const Chatbot = () => {

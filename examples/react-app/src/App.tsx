@@ -1,5 +1,5 @@
-import { Chatbot } from "../../../dist/component/index.es";
-import "../../../dist/component/chatbot.css";
+import { Chatbot } from "../../../dist/esm/index.esm.js";
+import "../../../dist/esm/chatbot.css";
 
 function App() {
   return (

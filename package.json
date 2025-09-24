@@ -1,16 +1,16 @@
 {
-  "name": "@sqlitecloud/chatbot",
+  "name": "@sqliteai/chatbot",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "module": "./dist/component/index.es.js",
-  "types": "./dist/component/index.d.ts",
+  "main": "./dist/cjs/index.cjs.js",     
+  "module": "./dist/esm/index.esm.js", 
   "exports": {
     ".": {
-      "import": "./dist/component/index.es.js",
-      "types": "./dist/component/index.d.ts"
+      "import": "./dist/esm/index.esm.js", 
+      "require": "./dist/cjs/index.cjs.js"
     },
-    "./dist/component/chatbot.css": "./dist/component/chatbot.css"
+    "./style.css": "./dist/esm/chatbot.css"
   },
   "files": [
     "dist"
@@ -22,11 +22,11 @@
   "scripts": {
     "lint": "eslint .",
     "dev": "vite",
-    "build": "rm -rf dist && npm run build:component && npm run build:widget",
-    "build:component": "tsc -b && vite build --mode component",
-    "build:widget": "tsc -b && vite build --mode widget",
-    "test:widget": "open examples/widget/index.html",
-    "test:react": "cd examples/react-app && (pnpm dev & sleep 1 && open http://localhost:3001)"
+    "build": "rm -rf dist && npm run build:react && npm run build:web",
+    "build:react": "tsc -b && vite build --mode react",
+    "build:web": "tsc -b && vite build --mode web",
+    "test:vanilla-js": "open examples/vanilla-js/index.html",
+    "test:react-app": "cd examples/react-app && (pnpm dev & sleep 1 && open http://localhost:4000)"
   },
   "dependencies": {
     "@ai-sdk/react": "2.0.28",

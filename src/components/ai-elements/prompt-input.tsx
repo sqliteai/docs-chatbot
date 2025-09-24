@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import type { ChatStatus, FileUIPart } from "ai";
 import {
   ImageIcon,
@@ -539,7 +539,7 @@ export const PromptInputButton = ({
   ...props
 }: PromptInputButtonProps) => {
   const newSize =
-    (size ?? Children.count(props.children) > 1) ? "default" : "icon";
+    size ?? Children.count(props.children) > 1 ? "default" : "icon";
 
   return (
     <Button

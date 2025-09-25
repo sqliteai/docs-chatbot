@@ -2,13 +2,26 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
+import dts from "unplugin-dts/vite";
 
 export default defineConfig(({ mode }) => {
   const isLibrary = mode === "react" || mode === "web";
 
   if (isLibrary) {
     return {
-      plugins: [react()],
+      plugins: [
+        react(),
+        ...(mode === "react"
+          ? [
+              dts({
+                include: ["src/lib/Chatbot.tsx"],
+                outDirs: ["dist/esm"],
+                tsconfigPath: "./tsconfig.app.json",
+                //bundleTypes: true,
+              }),
+            ]
+          : []),
+      ],
       resolve: {
         alias: {
           "@": path.resolve(__dirname, "./src"),

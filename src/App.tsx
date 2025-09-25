@@ -1,4 +1,4 @@
-import { Chatbot } from "./lib/Chatbot";
+import { Chatbot } from "../lib/Chatbot";
 
 function App() {
   return (

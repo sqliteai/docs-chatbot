@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { Chatbot } from "./Chatbot";
-import cssText from "../index.css?inline";
+import cssText from "../src/index.css?inline";
 
 interface SqliteAiChatbotConfig {
   containerId: string;
@@ -21,7 +21,6 @@ class SqliteAiChatbotWidget {
   }
 
   init(config: SqliteAiChatbotConfig): void {
-    // Inject CSS first
     this.injectCSS();
 
     const { containerId } = config;

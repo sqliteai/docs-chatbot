@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
         ...(mode === "react"
           ? [
               dts({
-                include: ["src/lib/Chatbot.tsx"],
+                include: ["lib/Chatbot.tsx"],
                 outDirs: ["dist/esm"],
                 tsconfigPath: "./tsconfig.app.json",
                 //bundleTypes: true,
@@ -39,8 +39,8 @@ export default defineConfig(({ mode }) => {
         lib: {
           entry:
             mode === "react"
-              ? path.resolve(__dirname, "src/lib/react.ts")
-              : path.resolve(__dirname, "src/lib/web.ts"),
+              ? path.resolve(__dirname, "lib/react.ts")
+              : path.resolve(__dirname, "lib/web.ts"),
           name: "SqliteAiChatbot",
           fileName: (format) => {
             if (mode === "react") {

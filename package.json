@@ -25,8 +25,8 @@
     "lint": "eslint .",
     "dev": "vite",
     "build": "rm -rf dist && npm run build:react && npm run build:web",
-    "build:react": "tsc -b && vite build --mode react",
-    "build:web": "tsc -b && vite build --mode web",
+    "build:react": "tsc -p ./tsconfig-build.json && vite build --mode react",
+    "build:web": "tsc -p ./tsconfig-build.json && vite build --mode web",
     "test:vanilla-js": "open examples/vanilla-js/index.html",
     "test:react-app": "cd examples/react-app && (pnpm dev & sleep 1 && open http://localhost:4000)"
   },

@@ -68,69 +68,35 @@ export async function docSearch({
           if (searchResult.data.search.length > 0) {
             const searchResults = searchResult.data.search;
 
-            const textId = nanoid();
+            // Write a summary text part
+            const summaryId = nanoid();
             writer.write({
               type: "text-start",
-              id: textId,
+              id: summaryId,
             });
-
             writer.write({
               type: "text-delta",
-              id: textId,
-              delta: `I found ${searchResults.length} relevant result(s) for your query:\n\n`,
+              id: summaryId,
+              delta: `I found ${searchResults.length} relevant result(s) for your query:`,
             });
-
             writer.write({
               type: "text-end",
-              id: textId,
+              id: summaryId,
             });
 
-            searchResults.forEach((result) => {
-              const partId1 = nanoid();
+            searchResults.map((result) =>
               writer.write({
-                type: "text-start",
-                id: partId1,
-              });
-              writer.write({
-                type: "text-delta",
-                id: partId1,
-                delta: result.title,
-              });
-              writer.write({
-                type: "text-end",
-                id: partId1,
-              });
-
-              const partId2 = nanoid();
-              writer.write({
-                type: "text-start",
-                id: partId2,
-              });
-              writer.write({
-                type: "text-delta",
-                id: partId2,
-                delta: `🔗 ${result.uri}`,
-              });
-              writer.write({
-                type: "text-end",
-                id: partId2,
-              });
-
-              const partId3 = nanoid();
-              writer.write({
-                type: "text-start",
-                id: partId3,
-              });
-              writer.write({
-                type: "text-delta",
-                id: partId3,
-                delta: `📝 ${result.snippet}`,
-              });
-              writer.write({
-                type: "text-end",
-                id: partId3,
-              });
-            });
+                type: "source-url",
+                sourceId: result.id,
+                title: result.title,
+                url: result.uri,
+                providerMetadata: {
+                  search: {
+                    snippet: result.snippet,
+                  },
+                },
+              })
+            );
           } else {
             const fallbackId = nanoid();
 

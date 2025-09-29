@@ -1,9 +1,5 @@
 import { useChat } from "@ai-sdk/react";
-import {
-  Message,
-  MessageContent,
-  MessageAvatar,
-} from "../src/components/ai-elements/message";
+import { Message, MessageContent } from "../src/components/ai-elements/message";
 import {
   PromptInput,
   PromptInputBody,
@@ -13,9 +9,23 @@ import {
   PromptInputSubmit,
   type PromptInputMessage,
 } from "../src/components/ai-elements/prompt-input";
+import { Source } from "../src/components/ai-elements/sources";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../src/components/ui/collapsible";
+import { ChevronDownIcon, MessageSquare } from "lucide-react";
+import { Response } from "../src/components/ai-elements/response";
 import { DefaultChatTransport } from "ai";
 import { docSearch } from "@/services/docSearch";
 import type { SendMessageRequest } from "@/types/chat";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
 
 /** Props for the Chatbot component */
 export type ChatbotProps = {
@@ -46,38 +56,68 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
   });
 
   return (
-    <div className="flex flex-col h-[800px] mt-5 max-w-md mx-auto border rounded-lg">
+    <div className="flex flex-col h-[800px] mt-5 max-w-3xl mx-auto border rounded-lg">
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        {messages.map((message) => (
-          <Message key={message.id} from={message.role}>
-            <MessageAvatar
-              src={
-                message.role === "user" ? "/user-avatar.png" : "/bot-avatar.png"
-              }
-              name={message.role === "user" ? "DY" : "Assistant"}
-            />
-            <MessageContent>
-              {message.parts.map((part) => (
-                <span key={`${message.id}-part-${part.type}`}>
-                  {part.type === "text" || part.type === "reasoning"
-                    ? part.text
-                    : part.type === "file"
-                    ? `[File: ${part.mediaType}]`
-                    : `[${part.type}]`}
-                </span>
-              ))}
-            </MessageContent>
-          </Message>
-        ))}
+        <Conversation className="relative w-full" style={{ height: "640px" }}>
+          <ConversationContent>
+            {messages.length === 0 ? (
+              <ConversationEmptyState
+                icon={<MessageSquare className="size-12" />}
+                title="Ask questions about SQLite Cloud"
+                description="Get help with SQLite Cloud documentation"
+              />
+            ) : (
+              messages.map((message) => (
+                <Message key={message.id} from={message.role}>
+                  <MessageContent>
+                    {message.parts.map((part) => {
+                      switch (part.type) {
+                        case "text":
+                        case "reasoning": {
+                          return (
+                            <Response key={`${message.id}-part-${part.type}`}>
+                              {part.text}
+                            </Response>
+                          );
+                        }
+                        case "source-url": {
+                          return (
+                            <Collapsible key={part.sourceId}>
+                              <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left border rounded-md hover:bg-muted/50 transition-colors group">
+                                <span className="font-medium text-sm">
+                                  {part.title}
+                                </span>
+                                <ChevronDownIcon className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+                              </CollapsibleTrigger>
 
-        {status === "streaming" && (
-          <Message from="assistant">
-            <MessageAvatar src="/bot-avatar.png" name="Assistant" />
-            <MessageContent>
-              <div className="animate-pulse">Typing...</div>
-            </MessageContent>
-          </Message>
-        )}
+                              <CollapsibleContent className="mt-2 p-3 border border-t-0 rounded-b-md bg-muted/25">
+                                <Source
+                                  href={`https://docs.sqlitecloud.io/${part.url}`}
+                                  title={part.title}
+                                />
+                                {part.providerMetadata?.search?.snippet && (
+                                  <div className="text-sm text-muted-foreground mt-3">
+                                    <Response>
+                                      {
+                                        part.providerMetadata.search
+                                          .snippet as string
+                                      }
+                                    </Response>
+                                  </div>
+                                )}
+                              </CollapsibleContent>
+                            </Collapsible>
+                          );
+                        }
+                      }
+                    })}
+                  </MessageContent>
+                </Message>
+              ))
+            )}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
       </div>
 
       <div className="p-4 border-t">

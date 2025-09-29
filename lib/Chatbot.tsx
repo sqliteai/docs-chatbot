@@ -17,16 +17,30 @@ import { DefaultChatTransport } from "ai";
 import { docSearch } from "@/services/docSearch";
 import type { SendMessageRequest } from "@/types/chat";
 
-export const Chatbot = () => {
+/** Props for the Chatbot component */
+type ChatbotProps = {
+  /** Edge function URL for the search functionality */
+  searchUrl: string;
+  /** Bearer token for edge function authentication */
+  apiKey: string;
+};
+
+/**
+ * AI-powered document search chatbot component.
+ *
+ * @param props.searchUrl - SQLite Cloud AI search endpoint URL
+ * @param props.apiKey - Authentication token for API access
+ *
+ * @returns JSX.Element - Rendered chatbot interface
+ */
+export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       fetch: (_, init) =>
         docSearch({
           request: JSON.parse(init?.body as string) as SendMessageRequest,
-          searchUrl: new URL(
-            "https://crbtbmtrhk.global1.ryujaz.sqlite.cloud:443/v2/functions/aisearch-docs"
-          ),
-          apiKey: "MdiMpLRbm6xNJEmQYsmTYYkUx7tWcsIfAZvBCT6umsw",
+          searchUrl: new URL(searchUrl),
+          apiKey,
         }),
     }),
   });

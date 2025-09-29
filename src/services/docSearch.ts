@@ -26,7 +26,6 @@ export async function docSearch({
   apiKey: string;
 }) {
   try {
-    console.warn("docSearch request: ", JSON.stringify(request, null, 2));
     const messages = request.messages;
 
     const lastUserMessage = messages[messages.length - 1];

@@ -14,11 +14,20 @@ import {
   type PromptInputMessage,
 } from "../src/components/ai-elements/prompt-input";
 import { DefaultChatTransport } from "ai";
+import { docSearch } from "@/services/docSearch";
+import type { SendMessageRequest } from "@/types/chat";
 
 export const Chatbot = () => {
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
-      api: "https://jsonplaceholder.typicode.com/posts",
+      fetch: (_, init) =>
+        docSearch({
+          request: JSON.parse(init?.body as string) as SendMessageRequest,
+          searchUrl: new URL(
+            "https://crbtbmtrhk.global1.ryujaz.sqlite.cloud:443/v2/functions/aisearch-docs"
+          ),
+          apiKey: "MdiMpLRbm6xNJEmQYsmTYYkUx7tWcsIfAZvBCT6umsw",
+        }),
     }),
   });
 
@@ -33,7 +42,7 @@ export const Chatbot = () => {
   };
 
   return (
-    <div className="flex flex-col h-96 max-w-md mx-auto border rounded-lg">
+    <div className="flex flex-col h-[800px] mt-5 max-w-md mx-auto border rounded-lg">
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((message) => (
           <Message key={message.id} from={message.role}>

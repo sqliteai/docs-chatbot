@@ -92,7 +92,10 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
 
                               <CollapsibleContent className="mt-2 p-3 border border-t-0 rounded-b-md bg-muted/25">
                                 <Source
-                                  href={`https://docs.sqlitecloud.io/${part.url}`}
+                                  // TODO:DAMLA - edge function should return the full url here
+                                  href={`https://docs.sqlitecloud.io/${part.url
+                                    .toLowerCase()
+                                    .replace(/\.[^.]*$/, "")}`}
                                   title={part.title}
                                 />
                                 {part.providerMetadata?.search?.snippet && (

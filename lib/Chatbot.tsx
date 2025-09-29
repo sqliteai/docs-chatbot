@@ -18,7 +18,7 @@ import { docSearch } from "@/services/docSearch";
 import type { SendMessageRequest } from "@/types/chat";
 
 /** Props for the Chatbot component */
-type ChatbotProps = {
+export type ChatbotProps = {
   /** Edge function URL for the search functionality */
   searchUrl: string;
   /** Bearer token for edge function authentication */
@@ -44,16 +44,6 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
         }),
     }),
   });
-
-  const handleSubmit = (
-    message: PromptInputMessage,
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    if (message.text?.trim()) {
-      void sendMessage({ text: message.text });
-      event.currentTarget.reset();
-    }
-  };
 
   return (
     <div className="flex flex-col h-[800px] mt-5 max-w-md mx-auto border rounded-lg">
@@ -91,7 +81,17 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
       </div>
 
       <div className="p-4 border-t">
-        <PromptInput onSubmit={handleSubmit}>
+        <PromptInput
+          onSubmit={(
+            message: PromptInputMessage,
+            event: React.FormEvent<HTMLFormElement>
+          ) => {
+            if (message.text?.trim()) {
+              void sendMessage({ text: message.text });
+              event.currentTarget.reset();
+            }
+          }}
+        >
           <PromptInputBody>
             <PromptInputTextarea placeholder="Ask a question..." />
             <PromptInputToolbar>

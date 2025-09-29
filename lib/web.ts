@@ -1,11 +1,11 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Chatbot } from "./Chatbot";
+import { Chatbot, type ChatbotProps } from "./Chatbot";
 import cssText from "../src/index.css?inline";
 
-interface SqliteAiChatbotConfig {
+type SqliteAiChatbotConfig = {
   containerId: string;
-}
+} & ChatbotProps;
 
 class SqliteAiChatbotWidget {
   private injectCSS(): void {
@@ -23,7 +23,7 @@ class SqliteAiChatbotWidget {
   init(config: SqliteAiChatbotConfig): void {
     this.injectCSS();
 
-    const { containerId } = config;
+    const { containerId, ...chatbotProps } = config;
 
     const container = document.getElementById(containerId);
     if (!container) {
@@ -35,7 +35,7 @@ class SqliteAiChatbotWidget {
 
     try {
       const root = createRoot(container);
-      root.render(React.createElement(Chatbot, null));
+      root.render(React.createElement(Chatbot, chatbotProps));
     } catch (error) {
       console.error("SqliteAi Chatbot: Failed to initialize", error);
     }

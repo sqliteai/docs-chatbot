@@ -16,10 +16,13 @@
     <div id="my-chatbot"></div>
 
     <script src="../../dist/umd/chatbot.min.js"></script>
+    <script src="./config.js"></script>
 
     <script>
       SqliteAiChatbot.init({
         containerId: "my-chatbot",
+        searchUrl: window.ChatbotConfig.searchUrl,
+        apiKey: window.ChatbotConfig.apiKey,
       });
     </script>
   </body>

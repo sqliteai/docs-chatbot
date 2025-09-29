@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Example configs with real credentials
+examples/vanilla-js/config.js
+examples/react-app/.env

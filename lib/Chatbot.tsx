@@ -56,9 +56,9 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
   });
 
   return (
-    <div className="flex flex-col h-[800px] mt-5 max-w-3xl mx-auto border rounded-lg">
+    <div className="flex flex-col h-[800px] mt-5 max-w-xl mx-auto border rounded-lg">
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        <Conversation className="relative w-full" style={{ height: "640px" }}>
+        <Conversation className="relative w-full" style={{ height: "620px" }}>
           <ConversationContent>
             {messages.length === 0 ? (
               <ConversationEmptyState
@@ -69,7 +69,11 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
             ) : (
               messages.map((message) => (
                 <Message key={message.id} from={message.role}>
-                  <MessageContent>
+                  <MessageContent
+                    className={
+                      message.role === "assistant" ? "!max-w-full w-full" : ""
+                    }
+                  >
                     {message.parts.map((part) => {
                       switch (part.type) {
                         case "text":

@@ -89,7 +89,7 @@ export async function docSearch({
                 type: "source-url",
                 sourceId: result.id,
                 title: result.title,
-                url: result.uri,
+                url: result.url,
                 providerMetadata: {
                   search: {
                     snippet: result.snippet,

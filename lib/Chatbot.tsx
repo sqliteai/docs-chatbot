@@ -94,16 +94,9 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
                                 <ChevronDownIcon className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
                               </CollapsibleTrigger>
 
-                              <CollapsibleContent className="mt-2 p-3 border border-t-0 rounded-b-md bg-muted/25">
-                                <Source
-                                  // TODO:DAMLA - edge function should return the full url here
-                                  href={`https://docs.sqlitecloud.io/${part.url
-                                    .toLowerCase()
-                                    .replace(/\.[^.]*$/, "")}`}
-                                  title={part.title}
-                                />
+                              <CollapsibleContent className="mt-2 p-3 border rounded-md bg-muted/25">
                                 {part.providerMetadata?.search?.snippet && (
-                                  <div className="text-sm text-muted-foreground mt-3">
+                                  <div className="text-sm text-muted-foreground mb-3">
                                     <Response>
                                       {
                                         part.providerMetadata.search
@@ -112,6 +105,8 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
                                     </Response>
                                   </div>
                                 )}
+
+                                <Source href={part.url} title={"Read more"} />
                               </CollapsibleContent>
                             </Collapsible>
                           );

@@ -21,7 +21,7 @@ export type DocumentSearchResult = {
   /** Unique identifier for this document chunk */
   id: string;
   /** File path or URL to the source document */
-  uri: string;
+  url: string;
   /** Relevant text excerpt from the document */
   snippet: string;
   /** The title of the document */

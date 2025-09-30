@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Message, MessageContent } from "../src/components/ai-elements/message";
 import {
@@ -15,6 +16,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../src/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "../src/components/ui/dialog";
+import { Button } from "../src/components/ui/button";
 import { ChevronDownIcon, MessageSquare } from "lucide-react";
 import { Response } from "../src/components/ai-elements/response";
 import { DefaultChatTransport } from "ai";
@@ -44,6 +51,8 @@ export type ChatbotProps = {
  * @returns JSX.Element - Rendered chatbot interface
  */
 export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
+  const [open, setOpen] = useState(false);
+
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       fetch: (_, init) =>
@@ -56,9 +65,22 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
   });
 
   return (
-    <div className="flex flex-col h-[800px] mt-5 max-w-xl mx-auto border rounded-lg">
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        <Conversation className="relative w-full" style={{ height: "620px" }}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          size="icon"
+          className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg"
+        >
+          <MessageSquare className="h-6 w-6" />
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className="max-w-md w-[calc(100vw-2rem)] p-0 h-[min(600px,calc(100vh-7rem))] fixed bottom-20 right-4 gap-0 top-auto left-auto translate-x-0 translate-y-0 sm:max-w-[425px] flex flex-col">
+        <div className="px-4 py-3 border-b bg-background rounded-lg flex-shrink-0">
+          <h2 className="text-lg font-semibold">SQLite Cloud Docs</h2>
+        </div>
+
+        <Conversation className="relative w-full h-full">
           <ConversationContent>
             {messages.length === 0 ? (
               <ConversationEmptyState
@@ -118,31 +140,35 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
               ))
             )}
           </ConversationContent>
+
           <ConversationScrollButton />
         </Conversation>
-      </div>
 
-      <div className="p-4 border-t">
-        <PromptInput
-          onSubmit={(
-            message: PromptInputMessage,
-            event: React.FormEvent<HTMLFormElement>
-          ) => {
-            if (message.text?.trim()) {
-              void sendMessage({ text: message.text });
-              event.currentTarget.reset();
-            }
-          }}
-        >
-          <PromptInputBody>
-            <PromptInputTextarea placeholder="Ask a question..." />
-            <PromptInputToolbar>
-              <PromptInputTools></PromptInputTools>
-              <PromptInputSubmit status={status} />
-            </PromptInputToolbar>
-          </PromptInputBody>
-        </PromptInput>
-      </div>
-    </div>
+        <div className="px-4 py-2 border-t flex-shrink-0">
+          <PromptInput
+            onSubmit={(
+              message: PromptInputMessage,
+              event: React.FormEvent<HTMLFormElement>
+            ) => {
+              if (message.text?.trim()) {
+                void sendMessage({ text: message.text });
+                event.currentTarget.reset();
+              }
+            }}
+          >
+            <PromptInputBody>
+              <PromptInputTextarea
+                placeholder="Ask a question..."
+                className="min-h-10 max-h-32"
+              />
+              <PromptInputToolbar>
+                <PromptInputTools></PromptInputTools>
+                <PromptInputSubmit status={status} />
+              </PromptInputToolbar>
+            </PromptInputBody>
+          </PromptInput>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };

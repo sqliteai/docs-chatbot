@@ -90,7 +90,7 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
           <h2 className="text-lg font-semibold">SQLite Cloud Docs</h2>
         </div>
 
-        <Conversation className="relative w-full h-full">
+        <Conversation className="relative w-full h-full overflow-hidden">
           <ConversationContent>
             {messages.length === 0 ? (
               <ConversationEmptyState

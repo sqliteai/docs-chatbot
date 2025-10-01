@@ -43,6 +43,13 @@ export type ChatbotProps = {
   searchUrl: string;
   /** Bearer token for edge function authentication */
   apiKey: string;
+  /** Header title of the chatbot */
+  title: string;
+  /** Title and description for the empty state */
+  emptyState?: {
+    title: string;
+    description: string;
+  };
 };
 
 /**
@@ -53,7 +60,12 @@ export type ChatbotProps = {
  *
  * @returns JSX.Element - Rendered chatbot interface
  */
-export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
+export const Chatbot = ({
+  searchUrl,
+  apiKey,
+  title,
+  emptyState,
+}: ChatbotProps) => {
   const [open, setOpen] = useState(false);
 
   const { messages, sendMessage, status } = useChat({
@@ -87,17 +99,21 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
         )}
       >
         <div className="px-4 py-3 border-b bg-background rounded-lg flex-shrink-0">
-          <h2 className="text-lg font-semibold">SQLite Cloud Docs</h2>
+          <h2 className="text-lg font-semibold">{title}</h2>
         </div>
 
         <Conversation className="relative w-full h-full overflow-hidden">
           <ConversationContent>
             {messages.length === 0 ? (
-              <ConversationEmptyState
-                icon={<MessageSquare className="size-12" />}
-                title="Ask questions about SQLite Cloud"
-                description="Get help with SQLite Cloud documentation"
-              />
+              emptyState ? (
+                <ConversationEmptyState
+                  icon={<MessageSquare className="size-12" />}
+                  title={emptyState.title}
+                  description={emptyState.description}
+                />
+              ) : (
+                <></>
+              )
             ) : (
               messages.map((message) => (
                 <Message key={message.id} from={message.role}>

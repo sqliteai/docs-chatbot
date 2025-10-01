@@ -10,19 +10,13 @@ import {
   PromptInputSubmit,
   type PromptInputMessage,
 } from "../src/components/ai-elements/prompt-input";
-import { Source } from "../src/components/ai-elements/sources";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../src/components/ui/collapsible";
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
 } from "../src/components/ui/dialog";
 import { Button } from "../src/components/ui/button";
-import { ChevronDownIcon, MessageSquare } from "lucide-react";
+import { ExternalLink, MessageSquare } from "lucide-react";
 import { Response } from "../src/components/ai-elements/response";
 import { DefaultChatTransport } from "ai";
 import { docSearch } from "@/services/docSearch";
@@ -33,6 +27,15 @@ import {
   ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
+import {
+  Artifact,
+  ArtifactAction,
+  ArtifactActions,
+  ArtifactContent,
+  ArtifactHeader,
+  ArtifactTitle,
+} from "@/components/ai-elements/artifact";
+import { cn } from "@/utils/cn";
 
 /** Props for the Chatbot component */
 export type ChatbotProps = {
@@ -69,13 +72,20 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
       <DialogTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg"
+          className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg cursor-pointer"
         >
           <MessageSquare className="h-6 w-6" />
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-md w-[calc(100vw-2rem)] p-0 h-[min(600px,calc(100vh-7rem))] fixed bottom-20 right-4 gap-0 top-auto left-auto translate-x-0 translate-y-0 sm:max-w-[425px] flex flex-col">
+      <DialogContent
+        className={cn(
+          "max-w-md w-[calc(100vw-2rem)] h-[min(600px,calc(100vh-7rem))] sm:max-w-[425px]",
+          "flex flex-col p-0 fixed gap-0",
+          "top-auto left-auto bottom-20 right-4",
+          "translate-x-0 translate-y-0"
+        )}
+      >
         <div className="px-4 py-3 border-b bg-background rounded-lg flex-shrink-0">
           <h2 className="text-lg font-semibold">SQLite Cloud Docs</h2>
         </div>
@@ -107,30 +117,41 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
                           );
                         }
                         case "source-url": {
-                          return (
-                            <Collapsible key={part.sourceId}>
-                              <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left border rounded-md hover:bg-muted/50 transition-colors group">
-                                <span className="font-medium text-sm">
-                                  {part.title}
-                                </span>
-                                <ChevronDownIcon className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                              </CollapsibleTrigger>
+                          const snippetLines = part.providerMetadata?.search
+                            ?.snippet
+                            ? [
+                                (
+                                  part.providerMetadata.search.snippet as string
+                                ).slice(0, 200),
+                              ]
+                            : [];
 
-                              <CollapsibleContent className="mt-2 p-3 border rounded-md bg-muted/25">
-                                {part.providerMetadata?.search?.snippet && (
-                                  <div className="text-sm text-muted-foreground mb-3">
+                          return (
+                            <Artifact key={part.sourceId}>
+                              <ArtifactHeader
+                                className="cursor-pointer hover:bg-muted/70 transition-colors"
+                                onClick={() => window.open(part.url, "_blank")}
+                              >
+                                <ArtifactTitle>{part.title}</ArtifactTitle>
+                                <ArtifactActions>
+                                  <ArtifactAction
+                                    icon={ExternalLink}
+                                    tooltip="Go to source"
+                                    className="cursor-pointer"
+                                  />
+                                </ArtifactActions>
+                              </ArtifactHeader>
+
+                              {snippetLines.length > 0 && (
+                                <ArtifactContent>
+                                  <div className="text-sm text-muted-foreground">
                                     <Response>
-                                      {
-                                        part.providerMetadata.search
-                                          .snippet as string
-                                      }
+                                      {snippetLines.join("\n") + "..."}
                                     </Response>
                                   </div>
-                                )}
-
-                                <Source href={part.url} title={"Read more"} />
-                              </CollapsibleContent>
-                            </Collapsible>
+                                </ArtifactContent>
+                              )}
+                            </Artifact>
                           );
                         }
                       }
@@ -159,11 +180,11 @@ export const Chatbot = ({ searchUrl, apiKey }: ChatbotProps) => {
             <PromptInputBody>
               <PromptInputTextarea
                 placeholder="Ask a question..."
-                className="min-h-10 max-h-32"
+                className="min-h-8 max-h-32"
               />
               <PromptInputToolbar>
                 <PromptInputTools></PromptInputTools>
-                <PromptInputSubmit status={status} />
+                <PromptInputSubmit status={status} className="cursor-pointer" />
               </PromptInputToolbar>
             </PromptInputBody>
           </PromptInput>

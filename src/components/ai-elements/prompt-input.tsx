@@ -489,6 +489,7 @@ export const PromptInputTextarea = ({
         "field-sizing-content bg-transparent dark:bg-transparent",
         "max-h-48 min-h-16",
         "focus-visible:ring-0",
+        "font-sans",
         className
       )}
       name="message"

@@ -115,7 +115,7 @@ export const Chatbot = ({
         )}
       >
         <div className="px-4 py-3 border-b bg-background rounded-lg flex-shrink-0">
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="text-lg font-sans font-semibold">{title}</h2>
         </div>
 
         <Conversation className="relative w-full h-full overflow-hidden">

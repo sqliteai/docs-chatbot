@@ -1,28 +1,15 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
 import { Chatbot, type ChatbotProps } from "./Chatbot";
+import createShadowRoot from "./createShadowRoot";
 import cssText from "../src/index.css?inline";
+import { ShadowRootProvider } from "@/providers/ShadowRootProvider";
 
 type SqliteAiChatbotConfig = {
   containerId: string;
 } & ChatbotProps;
 
 class SqliteAiChatbotWidget {
-  private injectCSS(): void {
-    if (
-      typeof document !== "undefined" &&
-      !document.querySelector("[data-sqlitecloud-widget-css]")
-    ) {
-      const styleElement = document.createElement("style");
-      styleElement.setAttribute("data-sqlitecloud-widget-css", "");
-      styleElement.textContent = cssText;
-      document.head.appendChild(styleElement);
-    }
-  }
-
   init(config: SqliteAiChatbotConfig): void {
-    this.injectCSS();
-
     const { containerId, ...chatbotProps } = config;
 
     const container = document.getElementById(containerId);
@@ -34,8 +21,20 @@ class SqliteAiChatbotWidget {
     }
 
     try {
-      const root = createRoot(container);
-      root.render(React.createElement(Chatbot, chatbotProps));
+      const { root, shadow } = createShadowRoot(container, cssText);
+
+      // Create portal container for dialogs inside shadow root
+      const portalContainer = document.createElement("div");
+      portalContainer.id = "portal-container";
+      shadow.appendChild(portalContainer);
+
+      root.render(
+        React.createElement(
+          ShadowRootProvider,
+          { value: portalContainer },
+          React.createElement(Chatbot, chatbotProps)
+        )
+      );
     } catch (error) {
       console.error("SqliteAi Chatbot: Failed to initialize", error);
     }

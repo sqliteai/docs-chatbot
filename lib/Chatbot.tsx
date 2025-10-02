@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useChat } from "@ai-sdk/react";
-import { Message, MessageContent } from "../src/components/ai-elements/message";
+import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   PromptInput,
   PromptInputBody,
@@ -9,15 +9,10 @@ import {
   PromptInputTools,
   PromptInputSubmit,
   type PromptInputMessage,
-} from "../src/components/ai-elements/prompt-input";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "../src/components/ui/dialog";
-import { Button } from "../src/components/ui/button";
+} from "@/components/ai-elements/prompt-input";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ExternalLink, MessageSquare } from "lucide-react";
-import { Response } from "../src/components/ai-elements/response";
+import { Response } from "@/components/ai-elements/response";
 import { DefaultChatTransport } from "ai";
 import { docSearch } from "@/services/docSearch";
 import type { SendMessageRequest } from "@/types/chat";
@@ -36,6 +31,9 @@ import {
   ArtifactTitle,
 } from "@/components/ai-elements/artifact";
 import { cn } from "@/utils/cn";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 /** Props for the Chatbot component */
 export type ChatbotProps = {
@@ -67,17 +65,35 @@ export const Chatbot = ({
   emptyState,
 }: ChatbotProps) => {
   const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      fetch: (_, init) =>
-        docSearch({
-          request: JSON.parse(init?.body as string) as SendMessageRequest,
-          searchUrl: new URL(searchUrl),
-          apiKey,
-        }),
-    }),
-  });
+  const { messages, sendMessage, status, error, clearError, setMessages } =
+    useChat({
+      transport: new DefaultChatTransport({
+        fetch: (_, init) =>
+          docSearch({
+            request: JSON.parse(init?.body as string) as SendMessageRequest,
+            searchUrl: new URL(searchUrl),
+            apiKey,
+          }),
+      }),
+    });
+
+  useEffect(() => {
+    if (error && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+
+      if (lastMessage.role === "user") {
+        const messageText = lastMessage.parts
+          .filter((part) => part.type === "text")
+          .map((part) => part.text)
+          .join(" ");
+
+        setMessages(messages.slice(0, -1));
+        setInputValue(messageText);
+      }
+    }
+  }, [error, messages, setMessages]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -103,6 +119,27 @@ export const Chatbot = ({
         </div>
 
         <Conversation className="relative w-full h-full overflow-hidden">
+          {error && (
+            <div className="absolute top-4 left-4 right-4 z-10">
+              <Alert variant="destructive" className="shadow-lg">
+                <AlertCircle className="h-4 w-4" />
+
+                <AlertDescription className="pr-8">
+                  {error.message || "Something went wrong. Please try again."}
+                </AlertDescription>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={() => clearError()}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </Alert>
+            </div>
+          )}
+
           <ConversationContent>
             {messages.length === 0 ? (
               emptyState ? (
@@ -183,13 +220,10 @@ export const Chatbot = ({
 
         <div className="px-4 py-2 border-t flex-shrink-0">
           <PromptInput
-            onSubmit={(
-              message: PromptInputMessage,
-              event: React.FormEvent<HTMLFormElement>
-            ) => {
+            onSubmit={(message: PromptInputMessage) => {
               if (message.text?.trim()) {
                 void sendMessage({ text: message.text });
-                event.currentTarget.reset();
+                setInputValue("");
               }
             }}
           >
@@ -197,6 +231,8 @@ export const Chatbot = ({
               <PromptInputTextarea
                 placeholder="Ask a question..."
                 className="min-h-8 max-h-32"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
               <PromptInputToolbar>
                 <PromptInputTools></PromptInputTools>

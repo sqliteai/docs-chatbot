@@ -39,7 +39,9 @@ export async function docSearch({
     }
 
     if (!query.trim()) {
-      throw new Error("No query found in user message");
+      throw new Error(
+        "Your message appears to be empty. Please type a question or search term."
+      );
     }
 
     searchUrl.searchParams.set("query", query.trim());
@@ -52,7 +54,9 @@ export async function docSearch({
     });
 
     if (!searchResponse.ok) {
-      throw new Error(`Search API failed: ${searchResponse.statusText}`);
+      throw new Error(
+        `Failed to complete the search. Please check your connection and try again.`
+      );
     }
 
     const searchResult = (await searchResponse.json()) as SearchResponse;
@@ -60,15 +64,11 @@ export async function docSearch({
     return createUIMessageStreamResponse({
       status: 200,
       statusText: "OK",
-      headers: {
-        "Content-Type": "application/json",
-      },
       stream: createUIMessageStream({
         execute({ writer }) {
           if (searchResult.data.search.length > 0) {
             const searchResults = searchResult.data.search;
 
-            // Write a summary text part
             const summaryId = nanoid();
             writer.write({
               type: "text-start",
@@ -120,35 +120,12 @@ export async function docSearch({
       }),
     });
   } catch (error) {
-    return createUIMessageStreamResponse({
-      status: 500,
-      statusText: "Internal Server Error",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      stream: createUIMessageStream({
-        execute({ writer }) {
-          const errorId = nanoid();
-
-          writer.write({
-            type: "text-start",
-            id: errorId,
-          });
-
-          writer.write({
-            type: "text-delta",
-            id: errorId,
-            delta: `Sorry, there was an error processing your request: ${
-              error instanceof Error ? error.message : "Unknown error"
-            }`,
-          });
-
-          writer.write({
-            type: "text-end",
-            id: errorId,
-          });
-        },
-      }),
-    });
+    return new Response(
+      error instanceof Error ? error.message : "Unknown error",
+      {
+        status: 500,
+        statusText: "Internal Server Error",
+      }
+    );
   }
 }

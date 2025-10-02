@@ -88,10 +88,10 @@ export async function docSearch({
               writer.write({
                 type: "source-url",
                 sourceId: result.id,
-                title: result.title,
+                title: result.title ?? "Untitled Document",
                 url: result.url,
                 providerMetadata: {
-                  search: {
+                  result: {
                     snippet: result.snippet,
                   },
                 },

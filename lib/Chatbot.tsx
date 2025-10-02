@@ -12,7 +12,7 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ExternalLink, MessageSquare } from "lucide-react";
-import { Response } from "@/components/ai-elements/response";
+import { ResponseLight } from "@/components/response-light";
 import { DefaultChatTransport } from "ai";
 import { docSearch } from "@/services/docSearch";
 import type { SendMessageRequest } from "@/types/chat";
@@ -163,18 +163,14 @@ export const Chatbot = ({
                       switch (part.type) {
                         case "text":
                         case "reasoning": {
-                          return (
-                            <Response key={`${message.id}-part-${part.type}`}>
-                              {part.text}
-                            </Response>
-                          );
+                          return part.text;
                         }
                         case "source-url": {
-                          const snippetLines = part.providerMetadata?.search
+                          const snippetLines = part.providerMetadata?.result
                             ?.snippet
                             ? [
                                 (
-                                  part.providerMetadata.search.snippet as string
+                                  part.providerMetadata.result.snippet as string
                                 ).slice(0, 200),
                               ]
                             : [];
@@ -197,11 +193,9 @@ export const Chatbot = ({
 
                               {snippetLines.length > 0 && (
                                 <ArtifactContent>
-                                  <div className="text-sm text-muted-foreground">
-                                    <Response>
-                                      {snippetLines.join("\n") + "..."}
-                                    </Response>
-                                  </div>
+                                  <ResponseLight>
+                                    {snippetLines.join("\n") + "..."}
+                                  </ResponseLight>
                                 </ArtifactContent>
                               )}
                             </Artifact>

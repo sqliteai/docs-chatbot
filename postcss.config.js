@@ -1,6 +1,4 @@
-import postcssImport from "postcss-import";
 import tailwindcssPostcss from "@tailwindcss/postcss";
-import postcssNested from "postcss-nested";
 
 const removeLayersPlugin = () => {
   return {

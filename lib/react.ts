@@ -1,2 +1,2 @@
 import "../src/index.css";
-export { Chatbot } from "./Chatbot";
+export { DocsChatbot } from "./DocsChatbot";

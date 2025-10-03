@@ -1,15 +1,15 @@
 import React from "react";
-import { Chatbot, type ChatbotProps } from "./Chatbot";
+import { DocsChatbot, type DocsChatbotProps } from "./DocsChatbot";
 import createShadowRoot from "./createShadowRoot";
 import cssText from "../src/index.css?inline";
 import { ShadowRootProvider } from "@/providers/ShadowRootProvider";
 
-type SqliteAiChatbotConfig = {
+type DocsChatbotConfig = {
   containerId: string;
-} & ChatbotProps;
+} & DocsChatbotProps;
 
-class SqliteAiChatbotWidget {
-  init(config: SqliteAiChatbotConfig): void {
+class DocsChatbotWidget {
+  init(config: DocsChatbotConfig): void {
     const { containerId, ...chatbotProps } = config;
 
     const container = document.getElementById(containerId);
@@ -32,7 +32,7 @@ class SqliteAiChatbotWidget {
         React.createElement(
           ShadowRootProvider,
           { value: portalContainer },
-          React.createElement(Chatbot, chatbotProps)
+          React.createElement(DocsChatbot, chatbotProps)
         )
       );
     } catch (error) {
@@ -41,20 +41,20 @@ class SqliteAiChatbotWidget {
   }
 }
 
-const chatbotWidget = new SqliteAiChatbotWidget();
+const chatbotWidget = new DocsChatbotWidget();
 
 declare global {
   interface Window {
-    SqliteAiChatbot: SqliteAiChatbotWidget;
+    DocsChatbot: DocsChatbotWidget;
   }
-  var SqliteAiChatbot: SqliteAiChatbotWidget | undefined;
+  var DocsChatbot: DocsChatbotWidget | undefined;
 }
 
 if (typeof window !== "undefined") {
-  window.SqliteAiChatbot = chatbotWidget;
+  window.DocsChatbot = chatbotWidget;
 }
 if (typeof globalThis !== "undefined") {
-  globalThis.SqliteAiChatbot = chatbotWidget;
+  globalThis.DocsChatbot = chatbotWidget;
 }
 
 export default chatbotWidget;

@@ -1,18 +1,18 @@
 {
-  "name": "@sqliteai/chatbot",
+  "name": "@sqliteai/docs-chatbot",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "./dist/cjs/index.cjs.js",
   "module": "./dist/esm/index.esm.js",
-  "types": "./dist/esm/lib/Chatbot.d.ts",
+  "types": "./dist/esm/lib/DocsChatbot.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/esm/lib/Chatbot.d.ts",
+      "types": "./dist/esm/lib/DocsChatbot.d.ts",
       "import": "./dist/esm/index.esm.js",
       "require": "./dist/esm/index.cjs.js"
     },
-    "./style.css": "./dist/esm/chatbot.css"
+    "./style.css": "./dist/esm/docs-chatbot.css"
   },
   "files": [
     "dist"

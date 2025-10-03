@@ -1,10 +1,10 @@
-import { Chatbot } from "../../../dist/esm/index.esm.js";
-import "../../../dist/esm/chatbot.css";
+import { DocsChatbot } from "../../../dist/esm/index.esm.js";
+import "../../../dist/esm/docs-chatbot.css";
 
 function App() {
   return (
     <div style={{ padding: "20px" }}>
-      <Chatbot
+      <DocsChatbot
         searchUrl={import.meta.env.VITE_SEARCH_API_URL}
         apiKey={import.meta.env.VITE_SEARCH_API_KEY}
         title="SQLite Cloud Docs"

@@ -36,7 +36,7 @@ import { AlertCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /** Props for the Chatbot component */
-export type ChatbotProps = {
+export type DocsChatbotProps = {
   /** Edge function URL for the search functionality */
   searchUrl: string;
   /** Bearer token for edge function authentication */
@@ -58,12 +58,12 @@ export type ChatbotProps = {
  *
  * @returns JSX.Element - Rendered chatbot interface
  */
-export const Chatbot = ({
+export const DocsChatbot = ({
   searchUrl,
   apiKey,
   title,
   emptyState,
-}: ChatbotProps) => {
+}: DocsChatbotProps) => {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
 

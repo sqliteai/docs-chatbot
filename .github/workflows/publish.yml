@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   bp:
-    name: build and publish to npmjs
+    name: build and publish to npm
     runs-on: ubuntu-22.04
 
     steps:

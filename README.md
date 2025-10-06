@@ -1,5 +1,7 @@
 # @sqliteai/docs-chatbot
 
+[![Status](https://img.shields.io/badge/status-in%20development-yellow)](https://github.com/sqliteai/docs-chatbot)
+
 Documentation search chatbot powered by SQLite and AI.
 
 ## Prerequisites
@@ -9,15 +11,13 @@ Before using this chatbot, you need to:
 1. **Index your documentation** - Use the [SQLite AI Search Action](https://github.com/sqliteai/sqlite-aisearch-action) to create embeddings from your documentation files
 2. **Create an edge function** - Follow the [setup guide](https://github.com/sqliteai/sqlite-aisearch-action#create-the-search-edge-function) to deploy the search edge function
 
-## Installation
+## Usage
+
+### React Application
 
 ```bash
 npm install @sqliteai/docs-chatbot
 ```
-
-## Usage
-
-### React Application
 
 ```tsx
 import { DocsChatbot } from "@sqliteai/docs-chatbot";
@@ -62,11 +62,11 @@ function App() {
 
 ## Props / Configuration
 
-| Property                 | Type     | Required | Description                                  |
-| ------------------------ | -------- | -------- | -------------------------------------------- |
+| Property                 | Type     | Required | Description                                                                                                                |
+| ------------------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `searchUrl`              | `string` | Yes      | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
-| `apiKey`                 | `string` | Yes      | SQLite Cloud API key with permissions to execute the edge function |
-| `title`                  | `string` | Yes      | Title displayed in the chatbot header |
-| `emptyState`             | `object` | No       | Customizes the initial empty state of the chatbot |
-| `emptyState.title`       | `string` | No       | Main heading shown before the first message |
-| `emptyState.description` | `string` | No       | Subtext shown below the empty state title |
+| `apiKey`                 | `string` | Yes      | SQLite Cloud API key with permissions to execute the edge function                                                         |
+| `title`                  | `string` | Yes      | Title displayed in the chatbot header                                                                                      |
+| `emptyState`             | `object` | No       | Customizes the initial empty state of the chatbot                                                                          |
+| `emptyState.title`       | `string` | No       | Main heading shown before the first message                                                                                |
+| `emptyState.description` | `string` | No       | Subtext shown below the empty state title                                                                                  |

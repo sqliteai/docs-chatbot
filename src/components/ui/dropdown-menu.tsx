@@ -74,7 +74,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "focus:dcb:bg-accent focus:dcb:text-accent-foreground data-[variant=destructive]:dcb:text-destructive data-[variant=destructive]:focus:dcb:bg-destructive/10 dark:data-[variant=destructive]:focus:dcb:bg-destructive/20 data-[variant=destructive]:focus:dcb:text-destructive data-[variant=destructive]:*:[svg]:!dcb:text-destructive [&_svg:not([class*='text-'])]:dcb:text-muted-foreground dcb:relative dcb:flex dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:px-2 dcb:py-1.5 dcb:text-sm dcb:outline-hidden dcb:select-none data-[disabled]:dcb:pointer-events-none data-[disabled]:dcb:opacity-50 data-[inset]:dcb:pl-8 [&_svg]:dcb:pointer-events-none [&_svg]:dcb:shrink-0 [&_svg:not([class*='size-'])]:dcb:size-4",
+        "focus:dcb:bg-accent focus:dcb:text-accent-foreground dcb:data-[variant=destructive]:text-destructive dcb:data-[variant=destructive]:focus:bg-destructive/10 dark:dcb:data-[variant=destructive]:focus:bg-destructive/20 dcb:data-[variant=destructive]:focus:text-destructive dcb:data-[variant=destructive]:*:[svg]:!text-destructive dcb:[&_svg:not([class*='text-'])]:text-muted-foreground dcb:relative dcb:flex dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:px-2 dcb:py-1.5 dcb:text-sm dcb:outline-hidden dcb:select-none dcb:data-[disabled]:pointer-events-none dcb:data-[disabled]:opacity-50 dcb:data-[inset]:pl-8 dcb:[&_svg]:pointer-events-none dcb:[&_svg]:shrink-0 dcb:[&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -92,7 +92,7 @@ function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
-        "focus:dcb:bg-accent focus:dcb:text-accent-foreground dcb:relative dcb:flex dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:py-1.5 dcb:pr-2 dcb:pl-8 dcb:text-sm dcb:outline-hidden dcb:select-none data-[disabled]:dcb:pointer-events-none data-[disabled]:dcb:opacity-50 [&_svg]:dcb:pointer-events-none [&_svg]:dcb:shrink-0 [&_svg:not([class*='size-'])]:dcb:size-4",
+        "focus:dcb:bg-accent focus:dcb:text-accent-foreground dcb:relative dcb:flex dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:py-1.5 dcb:pr-2 dcb:pl-8 dcb:text-sm dcb:outline-hidden dcb:select-none dcb:data-[disabled]:pointer-events-none dcb:data-[disabled]:opacity-50 dcb:[&_svg]:pointer-events-none dcb:[&_svg]:shrink-0 dcb:[&_svg:not([class*='size-'])]:size-4",
         className
       )}
       checked={checked}
@@ -128,7 +128,7 @@ function DropdownMenuRadioItem({
     <DropdownMenuPrimitive.RadioItem
       data-slot="dropdown-menu-radio-item"
       className={cn(
-        "focus:dcb:bg-accent focus:dcb:text-accent-foreground dcb:relative dcb:flex dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:py-1.5 dcb:pr-2 dcb:pl-8 dcb:text-sm dcb:outline-hidden dcb:select-none data-[disabled]:dcb:pointer-events-none data-[disabled]:dcb:opacity-50 [&_svg]:dcb:pointer-events-none [&_svg]:dcb:shrink-0 [&_svg:not([class*='size-'])]:dcb:size-4",
+        "focus:dcb:bg-accent focus:dcb:text-accent-foreground dcb:relative dcb:flex dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:py-1.5 dcb:pr-2 dcb:pl-8 dcb:text-sm dcb:outline-hidden dcb:select-none dcb:data-[disabled]:pointer-events-none dcb:data-[disabled]:opacity-50 dcb:[&_svg]:pointer-events-none dcb:[&_svg]:shrink-0 dcb:[&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -155,7 +155,7 @@ function DropdownMenuLabel({
       data-slot="dropdown-menu-label"
       data-inset={inset}
       className={cn(
-        "dcb:px-2 dcb:py-1.5 dcb:text-sm dcb:font-medium data-[inset]:dcb:pl-8",
+        "dcb:px-2 dcb:py-1.5 dcb:text-sm dcb:font-medium dcb:data-[inset]:pl-8",
         className
       )}
       {...props}
@@ -211,7 +211,7 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "focus:dcb:bg-accent focus:dcb:text-accent-foreground data-[state=open]:dcb:bg-accent data-[state=open]:dcb:text-accent-foreground dcb:flex dcb:cursor-default dcb:items-center dcb:rounded-sm dcb:px-2 dcb:py-1.5 dcb:text-sm dcb:outline-hidden dcb:select-none data-[inset]:dcb:pl-8",
+        "focus:dcb:bg-accent focus:dcb:text-accent-foreground dcb:data-[state=open]:bg-accent dcb:data-[state=open]:text-accent-foreground dcb:flex dcb:cursor-default dcb:items-center dcb:rounded-sm dcb:px-2 dcb:py-1.5 dcb:text-sm dcb:outline-hidden dcb:select-none dcb:data-[inset]:pl-8",
         className
       )}
       {...props}

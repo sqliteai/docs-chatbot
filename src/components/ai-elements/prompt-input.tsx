@@ -533,7 +533,7 @@ export const PromptInputTools = ({
   <div
     className={cn(
       "dcb:flex dcb:items-center dcb:gap-1",
-      "[&_button:first-child]:dcb:rounded-bl-xl",
+      "dcb:[&_button:first-child]:rounded-bl-xl",
       className
     )}
     {...props}
@@ -662,7 +662,7 @@ export const PromptInputModelSelectTrigger = ({
   <SelectTrigger
     className={cn(
       "dcb:border-none dcb:bg-transparent dcb:font-medium dcb:text-muted-foreground dcb:shadow-none dcb:transition-colors",
-      'hover:dcb:bg-accent hover:dcb:text-foreground [&[aria-expanded="true"]]:dcb:bg-accent [&[aria-expanded="true"]]:dcb:text-foreground',
+      'hover:dcb:bg-accent hover:dcb:text-foreground dcb:[&[aria-expanded="true"]]:bg-accent dcb:[&[aria-expanded="true"]]:text-foreground',
       className
     )}
     {...props}

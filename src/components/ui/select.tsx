@@ -35,7 +35,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "dcb:border-input data-[placeholder]:dcb:text-muted-foreground [&_svg:not([class*='text-'])]:dcb:text-muted-foreground focus-visible:dcb:border-ring focus-visible:dcb:ring-ring/50 aria-invalid:dcb:ring-destructive/20 dark:aria-invalid:dcb:ring-destructive/40 aria-invalid:dcb:border-destructive dark:dcb:bg-input/30 dark:hover:dcb:bg-input/50 dcb:flex dcb:w-fit dcb:items-center dcb:justify-between dcb:gap-2 dcb:rounded-md dcb:border dcb:bg-transparent dcb:px-3 dcb:py-2 dcb:text-sm dcb:whitespace-nowrap dcb:shadow-xs dcb:transition-[color,box-shadow] dcb:outline-none focus-visible:dcb:ring-[3px] disabled:dcb:cursor-not-allowed disabled:dcb:opacity-50 data-[size=default]:dcb:h-9 data-[size=sm]:dcb:h-8 *:data-[slot=select-value]:dcb:line-clamp-1 *:data-[slot=select-value]:dcb:flex *:data-[slot=select-value]:dcb:items-center *:data-[slot=select-value]:dcb:gap-2 [&_svg]:dcb:pointer-events-none [&_svg]:dcb:shrink-0 [&_svg:not([class*='size-'])]:dcb:size-4",
+        "dcb:border-input dcb:data-[placeholder]:text-muted-foreground dcb:[&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:dcb:border-ring focus-visible:dcb:ring-ring/50 aria-invalid:dcb:ring-destructive/20 dark:aria-invalid:dcb:ring-destructive/40 aria-invalid:dcb:border-destructive dark:dcb:bg-input/30 dark:hover:dcb:bg-input/50 dcb:flex dcb:w-fit dcb:items-center dcb:justify-between dcb:gap-2 dcb:rounded-md dcb:border dcb:bg-transparent dcb:px-3 dcb:py-2 dcb:text-sm dcb:whitespace-nowrap dcb:shadow-xs dcb:transition-[color,box-shadow] dcb:outline-none focus-visible:dcb:ring-[3px] disabled:dcb:cursor-not-allowed disabled:dcb:opacity-50 dcb:data-[size=default]:h-9 dcb:data-[size=sm]:h-8 dcb:*:data-[slot=select-value]:line-clamp-1 dcb:*:data-[slot=select-value]:flex dcb:*:data-[slot=select-value]:items-center dcb:*:data-[slot=select-value]:gap-2 dcb:[&_svg]:pointer-events-none dcb:[&_svg]:shrink-0 dcb:[&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -61,7 +61,7 @@ function SelectContent({
         className={cn(
           "dcb:bg-popover dcb:text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dcb:relative dcb:z-50 dcb:max-h-(--radix-select-content-available-height) dcb:min-w-[8rem] dcb:origin-(--radix-select-content-transform-origin) dcb:overflow-x-hidden dcb:overflow-y-auto dcb:rounded-md dcb:border dcb:shadow-md",
           position === "popper" &&
-            "data-[side=bottom]:dcb:translate-y-1 data-[side=left]:dcb:-translate-x-1 data-[side=right]:dcb:translate-x-1 data-[side=top]:dcb:-translate-y-1",
+            "dcb:data-[side=bottom]:translate-y-1 dcb:data-[side=left]:-translate-x-1 dcb:data-[side=right]:translate-x-1 dcb:data-[side=top]:-translate-y-1",
           className
         )}
         position={position}
@@ -108,7 +108,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "focus:dcb:bg-accent focus:dcb:text-accent-foreground [&_svg:not([class*='text-'])]:dcb:text-muted-foreground dcb:relative dcb:flex dcb:w-full dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:py-1.5 dcb:pr-8 dcb:pl-2 dcb:text-sm dcb:outline-hidden dcb:select-none data-[disabled]:dcb:pointer-events-none data-[disabled]:dcb:opacity-50 [&_svg]:dcb:pointer-events-none [&_svg]:dcb:shrink-0 [&_svg:not([class*='size-'])]:dcb:size-4 *:[span]:last:dcb:flex *:[span]:last:dcb:items-center *:[span]:last:dcb:gap-2",
+        "focus:dcb:bg-accent focus:dcb:text-accent-foreground dcb:[&_svg:not([class*='text-'])]:text-muted-foreground dcb:relative dcb:flex dcb:w-full dcb:cursor-default dcb:items-center dcb:gap-2 dcb:rounded-sm dcb:py-1.5 dcb:pr-8 dcb:pl-2 dcb:text-sm dcb:outline-hidden dcb:select-none dcb:data-[disabled]:pointer-events-none dcb:data-[disabled]:opacity-50 dcb:[&_svg]:pointer-events-none dcb:[&_svg]:shrink-0 dcb:[&_svg:not([class*='size-'])]:size-4 dcb:*:[span]:last:flex dcb:*:[span]:last:items-center dcb:*:[span]:last:gap-2",
         className
       )}
       {...props}

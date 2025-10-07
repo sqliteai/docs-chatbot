@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/utils/cn";
 
 const buttonVariants = cva(
-  "dcb:inline-flex dcb:items-center dcb:justify-center dcb:gap-2 dcb:whitespace-nowrap dcb:rounded-md dcb:text-sm dcb:font-medium dcb:transition-all disabled:dcb:pointer-events-none disabled:dcb:opacity-50 [&_svg]:dcb:pointer-events-none [&_svg:not([class*='size-'])]:dcb:size-4 dcb:shrink-0 [&_svg]:dcb:shrink-0 dcb:outline-none focus-visible:dcb:border-ring focus-visible:dcb:ring-ring/50 focus-visible:dcb:ring-[3px] aria-invalid:dcb:ring-destructive/20 dark:aria-invalid:dcb:ring-destructive/40 aria-invalid:dcb:border-destructive",
+  "dcb:inline-flex dcb:items-center dcb:justify-center dcb:gap-2 dcb:whitespace-nowrap dcb:rounded-md dcb:text-sm dcb:font-medium dcb:transition-all disabled:dcb:pointer-events-none disabled:dcb:opacity-50 dcb:[&_svg]:pointer-events-none dcb:[&_svg:not([class*='size-'])]:size-4 dcb:shrink-0 dcb:[&_svg]:shrink-0 dcb:outline-none focus-visible:dcb:border-ring focus-visible:dcb:ring-ring/50 focus-visible:dcb:ring-[3px] aria-invalid:dcb:ring-destructive/20 dark:aria-invalid:dcb:ring-destructive/40 aria-invalid:dcb:border-destructive",
   {
     variants: {
       variant: {
@@ -22,9 +22,9 @@ const buttonVariants = cva(
         link: "dcb:text-primary dcb:underline-offset-4 hover:dcb:underline",
       },
       size: {
-        default: "dcb:h-9 dcb:px-4 dcb:py-2 has-[>svg]:dcb:px-3",
-        sm: "dcb:h-8 dcb:rounded-md dcb:gap-1.5 dcb:px-3 has-[>svg]:dcb:px-2.5",
-        lg: "dcb:h-10 dcb:rounded-md dcb:px-6 has-[>svg]:dcb:px-4",
+        default: "dcb:h-9 dcb:px-4 dcb:py-2 dcb:has-[>svg]:px-3",
+        sm: "dcb:h-8 dcb:rounded-md dcb:gap-1.5 dcb:px-3 dcb:has-[>svg]:px-2.5",
+        lg: "dcb:h-10 dcb:rounded-md dcb:px-6 dcb:has-[>svg]:px-4",
         icon: "dcb:size-9",
       },
     },

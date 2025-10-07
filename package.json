@@ -1,7 +1,7 @@
 {
   "name": "@sqliteai/docs-chatbot",
   "description": "Documentation search chatbot powered by SQLite and AI",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "MIT",
   "type": "module",
   "main": "./dist/cjs/index.cjs.js",

@@ -12,7 +12,7 @@ export const ResponseLight = ({ children, className }: ResponseLightProps) => {
   return (
     <div
       className={cn(
-        "dcb:size-full dcb:prose dcb:prose-sm dark:dcb:prose-invert dcb:max-w-none [&>*:first-child]:dcb:mt-0 [&>*:last-child]:dcb:mb-0",
+        "dcb:size-full dcb:prose dcb:prose-sm dark:dcb:prose-invert dcb:max-w-none dcb:[&>*:first-child]:mt-0 dcb:[&>*:last-child]:mb-0",
         "dcb:text-sm dcb:text-muted-foreground",
         className
       )}

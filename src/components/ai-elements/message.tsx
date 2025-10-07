@@ -11,8 +11,10 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> & {
 export const Message = ({ className, from, ...props }: MessageProps) => (
   <div
     className={cn(
-      "group flex w-full items-end justify-end gap-2 py-4",
-      from === "user" ? "is-user" : "is-assistant flex-row-reverse justify-end",
+      "group dcb:flex dcb:w-full dcb:items-end dcb:justify-end dcb:gap-2 dcb:py-4",
+      from === "user"
+        ? "is-user"
+        : "is-assistant dcb:flex-row-reverse dcb:justify-end",
       className
     )}
     {...props}
@@ -20,18 +22,18 @@ export const Message = ({ className, from, ...props }: MessageProps) => (
 );
 
 const messageContentVariants = cva(
-  "is-user:dark flex flex-col gap-2 overflow-hidden rounded-lg text-sm",
+  "is-user:dark dcb:flex dcb:flex-col dcb:gap-2 dcb:overflow-hidden dcb:rounded-lg dcb:text-sm",
   {
     variants: {
       variant: {
         contained: [
-          "max-w-[80%] px-4 py-3",
-          "group-[.is-user]:bg-primary group-[.is-user]:text-primary-foreground",
-          "group-[.is-assistant]:bg-secondary group-[.is-assistant]:text-foreground",
+          "dcb:max-w-[80%] dcb:px-4 dcb:py-3",
+          "group-[.is-user]:dcb:bg-primary group-[.is-user]:dcb:text-primary-foreground",
+          "group-[.is-assistant]:dcb:bg-secondary group-[.is-assistant]:dcb:text-foreground",
         ],
         flat: [
-          "group-[.is-user]:max-w-[80%] group-[.is-user]:bg-secondary group-[.is-user]:px-4 group-[.is-user]:py-3 group-[.is-user]:text-foreground",
-          "group-[.is-assistant]:text-foreground",
+          "group-[.is-user]:dcb:max-w-[80%] group-[.is-user]:dcb:bg-secondary group-[.is-user]:dcb:px-4 group-[.is-user]:dcb:py-3 group-[.is-user]:dcb:text-foreground",
+          "group-[.is-assistant]:dcb:text-foreground",
         ],
       },
     },
@@ -51,7 +53,10 @@ export const MessageContent = ({
   ...props
 }: MessageContentProps) => (
   <div
-    className={cn(messageContentVariants({ variant, className }), "font-sans")}
+    className={cn(
+      messageContentVariants({ variant, className }),
+      "dcb:font-sans"
+    )}
     {...props}
   >
     {children}
@@ -69,8 +74,11 @@ export const MessageAvatar = ({
   className,
   ...props
 }: MessageAvatarProps) => (
-  <Avatar className={cn("size-8 ring-1 ring-border", className)} {...props}>
-    <AvatarImage alt="" className="mt-0 mb-0" src={src} />
+  <Avatar
+    className={cn("dcb:size-8 dcb:ring-1 dcb:ring-border", className)}
+    {...props}
+  >
+    <AvatarImage alt="" className="dcb:mt-0 dcb:mb-0" src={src} />
     <AvatarFallback>{name?.slice(0, 2) || "ME"}</AvatarFallback>
   </Avatar>
 );

@@ -2,7 +2,7 @@ import { DocsChatbot } from "../lib/DocsChatbot";
 
 function App() {
   return (
-    <div className="min-h-screen items-center justify-center">
+    <div className="dcb:min-h-screen dcb:items-center dcb:justify-center">
       <DocsChatbot
         searchUrl={import.meta.env.VITE_SEARCH_API_URL as string}
         apiKey={import.meta.env.VITE_SEARCH_API_KEY as string}

@@ -84,32 +84,35 @@ export function PromptInputAttachment({
 
   return (
     <div
-      className={cn("group relative h-14 w-14 rounded-md border", className)}
+      className={cn(
+        "group dcb:relative dcb:h-14 dcb:w-14 dcb:rounded-md dcb:border",
+        className
+      )}
       key={data.id}
       {...props}
     >
       {data.mediaType?.startsWith("image/") && data.url ? (
         <img
           alt={data.filename || "attachment"}
-          className="size-full rounded-md object-cover"
+          className="dcb:size-full dcb:rounded-md dcb:object-cover"
           height={56}
           src={data.url}
           width={56}
         />
       ) : (
-        <div className="flex size-full items-center justify-center text-muted-foreground">
-          <PaperclipIcon className="size-4" />
+        <div className="dcb:flex dcb:size-full dcb:items-center dcb:justify-center dcb:text-muted-foreground">
+          <PaperclipIcon className="dcb:size-4" />
         </div>
       )}
       <Button
         aria-label="Remove attachment"
-        className="-right-1.5 -top-1.5 absolute h-6 w-6 rounded-full opacity-0 group-hover:opacity-100"
+        className="dcb:-right-1.5 dcb:-top-1.5 dcb:absolute dcb:h-6 dcb:w-6 dcb:rounded-full dcb:opacity-0 group-hover:dcb:opacity-100"
         onClick={() => attachments.remove(data.id)}
         size="icon"
         type="button"
         variant="outline"
       >
-        <XIcon className="h-3 w-3" />
+        <XIcon className="dcb:h-3 dcb:w-3" />
       </Button>
     </div>
   );
@@ -148,13 +151,16 @@ export function PromptInputAttachments({
     <div
       aria-live="polite"
       className={cn(
-        "overflow-hidden transition-[height] duration-200 ease-out",
+        "dcb:overflow-hidden dcb:transition-[height] dcb:duration-200 dcb:ease-out",
         className
       )}
       style={{ height: attachments.files.length ? height : 0 }}
       {...props}
     >
-      <div className="flex flex-wrap gap-2 p-3 pt-3" ref={contentRef}>
+      <div
+        className="dcb:flex dcb:flex-wrap dcb:gap-2 dcb:p-3 dcb:pt-3"
+        ref={contentRef}
+      >
         {attachments.files.map((file) => (
           <Fragment key={file.id}>{children(file)}</Fragment>
         ))}
@@ -183,7 +189,7 @@ export const PromptInputActionAddAttachments = ({
         attachments.openFileDialog();
       }}
     >
-      <ImageIcon className="mr-2 size-4" /> {label}
+      <ImageIcon className="dcb:mr-2 dcb:size-4" /> {label}
     </DropdownMenuItem>
   );
 };
@@ -423,10 +429,10 @@ export const PromptInput = ({
 
   return (
     <AttachmentsContext.Provider value={ctx}>
-      <span aria-hidden="true" className="hidden" ref={anchorRef} />
+      <span aria-hidden="true" className="dcb:hidden" ref={anchorRef} />
       <input
         accept={accept}
-        className="hidden"
+        className="dcb:hidden"
         multiple={multiple}
         onChange={handleChange}
         ref={inputRef}
@@ -434,7 +440,7 @@ export const PromptInput = ({
       />
       <form
         className={cn(
-          "w-full divide-y overflow-hidden rounded-xl border bg-background shadow-sm",
+          "dcb:w-full dcb:divide-y dcb:overflow-hidden dcb:rounded-xl dcb:border dcb:bg-background dcb:shadow-sm",
           className
         )}
         onSubmit={handleSubmit}
@@ -450,7 +456,7 @@ export const PromptInputBody = ({
   className,
   ...props
 }: PromptInputBodyProps) => (
-  <div className={cn(className, "flex flex-col")} {...props} />
+  <div className={cn(className, "dcb:flex dcb:flex-col")} {...props} />
 );
 
 export type PromptInputTextareaProps = ComponentProps<typeof Textarea>;
@@ -485,11 +491,11 @@ export const PromptInputTextarea = ({
   return (
     <Textarea
       className={cn(
-        "w-full resize-none rounded-none border-none p-3 shadow-none outline-none ring-0",
-        "field-sizing-content bg-transparent dark:bg-transparent",
-        "max-h-48 min-h-16",
-        "focus-visible:ring-0",
-        "font-sans",
+        "dcb:w-full dcb:resize-none dcb:rounded-none dcb:border-none dcb:p-3 dcb:shadow-none dcb:outline-none dcb:ring-0",
+        "dcb:field-sizing-content dcb:bg-transparent dark:dcb:bg-transparent",
+        "dcb:max-h-48 dcb:min-h-16",
+        "focus-visible:dcb:ring-0",
+        "dcb:font-sans",
         className
       )}
       name="message"
@@ -510,7 +516,10 @@ export const PromptInputToolbar = ({
   ...props
 }: PromptInputToolbarProps) => (
   <div
-    className={cn("flex items-center justify-between p-1", className)}
+    className={cn(
+      "dcb:flex dcb:items-center dcb:justify-between dcb:p-1",
+      className
+    )}
     {...props}
   />
 );
@@ -523,8 +532,8 @@ export const PromptInputTools = ({
 }: PromptInputToolsProps) => (
   <div
     className={cn(
-      "flex items-center gap-1",
-      "[&_button:first-child]:rounded-bl-xl",
+      "dcb:flex dcb:items-center dcb:gap-1",
+      "[&_button:first-child]:dcb:rounded-bl-xl",
       className
     )}
     {...props}
@@ -545,9 +554,9 @@ export const PromptInputButton = ({
   return (
     <Button
       className={cn(
-        "shrink-0 gap-1.5 rounded-lg",
-        variant === "ghost" && "text-muted-foreground",
-        newSize === "default" && "px-3",
+        "dcb:shrink-0 dcb:gap-1.5 dcb:rounded-lg",
+        variant === "ghost" && "dcb:text-muted-foreground",
+        newSize === "default" && "dcb:px-3",
         className
       )}
       size={newSize}
@@ -573,7 +582,7 @@ export const PromptInputActionMenuTrigger = ({
 }: PromptInputActionMenuTriggerProps) => (
   <DropdownMenuTrigger asChild>
     <PromptInputButton className={className} {...props}>
-      {children ?? <PlusIcon className="size-4" />}
+      {children ?? <PlusIcon className="dcb:size-4" />}
     </PromptInputButton>
   </DropdownMenuTrigger>
 );
@@ -613,19 +622,19 @@ export const PromptInputSubmit = ({
   children,
   ...props
 }: PromptInputSubmitProps) => {
-  let Icon = <SendIcon className="size-4" />;
+  let Icon = <SendIcon className="dcb:size-4" />;
 
   if (status === "submitted") {
-    Icon = <Loader2Icon className="size-4 animate-spin" />;
+    Icon = <Loader2Icon className="dcb:size-4 animate-spin" />;
   } else if (status === "streaming") {
-    Icon = <SquareIcon className="size-4" />;
+    Icon = <SquareIcon className="dcb:size-4" />;
   } else if (status === "error") {
-    Icon = <XIcon className="size-4" />;
+    Icon = <XIcon className="dcb:size-4" />;
   }
 
   return (
     <Button
-      className={cn("gap-1.5 rounded-lg", className)}
+      className={cn("dcb:gap-1.5 dcb:rounded-lg", className)}
       size={size}
       type="submit"
       variant={variant}
@@ -652,8 +661,8 @@ export const PromptInputModelSelectTrigger = ({
 }: PromptInputModelSelectTriggerProps) => (
   <SelectTrigger
     className={cn(
-      "border-none bg-transparent font-medium text-muted-foreground shadow-none transition-colors",
-      'hover:bg-accent hover:text-foreground [&[aria-expanded="true"]]:bg-accent [&[aria-expanded="true"]]:text-foreground',
+      "dcb:border-none dcb:bg-transparent dcb:font-medium dcb:text-muted-foreground dcb:shadow-none dcb:transition-colors",
+      'hover:dcb:bg-accent hover:dcb:text-foreground [&[aria-expanded="true"]]:dcb:bg-accent [&[aria-expanded="true"]]:dcb:text-foreground',
       className
     )}
     {...props}

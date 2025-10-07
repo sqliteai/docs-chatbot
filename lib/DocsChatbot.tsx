@@ -100,41 +100,41 @@ export const DocsChatbot = ({
       <DialogTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg cursor-pointer"
+          className="dcb:fixed dcb:bottom-4 dcb:right-4 dcb:h-14 dcb:w-14 dcb:rounded-full dcb:shadow-lg dcb:cursor-pointer"
         >
-          <MessageSquare className="h-6 w-6" />
+          <MessageSquare className="dcb:h-6 dcb:w-6" />
         </Button>
       </DialogTrigger>
 
       <DialogContent
         className={cn(
-          "max-w-md w-[calc(100vw-2rem)] h-[min(600px,calc(100vh-7rem))] sm:max-w-[425px]",
-          "flex flex-col p-0 fixed gap-0",
-          "top-auto left-auto bottom-20 right-4",
-          "translate-x-0 translate-y-0"
+          "dcb:max-w-md dcb:w-[calc(100vw-2rem)] dcb:h-[min(600px,calc(100vh-7rem))] sm:dcb:max-w-[425px]",
+          "dcb:flex dcb:flex-col dcb:p-0 dcb:fixed dcb:gap-0",
+          "dcb:top-auto dcb:left-auto dcb:bottom-20 dcb:right-4",
+          "dcb:translate-x-0 dcb:translate-y-0"
         )}
       >
-        <div className="px-4 py-3 border-b bg-background rounded-lg flex-shrink-0">
-          <h2 className="text-lg font-sans font-semibold">{title}</h2>
+        <div className="dcb:px-4 dcb:py-3 dcb:border-b dcb:bg-background dcb:rounded-lg dcb:flex-shrink-0">
+          <h2 className="dcb:text-lg dcb:font-sans dcb:font-semibold">{title}</h2>
         </div>
 
-        <Conversation className="relative w-full h-full overflow-hidden">
+        <Conversation className="dcb:relative dcb:w-full dcb:h-full dcb:overflow-hidden">
           {error && (
-            <div className="absolute top-4 left-4 right-4 z-10">
-              <Alert variant="destructive" className="shadow-lg">
-                <AlertCircle className="h-4 w-4" />
+            <div className="dcb:absolute dcb:top-4 dcb:left-4 dcb:right-4 dcb:z-10">
+              <Alert variant="destructive" className="dcb:shadow-lg">
+                <AlertCircle className="dcb:h-4 dcb:w-4" />
 
-                <AlertDescription className="pr-8">
+                <AlertDescription className="dcb:pr-8">
                   {error.message || "Something went wrong. Please try again."}
                 </AlertDescription>
 
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-2 right-2 h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  className="dcb:absolute dcb:top-2 dcb:right-2 dcb:h-6 dcb:w-6 dcb:text-destructive hover:dcb:text-destructive hover:dcb:bg-destructive/10"
                   onClick={() => clearError()}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="dcb:h-4 dcb:w-4" />
                 </Button>
               </Alert>
             </div>
@@ -144,7 +144,7 @@ export const DocsChatbot = ({
             {messages.length === 0 ? (
               emptyState ? (
                 <ConversationEmptyState
-                  icon={<MessageSquare className="size-12" />}
+                  icon={<MessageSquare className="dcb:size-12" />}
                   title={emptyState.title}
                   description={emptyState.description}
                 />
@@ -156,7 +156,7 @@ export const DocsChatbot = ({
                 <Message key={message.id} from={message.role}>
                   <MessageContent
                     className={
-                      message.role === "assistant" ? "!max-w-full w-full" : ""
+                      message.role === "assistant" ? "!dcb:max-w-full dcb:w-full" : ""
                     }
                   >
                     {message.parts.map((part) => {
@@ -178,7 +178,7 @@ export const DocsChatbot = ({
                           return (
                             <Artifact key={part.sourceId}>
                               <ArtifactHeader
-                                className="cursor-pointer hover:bg-muted/70 transition-colors"
+                                className="dcb:cursor-pointer hover:dcb:bg-muted/70 dcb:transition-colors"
                                 onClick={() => window.open(part.url, "_blank")}
                               >
                                 <ArtifactTitle>{part.title}</ArtifactTitle>
@@ -186,7 +186,7 @@ export const DocsChatbot = ({
                                   <ArtifactAction
                                     icon={ExternalLink}
                                     tooltip="Go to source"
-                                    className="cursor-pointer"
+                                    className="dcb:cursor-pointer"
                                   />
                                 </ArtifactActions>
                               </ArtifactHeader>
@@ -212,7 +212,7 @@ export const DocsChatbot = ({
           <ConversationScrollButton />
         </Conversation>
 
-        <div className="px-4 py-2 border-t flex-shrink-0">
+        <div className="dcb:px-4 dcb:py-2 dcb:border-t dcb:flex-shrink-0">
           <PromptInput
             onSubmit={(message: PromptInputMessage) => {
               if (message.text?.trim()) {
@@ -224,13 +224,13 @@ export const DocsChatbot = ({
             <PromptInputBody>
               <PromptInputTextarea
                 placeholder="Ask a question..."
-                className="min-h-8 max-h-32"
+                className="dcb:min-h-8 dcb:max-h-32"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
               <PromptInputToolbar>
                 <PromptInputTools></PromptInputTools>
-                <PromptInputSubmit status={status} className="cursor-pointer" />
+                <PromptInputSubmit status={status} className="dcb:cursor-pointer" />
               </PromptInputToolbar>
             </PromptInputBody>
           </PromptInput>

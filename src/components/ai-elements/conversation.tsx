@@ -11,7 +11,7 @@ export type ConversationProps = ComponentProps<typeof StickToBottom>;
 
 export const Conversation = ({ className, ...props }: ConversationProps) => (
   <StickToBottom
-    className={cn("relative flex-1 overflow-y-auto", className)}
+    className={cn("dcb:relative dcb:flex-1 dcb:overflow-y-auto", className)}
     initial="smooth"
     resize="smooth"
     role="log"
@@ -27,7 +27,7 @@ export const ConversationContent = ({
   className,
   ...props
 }: ConversationContentProps) => (
-  <StickToBottom.Content className={cn("p-4", className)} {...props} />
+  <StickToBottom.Content className={cn("dcb:p-4", className)} {...props} />
 );
 
 export type ConversationEmptyStateProps = ComponentProps<"div"> & {
@@ -46,18 +46,18 @@ export const ConversationEmptyState = ({
 }: ConversationEmptyStateProps) => (
   <div
     className={cn(
-      "flex size-full flex-col items-center justify-center gap-3 p-8 text-center",
+      "dcb:flex dcb:size-full dcb:flex-col dcb:items-center dcb:justify-center dcb:gap-3 dcb:p-8 dcb:text-center",
       className
     )}
     {...props}
   >
     {children ?? (
       <>
-        {icon && <div className="text-muted-foreground">{icon}</div>}
-        <div className="space-y-1">
-          <h3 className="font-medium font-sans text-sm">{title}</h3>
+        {icon && <div className="dcb:text-muted-foreground">{icon}</div>}
+        <div className="dcb:space-y-1">
+          <h3 className="dcb:font-medium dcb:font-sans dcb:text-sm">{title}</h3>
           {description && (
-            <p className="text-muted-foreground font-sans text-sm">
+            <p className="dcb:text-muted-foreground dcb:font-sans dcb:text-sm">
               {description}
             </p>
           )}
@@ -83,7 +83,7 @@ export const ConversationScrollButton = ({
     !isAtBottom && (
       <Button
         className={cn(
-          "absolute bottom-4 left-[50%] translate-x-[-50%] rounded-full",
+          "dcb:absolute dcb:bottom-4 dcb:left-[50%] dcb:translate-x-[-50%] dcb:rounded-full",
           className
         )}
         onClick={handleScrollToBottom}
@@ -92,7 +92,7 @@ export const ConversationScrollButton = ({
         variant="outline"
         {...props}
       >
-        <ArrowDownIcon className="size-4" />
+        <ArrowDownIcon className="dcb:size-4" />
       </Button>
     )
   );

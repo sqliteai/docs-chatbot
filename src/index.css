@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" prefix(dcb);
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -34,9 +34,13 @@
   --color-sidebar: var(--docs-chatbot-sidebar);
   --color-sidebar-foreground: var(--docs-chatbot-sidebar-foreground);
   --color-sidebar-primary: var(--docs-chatbot-sidebar-primary);
-  --color-sidebar-primary-foreground: var(--docs-chatbot-sidebar-primary-foreground);
+  --color-sidebar-primary-foreground: var(
+    --docs-chatbot-sidebar-primary-foreground
+  );
   --color-sidebar-accent: var(--docs-chatbot-sidebar-accent);
-  --color-sidebar-accent-foreground: var(--docs-chatbot-sidebar-accent-foreground);
+  --color-sidebar-accent-foreground: var(
+    --docs-chatbot-sidebar-accent-foreground
+  );
   --color-sidebar-border: var(--docs-chatbot-sidebar-border);
   --color-sidebar-ring: var(--docs-chatbot-sidebar-ring);
 }
@@ -162,9 +166,9 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply dcb:border-border dcb:outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply dcb:bg-background dcb:text-foreground;
   }
 }

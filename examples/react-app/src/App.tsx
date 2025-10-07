@@ -1,5 +1,5 @@
 import { DocsChatbot } from "../../../dist/esm/index.esm.js";
-import "../../../dist/esm/docs-chatbot.css";
+import "./styles.css";
 
 function App() {
   return (

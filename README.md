@@ -70,18 +70,6 @@ function App() {
 </script>
 ```
 
-**With CSS custom properties for theming:**
-
-```html
-<docs-chatbot
-  search-url="your-edge-function-url"
-  api-key="your-api-key"
-  title="Your Docs"
-  style="--primary: #f5426c; --primary-foreground: #ffffff"
->
-</docs-chatbot>
-```
-
 ## Props / Configuration
 
 ### React Component
@@ -104,3 +92,88 @@ function App() {
 | `title`                   | Yes      | Title displayed in the chatbot header                                                                                      |
 | `empty-state-title`       | No       | Main heading shown before the first message                                                                                |
 | `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |
+
+## Customizing Theme
+
+You can customize the chatbot's appearance by overriding CSS variables.
+
+### Available CSS Variables
+
+```css
+:root {
+  /* Border radius */
+  --docs-chatbot-radius
+
+  /* Colors */
+  --docs-chatbot-background
+  --docs-chatbot-foreground
+  --docs-chatbot-card
+  --docs-chatbot-card-foreground
+  --docs-chatbot-popover
+  --docs-chatbot-popover-foreground
+  --docs-chatbot-primary
+  --docs-chatbot-primary-foreground
+  --docs-chatbot-secondary
+  --docs-chatbot-secondary-foreground
+  --docs-chatbot-muted
+  --docs-chatbot-muted-foreground
+  --docs-chatbot-accent
+  --docs-chatbot-accent-foreground
+  --docs-chatbot-destructive
+  --docs-chatbot-border
+  --docs-chatbot-input
+  --docs-chatbot-ring
+}
+```
+
+### Usage Examples
+
+**In your global CSS (recommended):**
+
+```css
+/* In your main CSS file, import the chatbot styles first */
+@import "@sqliteai/docs-chatbot/style.css";
+
+/* Then override the variables */
+:root {
+  --docs-chatbot-primary: oklch(0.6 0.2 0);
+  --docs-chatbot-primary-foreground: oklch(1 0 0);
+  --docs-chatbot-border: oklch(0.85 0 0);
+}
+```
+
+**In React:**
+
+```tsx
+import { DocsChatbot } from "@sqliteai/docs-chatbot";
+import "./styles.css"; // Your CSS file with overrides
+
+function App() {
+  return (
+    <DocsChatbot
+      searchUrl="your-edge-function-url"
+      apiKey="your-api-key"
+      title="Your Docs"
+    />
+  );
+}
+```
+
+**In Vanilla JavaScript / HTML:**
+
+```html
+<style>
+  docs-chatbot {
+    --docs-chatbot-primary: oklch(0.6 0.2 0);
+    --docs-chatbot-primary-foreground: oklch(1 0 0);
+    --docs-chatbot-border: oklch(0.85 0 0);
+  }
+</style>
+
+<docs-chatbot
+  search-url="your-edge-function-url"
+  api-key="your-api-key"
+  title="Your Docs"
+>
+</docs-chatbot>
+```

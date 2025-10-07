@@ -1,0 +1,7 @@
+@import "../../../dist/esm/docs-chatbot.css";
+
+:root {
+  --docs-chatbot-primary: oklch(70.427% 0.13219 65.637);
+  --docs-chatbot-primary-foreground: oklch(1 0 0);
+  --docs-chatbot-border: oklch(0.85 0 0);
+}

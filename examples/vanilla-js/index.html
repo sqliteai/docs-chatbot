@@ -16,6 +16,13 @@
     <script src="../../dist/umd/docs-chatbot.min.js"></script>
     <script src="./config.js"></script>
 
+    <style>
+      docs-chatbot {
+        --docs-chatbot-primary: oklch(65.698% 0.12717 240.619);
+        --docs-chatbot-primary-foreground: oklch(1 0 0);
+      }
+    </style>
+
     <docs-chatbot
       title="SQLite Cloud Docs"
       empty-state-title="Ask questions about SQLite Cloud"
@@ -27,10 +34,6 @@
       const chatbot = document.querySelector("docs-chatbot");
       chatbot.setAttribute("search-url", window.ChatbotConfig.searchUrl);
       chatbot.setAttribute("api-key", window.ChatbotConfig.apiKey);
-      chatbot.setAttribute(
-        "style",
-        "--docs-chatbot-primary: #f5426c; --docs-chatbot-primary-foreground: #ffffff"
-      );
     </script>
   </body>
 </html>

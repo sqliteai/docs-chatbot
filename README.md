@@ -50,8 +50,7 @@ function App() {
       search-url="your-edge-function-url"
       api-key="your-api-key"
       title="Your Docs"
-      empty-state-title="How can we help?"
-      empty-state-description="Ask us anything about the documentation">
+    >
     </docs-chatbot>
   </body>
 </html>
@@ -62,16 +61,12 @@ function App() {
 ```html
 <script src="https://unpkg.com/@sqliteai/docs-chatbot/dist/umd/docs-chatbot.min.js"></script>
 
-<docs-chatbot
-  title="Your Docs"
-  empty-state-title="How can we help?"
-  empty-state-description="Ask us anything about the documentation">
-</docs-chatbot>
+<docs-chatbot title="Your Docs"> </docs-chatbot>
 
 <script>
-  const chatbot = document.querySelector('docs-chatbot');
-  chatbot.setAttribute('search-url', 'your-edge-function-url');
-  chatbot.setAttribute('api-key', 'your-api-key');
+  const chatbot = document.querySelector("docs-chatbot");
+  chatbot.setAttribute("search-url", "your-edge-function-url");
+  chatbot.setAttribute("api-key", "your-api-key");
 </script>
 ```
 
@@ -82,7 +77,8 @@ function App() {
   search-url="your-edge-function-url"
   api-key="your-api-key"
   title="Your Docs"
-  style="--primary: #f5426c; --primary-foreground: #ffffff">
+  style="--primary: #f5426c; --primary-foreground: #ffffff"
+>
 </docs-chatbot>
 ```
 
@@ -101,10 +97,10 @@ function App() {
 
 ### Web Component Attributes
 
-| Attribute                     | Required | Description                                                                                                                |
-| ----------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `search-url`                  | Yes      | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
-| `api-key`                     | Yes      | SQLite Cloud API key with permissions to execute the edge function                                                         |
-| `title`                       | Yes      | Title displayed in the chatbot header                                                                                      |
-| `empty-state-title`           | No       | Main heading shown before the first message                                                                                |
-| `empty-state-description`     | No       | Subtext shown below the empty state title                                                                                  |
+| Attribute                 | Required | Description                                                                                                                |
+| ------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `search-url`              | Yes      | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
+| `api-key`                 | Yes      | SQLite Cloud API key with permissions to execute the edge function                                                         |
+| `title`                   | Yes      | Title displayed in the chatbot header                                                                                      |
+| `empty-state-title`       | No       | Main heading shown before the first message                                                                                |
+| `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |

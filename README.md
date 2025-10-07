@@ -100,30 +100,28 @@ You can customize the chatbot's appearance by overriding CSS variables.
 ### Available CSS Variables
 
 ```css
-:root {
-  /* Border radius */
-  --docs-chatbot-radius
+/* Border radius */
+--docs-chatbot-radius
 
-  /* Colors */
-  --docs-chatbot-background
-  --docs-chatbot-foreground
-  --docs-chatbot-card
-  --docs-chatbot-card-foreground
-  --docs-chatbot-popover
-  --docs-chatbot-popover-foreground
-  --docs-chatbot-primary
-  --docs-chatbot-primary-foreground
-  --docs-chatbot-secondary
-  --docs-chatbot-secondary-foreground
-  --docs-chatbot-muted
-  --docs-chatbot-muted-foreground
-  --docs-chatbot-accent
-  --docs-chatbot-accent-foreground
-  --docs-chatbot-destructive
-  --docs-chatbot-border
-  --docs-chatbot-input
-  --docs-chatbot-ring
-}
+/* Colors */
+--docs-chatbot-background
+--docs-chatbot-foreground
+--docs-chatbot-card
+--docs-chatbot-card-foreground
+--docs-chatbot-popover
+--docs-chatbot-popover-foreground
+--docs-chatbot-primary
+--docs-chatbot-primary-foreground
+--docs-chatbot-secondary
+--docs-chatbot-secondary-foreground
+--docs-chatbot-muted
+--docs-chatbot-muted-foreground
+--docs-chatbot-accent
+--docs-chatbot-accent-foreground
+--docs-chatbot-destructive
+--docs-chatbot-border
+--docs-chatbot-input
+--docs-chatbot-ring
 ```
 
 ### Usage Examples

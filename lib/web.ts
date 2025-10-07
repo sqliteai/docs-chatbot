@@ -4,57 +4,91 @@ import createShadowRoot from "./createShadowRoot";
 import cssText from "../src/index.css?inline";
 import { ShadowRootProvider } from "@/providers/ShadowRootProvider";
 
-type DocsChatbotConfig = {
-  containerId: string;
-} & DocsChatbotProps;
+class DocsChatbotElement extends HTMLElement {
+  private root: ReturnType<typeof createShadowRoot>["root"] | null = null;
+  private portalContainer: HTMLDivElement | null = null;
 
-class DocsChatbotWidget {
-  init(config: DocsChatbotConfig): void {
-    const { containerId, ...chatbotProps } = config;
+  static get observedAttributes() {
+    return [
+      "search-url",
+      "api-key",
+      "title",
+      "empty-state-title",
+      "empty-state-description",
+    ];
+  }
 
-    const container = document.getElementById(containerId);
-    if (!container) {
-      console.error(
-        `SqliteAi Chatbot: Container with id "${containerId}" not found`
-      );
-      return;
-    }
-
+  connectedCallback() {
     try {
-      const { root, shadow } = createShadowRoot(container, cssText);
+      const { root, shadow } = createShadowRoot(this, cssText);
+      this.root = root;
 
-      // Create portal container for dialogs inside shadow root
       const portalContainer = document.createElement("div");
       portalContainer.id = "portal-container";
+      this.portalContainer = portalContainer;
       shadow.appendChild(portalContainer);
 
-      root.render(
-        React.createElement(
-          ShadowRootProvider,
-          { value: portalContainer },
-          React.createElement(DocsChatbot, chatbotProps)
-        )
-      );
+      this.render();
     } catch (error) {
       console.error("SqliteAi Chatbot: Failed to initialize", error);
     }
   }
-}
 
-const chatbotWidget = new DocsChatbotWidget();
-
-declare global {
-  interface Window {
-    DocsChatbot: DocsChatbotWidget;
+  attributeChangedCallback() {
+    if (this.root) {
+      this.render();
+    }
   }
-  var DocsChatbot: DocsChatbotWidget | undefined;
+
+  private render() {
+    if (!this.root || !this.portalContainer) return;
+
+    const searchUrl = this.getAttribute("search-url");
+    const apiKey = this.getAttribute("api-key");
+    const title = this.getAttribute("title");
+    const emptyStateTitle = this.getAttribute("empty-state-title");
+    const emptyStateDescription = this.getAttribute("empty-state-description");
+
+    if (!searchUrl || !apiKey || !title) {
+      console.error(
+        "SqliteAi Chatbot: Missing required attributes (search-url, api-key, title)"
+      );
+      return;
+    }
+
+    const chatbotProps: DocsChatbotProps = {
+      searchUrl,
+      apiKey,
+      title,
+      ...(emptyStateTitle &&
+        emptyStateDescription && {
+          emptyState: {
+            title: emptyStateTitle,
+            description: emptyStateDescription,
+          },
+        }),
+    };
+
+    this.root.render(
+      React.createElement(
+        ShadowRootProvider,
+        { value: this.portalContainer },
+        React.createElement(DocsChatbot, chatbotProps)
+      )
+    );
+  }
+
+  disconnectedCallback() {
+    if (this.root) {
+      this.root.unmount();
+      this.root = null;
+      this.portalContainer = null;
+    }
+  }
 }
 
-if (typeof window !== "undefined") {
-  window.DocsChatbot = chatbotWidget;
-}
-if (typeof globalThis !== "undefined") {
-  globalThis.DocsChatbot = chatbotWidget;
+if (typeof window !== "undefined" && !customElements.get("docs-chatbot")) {
+  customElements.define("docs-chatbot", DocsChatbotElement);
 }
 
-export default chatbotWidget;
+export default DocsChatbotElement;

@@ -13,22 +13,24 @@
     </style>
   </head>
   <body>
-    <div id="my-chatbot"></div>
-
     <script src="../../dist/umd/docs-chatbot.min.js"></script>
     <script src="./config.js"></script>
 
+    <docs-chatbot
+      title="SQLite Cloud Docs"
+      empty-state-title="Ask questions about SQLite Cloud"
+      empty-state-description="Get help with SQLite Cloud documentation"
+    >
+    </docs-chatbot>
+
     <script>
-      DocsChatbot.init({
-        containerId: "my-chatbot",
-        searchUrl: window.ChatbotConfig.searchUrl,
-        apiKey: window.ChatbotConfig.apiKey,
-        title: "SQLite Cloud Docs",
-        emptyState: {
-          title: "Ask questions about SQLite Cloud",
-          description: "Get help with SQLite Cloud documentation",
-        },
-      });
+      const chatbot = document.querySelector("docs-chatbot");
+      chatbot.setAttribute("search-url", window.ChatbotConfig.searchUrl);
+      chatbot.setAttribute("api-key", window.ChatbotConfig.apiKey);
+      chatbot.setAttribute(
+        "style",
+        "--primary: #f5426c; --primary-foreground: #ffffff"
+      );
     </script>
   </body>
 </html>

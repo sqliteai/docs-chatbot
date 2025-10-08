@@ -26,15 +26,35 @@ export const ResponseLight = ({ children, className }: ResponseLightProps) => {
             <h2 className="dcb:text-sm dcb:font-bold dcb:mb-2">{children}</h2>
           ),
           h3: ({ children }) => (
-            <h3 className="dcb:text-sm dcb:font-bold dcb:mb-1">{children}</h3>
+            <h3 className="dcb:text-sm dcb:font-bold dcb:mb-2">{children}</h3>
           ),
           p: ({ children }) => <p className="dcb:mb-4">{children}</p>,
           strong: ({ children }) => (
             <strong className="dcb:font-bold">{children}</strong>
           ),
+          hr: () => <hr className="dcb:my-4" />,
           code(props) {
             const { children, className, ...rest } = props;
+            const isInline = !className?.includes("language-");
+            const isMultiline =
+              typeof children === "string" && children.includes("\n");
 
+            // Inline code styling
+            if (isInline && !isMultiline) {
+              return (
+                <code
+                  className={cn(
+                    className,
+                    "dcb:px-1.5 dcb:py-0.5 dcb:rounded dcb:font-mono dcb:text-[13px] dcb:bg-gray-100 dcb:text-zinc-600 dark:dcb:bg-gray-800 dark:dcb:text-gray-300"
+                  )}
+                  {...rest}
+                >
+                  {children}
+                </code>
+              );
+            }
+
+            // Code block styling
             return (
               <code
                 className={cn(

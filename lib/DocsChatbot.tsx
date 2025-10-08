@@ -35,8 +35,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-/** Props for the Chatbot component */
-export type DocsChatbotProps = {
+/** Base props shared by all variants */
+type DocsChatbotBaseProps = {
   /** Edge function URL for the search functionality */
   searchUrl: string;
   /** Bearer token for edge function authentication */
@@ -49,6 +49,31 @@ export type DocsChatbotProps = {
     description: string;
   };
 };
+
+/** Props when using the default floating trigger button */
+type DocsChatbotDefaultTriggerProps = DocsChatbotBaseProps & {
+  /** Use the default floating trigger button */
+  trigger?: "default";
+  /** Not used with default trigger */
+  open?: never;
+  /** Not used with default trigger */
+  onOpenChange?: never;
+};
+
+/** Props when using a custom trigger button (controlled) */
+type DocsChatbotCustomTriggerProps = DocsChatbotBaseProps & {
+  /** Use a custom trigger button - requires open and onOpenChange */
+  trigger: "custom";
+  /** Control the open state externally */
+  open: boolean;
+  /** Callback when the open state changes */
+  onOpenChange: (open: boolean) => void;
+};
+
+/** Props for the Chatbot component */
+export type DocsChatbotProps =
+  | DocsChatbotDefaultTriggerProps
+  | DocsChatbotCustomTriggerProps;
 
 /**
  * AI-powered document search chatbot component.
@@ -63,9 +88,20 @@ export const DocsChatbot = ({
   apiKey,
   title,
   emptyState,
+  ...props
 }: DocsChatbotProps) => {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+
+  const isCustomTrigger = props.trigger === "custom";
+  const open = isCustomTrigger ? props.open : internalOpen;
+  const setOpen = (newOpen: boolean) => {
+    if (isCustomTrigger) {
+      props.onOpenChange(newOpen);
+    } else {
+      setInternalOpen(newOpen);
+    }
+  };
 
   const { messages, sendMessage, status, error, clearError, setMessages } =
     useChat({
@@ -97,20 +133,23 @@ export const DocsChatbot = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="icon"
-          className="dcb:fixed dcb:bottom-4 dcb:right-4 dcb:h-14 dcb:w-14 dcb:rounded-full dcb:shadow-lg dcb:cursor-pointer"
-        >
-          <MessageSquare className="dcb:h-6 dcb:w-6" />
-        </Button>
-      </DialogTrigger>
+      {!isCustomTrigger && (
+        <DialogTrigger asChild>
+          <Button
+            size="icon"
+            className="dcb:fixed dcb:bottom-4 dcb:right-4 dcb:h-14 dcb:w-14 dcb:rounded-full dcb:shadow-lg dcb:cursor-pointer"
+          >
+            <MessageSquare className="dcb:h-6 dcb:w-6" />
+          </Button>
+        </DialogTrigger>
+      )}
 
       <DialogContent
         className={cn(
           "dcb:max-w-md dcb:w-[calc(100vw-2rem)] dcb:h-[min(600px,calc(100vh-7rem))] sm:dcb:max-w-[425px]",
           "dcb:flex dcb:flex-col dcb:p-0 dcb:fixed dcb:gap-0",
-          "dcb:top-auto dcb:left-auto dcb:bottom-20 dcb:right-4",
+          "dcb:top-auto dcb:left-auto dcb:right-4",
+          isCustomTrigger ? "dcb:bottom-4" : "dcb:bottom-20",
           "dcb:translate-x-0 dcb:translate-y-0"
         )}
       >

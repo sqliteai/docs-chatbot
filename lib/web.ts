@@ -7,6 +7,7 @@ import { ShadowRootProvider } from "@/providers/ShadowRootProvider";
 class DocsChatbotElement extends HTMLElement {
   private root: ReturnType<typeof createShadowRoot>["root"] | null = null;
   private portalContainer: HTMLDivElement | null = null;
+  private _open = false;
 
   static get observedAttributes() {
     return [
@@ -15,7 +16,34 @@ class DocsChatbotElement extends HTMLElement {
       "title",
       "empty-state-title",
       "empty-state-description",
+      "trigger",
     ];
+  }
+
+  // Public property for controlling open state
+  get open(): boolean {
+    return this._open;
+  }
+
+  set open(value: boolean) {
+    const oldValue = this._open;
+    this._open = value;
+
+    if (oldValue !== value) {
+      // Dispatch custom event
+      this.dispatchEvent(
+        new CustomEvent("openchange", {
+          detail: { open: value },
+          bubbles: true,
+          composed: true,
+        })
+      );
+
+      // Re-render if connected
+      if (this.root) {
+        this.render();
+      }
+    }
   }
 
   connectedCallback() {
@@ -48,6 +76,7 @@ class DocsChatbotElement extends HTMLElement {
     const title = this.getAttribute("title");
     const emptyStateTitle = this.getAttribute("empty-state-title");
     const emptyStateDescription = this.getAttribute("empty-state-description");
+    const trigger = this.getAttribute("trigger") as "default" | "custom" | null;
 
     if (!searchUrl || !apiKey || !title) {
       console.error(
@@ -56,18 +85,38 @@ class DocsChatbotElement extends HTMLElement {
       return;
     }
 
-    const chatbotProps: DocsChatbotProps = {
-      searchUrl,
-      apiKey,
-      title,
-      ...(emptyStateTitle &&
-        emptyStateDescription && {
-          emptyState: {
-            title: emptyStateTitle,
-            description: emptyStateDescription,
+    const isCustomTrigger = trigger === "custom";
+
+    const chatbotProps: DocsChatbotProps = isCustomTrigger
+      ? {
+          searchUrl,
+          apiKey,
+          title,
+          trigger: "custom",
+          open: this._open,
+          onOpenChange: (open: boolean) => {
+            this.open = open;
           },
-        }),
-    };
+          ...(emptyStateTitle &&
+            emptyStateDescription && {
+              emptyState: {
+                title: emptyStateTitle,
+                description: emptyStateDescription,
+              },
+            }),
+        }
+      : {
+          searchUrl,
+          apiKey,
+          title,
+          ...(emptyStateTitle &&
+            emptyStateDescription && {
+              emptyState: {
+                title: emptyStateTitle,
+                description: emptyStateDescription,
+              },
+            }),
+        };
 
     this.root.render(
       React.createElement(

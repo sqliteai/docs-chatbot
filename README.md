@@ -2,18 +2,18 @@
 
 [![Status](https://img.shields.io/badge/status-in%20development-yellow)](https://github.com/sqliteai/docs-chatbot)
 
-Documentation search chatbot powered by SQLite and AI.
+AI-powered documentation search chatbot that integrates seamlessly into your application.
 
-## Prerequisites
+## Quick Start
+
+### Prerequisites
 
 Before using this chatbot, you need to:
 
 1. **Index your documentation** - Use the [SQLite AI Search Action](https://github.com/sqliteai/sqlite-aisearch-action) to create embeddings from your documentation files
 2. **Create an edge function** - Follow the [setup guide](https://github.com/sqliteai/sqlite-aisearch-action#create-the-search-edge-function) to deploy the search edge function
 
-## Usage
-
-### React Application
+### React
 
 ```bash
 npm install @sqliteai/docs-chatbot
@@ -26,15 +26,15 @@ import "@sqliteai/docs-chatbot/style.css";
 function App() {
   return (
     <DocsChatbot
-      searchUrl="your-edge-function-url"
+      searchUrl="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
       apiKey="your-api-key"
-      title="Your Docs"
+      title="Help Center"
     />
   );
 }
 ```
 
-### Vanilla JavaScript / HTML
+### Vanilla JavaScript
 
 ```html
 <!DOCTYPE html>
@@ -47,43 +47,123 @@ function App() {
     <script src="https://unpkg.com/@sqliteai/docs-chatbot/dist/umd/docs-chatbot.min.js"></script>
 
     <docs-chatbot
-      search-url="your-edge-function-url"
+      search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
       api-key="your-api-key"
-      title="Your Docs"
+      title="Help Center"
     >
     </docs-chatbot>
   </body>
 </html>
 ```
 
-**With dynamic configuration:**
+## Trigger Modes
+
+The chatbot supports two trigger modes to fit different use cases.
+
+### Default Trigger
+
+**When to use:** Most common use case. Adds a floating button in the bottom-right corner that opens the chatbot when clicked.
+
+```tsx
+<DocsChatbot
+  searchUrl="your-edge-function-url"
+  apiKey="your-api-key"
+  title="Help Center"
+/>
+```
+
+The floating button appears on every page and the dialog opens in the bottom-right corner.
+
+### Custom Trigger
+
+**When to use:** You want full control over when and how the chatbot opens. Perfect for:
+
+- Adding help buttons in specific locations (headers, sidebars, toolbars)
+- Opening the chatbot programmatically
+- Integrating with existing UI patterns
+- Pages where the floating button would overlap with other elements
+
+**React:**
+
+```tsx
+import { DocsChatbot } from "@sqliteai/docs-chatbot";
+import "@sqliteai/docs-chatbot/style.css";
+import { useState } from "react";
+
+function App() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      {/* Your custom button anywhere in your app */}
+      <button onClick={() => setOpen(true)}>Help & Support</button>
+
+      {/* Chatbot with custom trigger mode */}
+      <DocsChatbot
+        searchUrl="your-edge-function-url"
+        apiKey="your-api-key"
+        title="Help Center"
+        trigger="custom"
+        open={open}
+        onOpenChange={setOpen}
+      />
+    </>
+  );
+}
+```
+
+**Vanilla JavaScript:**
 
 ```html
 <script src="https://unpkg.com/@sqliteai/docs-chatbot/dist/umd/docs-chatbot.min.js"></script>
 
-<docs-chatbot title="Your Docs"> </docs-chatbot>
+<!-- Your custom button -->
+<button id="help-btn">Help & Support</button>
+
+<!-- Chatbot with custom trigger mode -->
+<docs-chatbot
+  search-url="your-edge-function-url"
+  api-key="your-api-key"
+  title="Help Center"
+  trigger="custom"
+>
+</docs-chatbot>
 
 <script>
   const chatbot = document.querySelector("docs-chatbot");
-  chatbot.setAttribute("search-url", "your-edge-function-url");
-  chatbot.setAttribute("api-key", "your-api-key");
+  const button = document.getElementById("help-btn");
+
+  // Open chatbot when button is clicked
+  button.addEventListener("click", () => {
+    chatbot.open = true;
+  });
+
+  // Listen to state changes (optional)
+  chatbot.addEventListener("openchange", (e) => {
+    console.log("Chatbot open:", e.detail.open);
+  });
 </script>
 ```
 
-## Props / Configuration
+## API Reference
 
-### React Component
+### React Component Props
 
-| Property                 | Type     | Required | Description                                                                                                                |
-| ------------------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `searchUrl`              | `string` | Yes      | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
-| `apiKey`                 | `string` | Yes      | SQLite Cloud API key with permissions to execute the edge function                                                         |
-| `title`                  | `string` | Yes      | Title displayed in the chatbot header                                                                                      |
-| `emptyState`             | `object` | No       | Customizes the initial empty state of the chatbot                                                                          |
-| `emptyState.title`       | `string` | No       | Main heading shown before the first message                                                                                |
-| `emptyState.description` | `string` | No       | Subtext shown below the empty state title                                                                                  |
+| Property                 | Type                      | Required                    | Description                                                                                                                |
+| ------------------------ | ------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `searchUrl`              | `string`                  | Yes                         | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
+| `apiKey`                 | `string`                  | Yes                         | SQLite Cloud API key with permissions to execute the edge function                                                         |
+| `title`                  | `string`                  | Yes                         | Title displayed in the chatbot header                                                                                      |
+| `emptyState`             | `object`                  | No                          | Customizes the initial empty state of the chatbot                                                                          |
+| `emptyState.title`       | `string`                  | No                          | Main heading shown before the first message                                                                                |
+| `emptyState.description` | `string`                  | No                          | Subtext shown below the empty state title                                                                                  |
+| `trigger`                | `"default" \| "custom"`   | No                          | Trigger mode: `"default"` uses floating button, `"custom"` requires you to control `open` state (default: `"default"`)     |
+| `open`                   | `boolean`                 | Yes when `trigger="custom"` | Control the chatbot open state (only used with `trigger="custom"`)                                                         |
+| `onOpenChange`           | `(open: boolean) => void` | Yes when `trigger="custom"` | Callback fired when the open state changes (only used with `trigger="custom"`)                                             |
 
-### Web Component Attributes
+### Web Component
+
+#### Attributes
 
 | Attribute                 | Required | Description                                                                                                                |
 | ------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -92,41 +172,51 @@ function App() {
 | `title`                   | Yes      | Title displayed in the chatbot header                                                                                      |
 | `empty-state-title`       | No       | Main heading shown before the first message                                                                                |
 | `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |
+| `trigger`                 | No       | Trigger mode: `"default"` uses floating button, `"custom"` requires controlling `open` property (default: `"default"`)     |
 
-## Customizing Theme
+#### Properties
 
-You can customize the chatbot's appearance by overriding CSS variables.
+| Property | Type      | Description                                                     |
+| -------- | --------- | --------------------------------------------------------------- |
+| `open`   | `boolean` | Get or set the chatbot open state (property-only, no attribute) |
 
-### Available CSS Variables
+#### Events
 
-```css
-/* Border radius */
---docs-chatbot-radius
+| Event        | Detail              | Description                               |
+| ------------ | ------------------- | ----------------------------------------- |
+| `openchange` | `{ open: boolean }` | Fired when the chatbot open state changes |
 
-/* Colors */
---docs-chatbot-background
---docs-chatbot-foreground
---docs-chatbot-card
---docs-chatbot-card-foreground
---docs-chatbot-popover
---docs-chatbot-popover-foreground
---docs-chatbot-primary
---docs-chatbot-primary-foreground
---docs-chatbot-secondary
---docs-chatbot-secondary-foreground
---docs-chatbot-muted
---docs-chatbot-muted-foreground
---docs-chatbot-accent
---docs-chatbot-accent-foreground
---docs-chatbot-destructive
---docs-chatbot-border
---docs-chatbot-input
---docs-chatbot-ring
-```
+## Theming
 
-### Usage Examples
+Customize the chatbot's appearance using CSS variables.
 
-**In your global CSS (recommended):**
+### CSS Variables
+
+| Variable                              | Description              |
+| ------------------------------------- | ------------------------ |
+| `--docs-chatbot-radius`               | Border radius            |
+| `--docs-chatbot-background`           | Background color         |
+| `--docs-chatbot-foreground`           | Text color               |
+| `--docs-chatbot-primary`              | Primary color            |
+| `--docs-chatbot-primary-foreground`   | Primary text color       |
+| `--docs-chatbot-secondary`            | Secondary color          |
+| `--docs-chatbot-secondary-foreground` | Secondary text color     |
+| `--docs-chatbot-muted`                | Muted color              |
+| `--docs-chatbot-muted-foreground`     | Muted text color         |
+| `--docs-chatbot-accent`               | Accent color             |
+| `--docs-chatbot-accent-foreground`    | Accent text color        |
+| `--docs-chatbot-border`               | Border color             |
+| `--docs-chatbot-input`                | Input background color   |
+| `--docs-chatbot-ring`                 | Focus ring color         |
+| `--docs-chatbot-card`                 | Card background color    |
+| `--docs-chatbot-card-foreground`      | Card text color          |
+| `--docs-chatbot-popover`              | Popover background color |
+| `--docs-chatbot-popover-foreground`   | Popover text color       |
+| `--docs-chatbot-destructive`          | Destructive/error color  |
+
+### Examples
+
+**React:**
 
 ```css
 /* In your main CSS file, import the chatbot styles first */
@@ -137,10 +227,9 @@ You can customize the chatbot's appearance by overriding CSS variables.
   --docs-chatbot-primary: oklch(0.6 0.2 0);
   --docs-chatbot-primary-foreground: oklch(1 0 0);
   --docs-chatbot-border: oklch(0.85 0 0);
+  --docs-chatbot-radius: 8px;
 }
 ```
-
-**In React:**
 
 ```tsx
 import { DocsChatbot } from "@sqliteai/docs-chatbot";
@@ -151,13 +240,13 @@ function App() {
     <DocsChatbot
       searchUrl="your-edge-function-url"
       apiKey="your-api-key"
-      title="Your Docs"
+      title="Help Center"
     />
   );
 }
 ```
 
-**In Vanilla JavaScript / HTML:**
+**Vanilla JavaScript:**
 
 ```html
 <style>
@@ -165,13 +254,14 @@ function App() {
     --docs-chatbot-primary: oklch(0.6 0.2 0);
     --docs-chatbot-primary-foreground: oklch(1 0 0);
     --docs-chatbot-border: oklch(0.85 0 0);
+    --docs-chatbot-radius: 8px;
   }
 </style>
 
 <docs-chatbot
   search-url="your-edge-function-url"
   api-key="your-api-key"
-  title="Your Docs"
+  title="Help Center"
 >
 </docs-chatbot>
 ```

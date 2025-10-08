@@ -7,7 +7,7 @@ import { useShadowRoot } from "@/hooks/useShadowRoot";
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+  return <DialogPrimitive.Root data-slot="dialog" modal={false} {...props} />;
 }
 
 function DialogTrigger({

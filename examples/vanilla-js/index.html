@@ -6,9 +6,43 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
+        margin: 0;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .mode-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ccc;
+        background: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button.active {
+        background: #000;
+        color: #fff;
+        border-color: #000;
+      }
+      .help-button {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .help-button.show {
+        display: flex;
       }
     </style>
   </head>
@@ -23,17 +57,85 @@
       }
     </style>
 
-    <docs-chatbot
-      title="SQLite Cloud Docs"
-      empty-state-title="Ask questions about SQLite Cloud"
-      empty-state-description="Get help with SQLite Cloud documentation"
-    >
-    </docs-chatbot>
+    <!-- Header with mode switcher -->
+    <div class="header">
+      <div>
+        <h1>Chatbot Demo</h1>
+        <div class="mode-buttons">
+          <button id="default-btn" class="active">Default Trigger</button>
+          <button id="custom-btn">Custom Trigger</button>
+        </div>
+      </div>
+
+      <!-- Custom trigger button (hidden by default) -->
+      <button id="help-btn" class="help-button">
+        <span>❓</span>
+        Help & Support
+      </button>
+    </div>
+
+    <!-- Chatbot element (we'll swap it when mode changes) -->
+    <div id="chatbot-container"></div>
 
     <script>
-      const chatbot = document.querySelector("docs-chatbot");
-      chatbot.setAttribute("search-url", window.ChatbotConfig.searchUrl);
-      chatbot.setAttribute("api-key", window.ChatbotConfig.apiKey);
+      const defaultBtn = document.getElementById("default-btn");
+      const customBtn = document.getElementById("custom-btn");
+      const helpBtn = document.getElementById("help-btn");
+      const container = document.getElementById("chatbot-container");
+
+      let currentMode = "default";
+      let chatbot = null;
+
+      function initChatbot(mode) {
+        // Remove existing chatbot
+        if (chatbot) {
+          container.removeChild(chatbot);
+        }
+
+        // Create new chatbot element
+        chatbot = document.createElement("docs-chatbot");
+        chatbot.setAttribute("title", "SQLite Cloud Docs");
+        chatbot.setAttribute("empty-state-title", "Ask questions about SQLite Cloud");
+        chatbot.setAttribute("empty-state-description", "Get help with SQLite Cloud documentation");
+        chatbot.setAttribute("search-url", window.ChatbotConfig.searchUrl);
+        chatbot.setAttribute("api-key", window.ChatbotConfig.apiKey);
+
+        if (mode === "custom") {
+          chatbot.setAttribute("trigger", "custom");
+
+          // Listen to open state changes
+          chatbot.addEventListener("openchange", (e) => {
+            console.log("Chatbot open:", e.detail.open);
+          });
+        }
+
+        container.appendChild(chatbot);
+      }
+
+      // Mode switcher
+      defaultBtn.addEventListener("click", () => {
+        currentMode = "default";
+        defaultBtn.classList.add("active");
+        customBtn.classList.remove("active");
+        helpBtn.classList.remove("show");
+        initChatbot("default");
+      });
+
+      customBtn.addEventListener("click", () => {
+        currentMode = "custom";
+        customBtn.classList.add("active");
+        defaultBtn.classList.remove("active");
+        helpBtn.classList.add("show");
+        initChatbot("custom");
+      });
+
+      // Help button (only for custom mode)
+      helpBtn.addEventListener("click", () => {
+        chatbot.open = true;
+      });
+
+      // Initialize with default mode
+      initChatbot("default");
     </script>
   </body>
 </html>

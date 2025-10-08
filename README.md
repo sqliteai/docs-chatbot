@@ -58,11 +58,9 @@ function App() {
 
 ## Trigger Modes
 
-The chatbot supports two trigger modes to fit different use cases.
-
 ### Default Trigger
 
-**When to use:** Most common use case. Adds a floating button in the bottom-right corner that opens the chatbot when clicked.
+Adds a floating button in the bottom-right corner that opens the chatbot when clicked.
 
 ```tsx
 <DocsChatbot
@@ -72,16 +70,7 @@ The chatbot supports two trigger modes to fit different use cases.
 />
 ```
 
-The floating button appears on every page and the dialog opens in the bottom-right corner.
-
 ### Custom Trigger
-
-**When to use:** You want full control over when and how the chatbot opens. Perfect for:
-
-- Adding help buttons in specific locations (headers, sidebars, toolbars)
-- Opening the chatbot programmatically
-- Integrating with existing UI patterns
-- Pages where the floating button would overlap with other elements
 
 **React:**
 

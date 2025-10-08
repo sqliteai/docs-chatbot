@@ -154,7 +154,9 @@ export const DocsChatbot = ({
         )}
       >
         <div className="dcb:px-4 dcb:py-3 dcb:border-b dcb:bg-background dcb:rounded-lg dcb:flex-shrink-0">
-          <h2 className="dcb:text-lg dcb:font-sans dcb:font-semibold">{title}</h2>
+          <h2 className="dcb:text-lg dcb:font-sans dcb:font-semibold dcb:text-foreground">
+            {title}
+          </h2>
         </div>
 
         <Conversation className="dcb:relative dcb:w-full dcb:h-full dcb:overflow-hidden">
@@ -195,7 +197,9 @@ export const DocsChatbot = ({
                 <Message key={message.id} from={message.role}>
                   <MessageContent
                     className={
-                      message.role === "assistant" ? "!dcb:max-w-full dcb:w-full" : ""
+                      message.role === "assistant"
+                        ? "!dcb:max-w-full dcb:w-full"
+                        : ""
                     }
                   >
                     {message.parts.map((part) => {
@@ -269,7 +273,10 @@ export const DocsChatbot = ({
               />
               <PromptInputToolbar>
                 <PromptInputTools></PromptInputTools>
-                <PromptInputSubmit status={status} className="dcb:cursor-pointer" />
+                <PromptInputSubmit
+                  status={status}
+                  className="dcb:cursor-pointer"
+                />
               </PromptInputToolbar>
             </PromptInputBody>
           </PromptInput>

@@ -55,7 +55,9 @@ export const ConversationEmptyState = ({
       <>
         {icon && <div className="dcb:text-muted-foreground">{icon}</div>}
         <div className="dcb:space-y-1">
-          <h3 className="dcb:font-medium dcb:font-sans dcb:text-sm">{title}</h3>
+          <h3 className="dcb:font-medium dcb:text-foreground dcb:font-sans dcb:text-sm">
+            {title}
+          </h3>
           {description && (
             <p className="dcb:text-muted-foreground dcb:font-sans dcb:text-sm">
               {description}

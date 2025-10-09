@@ -2,7 +2,7 @@
 
 [![Status](https://img.shields.io/badge/status-in%20development-yellow)](https://github.com/sqliteai/docs-chatbot)
 
-AI-powered documentation search chatbot that integrates seamlessly into your application.
+Embeddable AI chatbot for documentation, powered by SQLite Cloud.
 
 ## Quick Start
 

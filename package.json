@@ -1,9 +1,32 @@
 {
   "name": "@sqliteai/docs-chatbot",
   "description": "Documentation search chatbot powered by SQLite and AI",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sqliteai/chatbot.git"
+  },
+  "homepage": "https://github.com/sqliteai/chatbot#readme",
+  "bugs": {
+    "url": "https://github.com/sqliteai/chatbot/issues"
+  },
+  "keywords": [
+    "chatbot",
+    "documentation",
+    "search",
+    "sqlite",
+    "ai",
+    "vector-search",
+    "semantic-search",
+    "react",
+    "react-component"
+  ],
+  "author": "SQLite Cloud",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/cjs/index.cjs.js",
   "module": "./dist/esm/index.esm.js",
   "types": "./dist/esm/lib/DocsChatbot.d.ts",

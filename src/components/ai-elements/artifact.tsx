@@ -66,7 +66,10 @@ export type ArtifactTitleProps = HTMLAttributes<HTMLParagraphElement>;
 
 export const ArtifactTitle = ({ className, ...props }: ArtifactTitleProps) => (
   <p
-    className={cn("dcb:font-medium dcb:text-foreground dcb:text-sm", className)}
+    className={cn(
+      "dcb:font-medium dcb:text-foreground dcb:text-sm dcb:flex-1 dcb:min-w-0 dcb:truncate dcb:pr-2",
+      className
+    )}
     {...props}
   />
 );
@@ -90,7 +93,7 @@ export const ArtifactActions = ({
   ...props
 }: ArtifactActionsProps) => (
   <div
-    className={cn("dcb:flex dcb:items-center dcb:gap-1", className)}
+    className={cn("dcb:flex dcb:items-center dcb:gap-1 dcb:flex-shrink-0", className)}
     {...props}
   />
 );

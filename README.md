@@ -60,6 +60,8 @@ function App() {
 
 ### Default Trigger
 
+<img width="1887" height="829" alt="Screen Shot 2025-10-24 at 14 39 33 PM" src="https://github.com/user-attachments/assets/dfb3b8c0-ba8b-4c7d-bf0d-a4022982d45f" />
+
 Adds a floating button in the bottom-right corner that opens the chatbot when clicked.
 
 ```tsx
@@ -70,10 +72,12 @@ Adds a floating button in the bottom-right corner that opens the chatbot when cl
 />
 ```
 
-<img width="1887" height="829" alt="Screen Shot 2025-10-24 at 14 39 33 PM" src="https://github.com/user-attachments/assets/dfb3b8c0-ba8b-4c7d-bf0d-a4022982d45f" />
-
 ### Custom Trigger
 
+<img width="1898" height="830" alt="Screen Shot 2025-10-24 at 14 42 16 PM" src="https://github.com/user-attachments/assets/a2efaa07-f441-4281-bf8c-818b98a8c8b1" />
+
+Use your own button or trigger element to control when the chatbot opens. This mode is useful when you want the chatbot to integrate seamlessly with your existing UI design or place the trigger in a specific location (like a navigation bar or help menu).
+  
 **React:**
 
 ```tsx
@@ -102,8 +106,6 @@ function App() {
   );
 }
 ```
-
-<img width="1898" height="830" alt="Screen Shot 2025-10-24 at 14 42 16 PM" src="https://github.com/user-attachments/assets/a2efaa07-f441-4281-bf8c-818b98a8c8b1" />
 
 **Vanilla JavaScript:**
 

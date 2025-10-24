@@ -209,15 +209,6 @@ export const DocsChatbot = ({
                           return part.text;
                         }
                         case "source-url": {
-                          const snippetLines = part.providerMetadata?.result
-                            ?.snippet
-                            ? [
-                                (
-                                  part.providerMetadata.result.snippet as string
-                                ).slice(0, 200),
-                              ]
-                            : [];
-
                           return (
                             <Artifact key={part.sourceId}>
                               <ArtifactHeader
@@ -234,10 +225,13 @@ export const DocsChatbot = ({
                                 </ArtifactActions>
                               </ArtifactHeader>
 
-                              {snippetLines.length > 0 && (
+                              {part.providerMetadata?.result && (
                                 <ArtifactContent>
                                   <ResponseLight>
-                                    {snippetLines.join("\n") + "..."}
+                                    {
+                                      part.providerMetadata.result
+                                        .snippet as string
+                                    }
                                   </ResponseLight>
                                 </ArtifactContent>
                               )}

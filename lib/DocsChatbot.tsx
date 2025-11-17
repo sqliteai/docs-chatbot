@@ -10,7 +10,12 @@ import {
   PromptInputSubmit,
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { ExternalLink, MessageSquare } from "lucide-react";
 import { ResponseLight } from "@/components/response-light";
 import { DefaultChatTransport } from "ai";
@@ -153,11 +158,7 @@ export const DocsChatbot = ({
           "dcb:translate-x-0 dcb:translate-y-0"
         )}
       >
-        <div className="dcb:px-4 dcb:py-3 dcb:border-b dcb:bg-background dcb:rounded-lg dcb:flex-shrink-0">
-          <h2 className="dcb:text-lg dcb:font-sans dcb:font-semibold dcb:text-foreground">
-            {title}
-          </h2>
-        </div>
+        <DialogTitle>{title}</DialogTitle>
 
         <Conversation className="dcb:relative dcb:w-full dcb:h-full dcb:overflow-hidden">
           {error && (

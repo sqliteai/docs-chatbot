@@ -48,9 +48,6 @@ jobs:
 
       - name: build and publish
         if: steps.version-check.outputs.changed == 'true'
-        working-directory: ./
         run: |
           pnpm build
           npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

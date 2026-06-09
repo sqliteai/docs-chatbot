@@ -2,13 +2,19 @@
 
 import { cn } from "@/utils/cn";
 import ReactMarkdown from "react-markdown";
+import type { CSSProperties } from "react";
 
 type ResponseLightProps = {
   children: string;
   className?: string;
+  style?: CSSProperties;
 };
 
-export const ResponseLight = ({ children, className }: ResponseLightProps) => {
+export const ResponseLight = ({
+  children,
+  className,
+  style,
+}: ResponseLightProps) => {
   return (
     <div
       className={cn(
@@ -16,6 +22,7 @@ export const ResponseLight = ({ children, className }: ResponseLightProps) => {
         "dcb:text-sm dcb:text-muted-foreground",
         className
       )}
+      style={style}
     >
       <ReactMarkdown
         components={{

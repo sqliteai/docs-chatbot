@@ -4,6 +4,12 @@
 
 Embeddable AI chatbot for documentation, powered by SQLite Cloud.
 
+## Local Testing
+
+For local testing, the package includes a built-in mock endpoint: `mock://docs-chatbot`.
+
+The repo demos and examples now prefer that mock endpoint by default, even if `VITE_SEARCH_API_URL` exists.
+
 ## Quick Start
 
 ### Prerequisites
@@ -26,13 +32,20 @@ import "@sqliteai/docs-chatbot/style.css";
 function App() {
   return (
     <DocsChatbot
-      searchUrl="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
-      apiKey="your-api-key"
+      search={{
+        url: "https://yourproject.sqlite.cloud/v2/functions/aisearch-docs",
+        apiKey: "your-api-key",
+      }}
       title="Help Center"
+      variant="embedded"
     />
   );
 }
 ```
+
+For local-only testing, replace `search.url` with `mock://docs-chatbot` and use any placeholder API key such as `demo-key`.
+
+If you want the demos to use a real backend instead, set `VITE_USE_REAL_SEARCH=true`.
 
 ### Vanilla JavaScript
 
@@ -56,6 +69,114 @@ function App() {
 </html>
 ```
 
+## Display Modes
+
+### Embedded Panel
+
+Render the chatbot inline inside your layout. This is the mode to use when you want the chat UI to live inside an existing panel, sidebar, or page section.
+
+```tsx
+<DocsChatbot
+  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  title="Help Center"
+  variant="embedded"
+  className="max-w-2xl h-[600px]"
+  persistence={{ key: "help-center" }}
+  results={{ snippetMaxLines: 5 }}
+/>
+```
+
+```html
+<docs-chatbot
+  search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
+  api-key="your-api-key"
+  title="Help Center"
+  variant="embedded"
+></docs-chatbot>
+```
+
+In embedded mode, the host layout should provide height. The component no longer renders its own outer frame.
+
+## Conversation Persistence
+
+To preserve chat history across unmounts or context switches, pass a persistence key. In dashboard-style layouts, use a different key per database or per workspace.
+
+```tsx
+<DocsChatbot
+  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  title="Memory Assistant"
+  variant="embedded"
+  className="h-full"
+  persistence={{
+    key: `memory:${projectId}:${databaseName}`,
+    storage: "session",
+  }}
+/>
+```
+
+```html
+<docs-chatbot
+  search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
+  api-key="your-api-key"
+  title="Help Center"
+  persistence-key="help-center"
+  persistence-storage="session"
+></docs-chatbot>
+```
+
+The floating dialog modes also keep running when you click outside the widget. They no longer dismiss on background clicks.
+
+## Snippet Display
+
+To keep result cards compact, you can clamp snippet height visually and/or truncate by characters.
+
+```tsx
+<DocsChatbot
+  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  title="Memory Assistant"
+  variant="embedded"
+  results={{
+    snippetMaxLines: 5,
+    snippetMaxChars: 320,
+  }}
+/>
+```
+
+## Result Selection
+
+To intercept result clicks and route them into your own UI, use `results.onSelect` in React or listen for the `resultselect` event on the web component.
+
+```tsx
+<DocsChatbot
+  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  title="Memory Assistant"
+  variant="embedded"
+  results={{
+    onSelect: (result) => {
+      // Example: select the matching file in your tree/editor
+      console.log("Selected result", result);
+    },
+  }}
+/>
+```
+
+```html
+<docs-chatbot
+  search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
+  api-key="your-api-key"
+  title="Help Center"
+></docs-chatbot>
+
+<script>
+  const chatbot = document.querySelector("docs-chatbot");
+
+  chatbot.addEventListener("resultselect", (event) => {
+    event.preventDefault();
+    console.log("Selected result", event.detail);
+  });
+</script>
+```
+
 ## Trigger Modes
 
 ### Default Trigger
@@ -66,9 +187,9 @@ Adds a floating button in the bottom-right corner that opens the chatbot when cl
 
 ```tsx
 <DocsChatbot
-  searchUrl="your-edge-function-url"
-  apiKey="your-api-key"
+  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
   title="Help Center"
+  variant="dialog"
 />
 ```
 
@@ -95,12 +216,9 @@ function App() {
 
       {/* Chatbot with custom trigger mode */}
       <DocsChatbot
-        searchUrl="your-edge-function-url"
-        apiKey="your-api-key"
+        search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
         title="Help Center"
-        trigger="custom"
-        open={open}
-        onOpenChange={setOpen}
+        dialog={{ trigger: "custom", open, onOpenChange: setOpen }}
       />
     </>
   );
@@ -144,17 +262,31 @@ function App() {
 
 ### React Component Props
 
-| Property                 | Type                      | Required                    | Description                                                                                                                |
-| ------------------------ | ------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `searchUrl`              | `string`                  | Yes                         | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
-| `apiKey`                 | `string`                  | Yes                         | SQLite Cloud API key with permissions to execute the edge function                                                         |
-| `title`                  | `string`                  | Yes                         | Title displayed in the chatbot header                                                                                      |
-| `emptyState`             | `object`                  | No                          | Customizes the initial empty state of the chatbot                                                                          |
-| `emptyState.title`       | `string`                  | No                          | Main heading shown before the first message                                                                                |
-| `emptyState.description` | `string`                  | No                          | Subtext shown below the empty state title                                                                                  |
-| `trigger`                | `"default" \| "custom"`   | No                          | Trigger mode: `"default"` uses floating button, `"custom"` requires you to control `open` state (default: `"default"`)     |
-| `open`                   | `boolean`                 | Yes when `trigger="custom"` | Control the chatbot open state (only used with `trigger="custom"`)                                                         |
-| `onOpenChange`           | `(open: boolean) => void` | Yes when `trigger="custom"` | Callback fired when the open state changes (only used with `trigger="custom"`)                                             |
+| Property | Type | Required | Description |
+| -------- | ---- | -------- | ----------- |
+| `search` | `{ url: string; apiKey: string }` | Yes | Search transport configuration |
+| `search.url` | `string` | Yes | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
+| `search.apiKey` | `string` | Yes | SQLite Cloud API key with permissions to execute the edge function |
+| `title` | `string` | Yes | Title displayed in the chatbot header |
+| `variant` | `"dialog" \| "embedded"` | No | Rendering mode: `"dialog"` keeps the popup widget behavior, `"embedded"` renders the chatbot inline (default: `"dialog"`) |
+| `emptyState` | `{ title: string; description: string }` | No | Customizes the initial empty state of the chatbot |
+| `emptyState.title` | `string` | No | Main heading shown before the first message |
+| `emptyState.description` | `string` | No | Subtext shown below the empty state title |
+| `persistence` | `{ key: string; storage?: "session" \| "local" }` | No | Persists messages and composer input under the provided key |
+| `persistence.key` | `string` | No | Storage key used for persisted conversation state |
+| `persistence.storage` | `"session" \| "local"` | No | Storage backend for persistence (default: `"session"`) |
+| `header` | `{ showClearButton?: boolean }` | No | Header-specific controls |
+| `header.showClearButton` | `boolean` | No | Shows the `Clear` action in the header when there is conversation history (default: `false`) |
+| `results` | `{ onSelect?: (result: DocumentSearchResult) => void; snippetMaxLines?: number; snippetMaxChars?: number }` | No | Result-card behavior and display settings |
+| `results.onSelect` | `(result: DocumentSearchResult) => void` | No | Called when a result card is selected. When provided, default link navigation is suppressed |
+| `results.snippetMaxLines` | `number` | No | Visually clamps result snippets to the given number of lines |
+| `results.snippetMaxChars` | `number` | No | Truncates result snippets to the given number of characters before rendering |
+| `dialog` | `{ trigger?: "default" } \| { trigger: "custom"; open: boolean; onOpenChange: (open: boolean) => void }` | No | Dialog-specific configuration |
+| `dialog.trigger` | `"default" \| "custom"` | No | Trigger mode for dialog rendering. `"default"` uses the floating button, `"custom"` makes open state controlled |
+| `dialog.open` | `boolean` | Yes when `dialog.trigger="custom"` | Controls the chatbot open state in custom-trigger mode |
+| `dialog.onOpenChange` | `(open: boolean) => void` | Yes when `dialog.trigger="custom"` | Callback fired when the open state changes in custom-trigger mode |
+| `className` | `string` | No | Extra classes applied to the root chatbot panel |
+| `style` | `CSSProperties` | No | Inline styles applied to the root chatbot panel |
 
 ### Web Component
 
@@ -167,6 +299,12 @@ function App() {
 | `title`                   | Yes      | Title displayed in the chatbot header                                                                                      |
 | `empty-state-title`       | No       | Main heading shown before the first message                                                                                |
 | `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |
+| `persistence-key`         | No       | Storage key used to persist messages and composer input                                                                    |
+| `persistence-storage`     | No       | Storage backend for persistence: `"session"` or `"local"` (default: `"session"`)                                        |
+| `result-snippet-max-lines`| No       | Visually clamps result snippets to the given number of lines                                                              |
+| `result-snippet-max-chars`| No       | Truncates result snippets to the given number of characters                                                               |
+| `show-clear-button`       | No       | When present, shows the `Clear` action in the header                                                                       |
+| `variant`                 | No       | Rendering mode: `"dialog"` for the popup widget or `"embedded"` for an inline panel                                      |
 | `trigger`                 | No       | Trigger mode: `"default"` uses floating button, `"custom"` requires controlling `open` property (default: `"default"`)     |
 
 #### Properties
@@ -180,6 +318,7 @@ function App() {
 | Event        | Detail              | Description                               |
 | ------------ | ------------------- | ----------------------------------------- |
 | `openchange` | `{ open: boolean }` | Fired when the chatbot open state changes |
+| `resultselect` | `DocumentSearchResult` | Fired when a result card is selected. Call `preventDefault()` to suppress default link navigation |
 
 ## Theming
 
@@ -233,8 +372,7 @@ import "./styles.css"; // Your CSS file with overrides
 function App() {
   return (
     <DocsChatbot
-      searchUrl="your-edge-function-url"
-      apiKey="your-api-key"
+      search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
       title="Help Center"
     />
   );

@@ -1,6 +1,32 @@
 import type { SearchResponse, SendMessageRequest } from "@/types/chat";
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import { nanoid } from "nanoid";
+import { isMockSearchUrl, runMockSearch } from "@/services/mockSearch";
+
+type SerializableSearchResultMetadata = Record<
+  string,
+  string | number | boolean | null
+>;
+
+function serializeSearchResultMetadata(
+  result: SearchResponse["data"]["search"][number]
+): SerializableSearchResultMetadata {
+  return Object.entries(result).reduce<SerializableSearchResultMetadata>(
+    (accumulator, [key, value]) => {
+      if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean" ||
+        value === null
+      ) {
+        accumulator[key] = value;
+      }
+
+      return accumulator;
+    },
+    {}
+  );
+}
 
 /**
  * Performs document search using SQLite Cloud AI search API and streams results back to the chat.
@@ -44,22 +70,32 @@ export async function docSearch({
       );
     }
 
-    searchUrl.searchParams.set("query", query.trim());
+    let searchResult: SearchResponse;
 
-    const searchResponse = await fetch(searchUrl.toString(), {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
+    if (isMockSearchUrl(searchUrl)) {
+      searchResult = {
+        data: {
+          search: await runMockSearch(query.trim()),
+        },
+      };
+    } else {
+      searchUrl.searchParams.set("query", query.trim());
 
-    if (!searchResponse.ok) {
-      throw new Error(
-        `Failed to complete the search. Please check your connection and try again.`
-      );
+      const searchResponse = await fetch(searchUrl.toString(), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!searchResponse.ok) {
+        throw new Error(
+          `Failed to complete the search. Please check your connection and try again.`
+        );
+      }
+
+      searchResult = (await searchResponse.json()) as SearchResponse;
     }
-
-    const searchResult = (await searchResponse.json()) as SearchResponse;
 
     return createUIMessageStreamResponse({
       status: 200,
@@ -91,9 +127,7 @@ export async function docSearch({
                 title: result.title ?? "Untitled Document",
                 url: result.url,
                 providerMetadata: {
-                  result: {
-                    snippet: result.snippet,
-                  },
+                  result: serializeSearchResultMetadata(result),
                 },
               })
             );

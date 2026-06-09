@@ -16,7 +16,7 @@ export type ArtifactProps = HTMLAttributes<HTMLDivElement>;
 export const Artifact = ({ className, ...props }: ArtifactProps) => (
   <div
     className={cn(
-      "dcb:flex dcb:flex-col dcb:overflow-hidden dcb:rounded-lg dcb:border dcb:bg-background dcb:shadow-sm",
+      "dcb:flex dcb:flex-col dcb:overflow-hidden dcb:rounded-lg dcb:border dcb:border-border/80 dcb:bg-background dcb:shadow-sm",
       className
     )}
     {...props}
@@ -31,7 +31,7 @@ export const ArtifactHeader = ({
 }: ArtifactHeaderProps) => (
   <div
     className={cn(
-      "dcb:flex dcb:items-center dcb:justify-between dcb:border-b dcb:bg-muted/50 dcb:px-4 dcb:py-3",
+      "dcb:flex dcb:items-center dcb:justify-between dcb:border-b dcb:border-border/80 dcb:bg-muted/50 dcb:px-3 dcb:py-2.5",
       className
     )}
     {...props}
@@ -117,7 +117,7 @@ export const ArtifactAction = ({
   const button = (
     <Button
       className={cn(
-        "dcb:size-8 dcb:p-0 dcb:text-muted-foreground hover:dcb:text-foreground",
+        "dcb:size-8 dcb:cursor-pointer dcb:p-0 dcb:text-muted-foreground hover:dcb:text-foreground",
         className
       )}
       size={size}
@@ -153,7 +153,7 @@ export const ArtifactContent = ({
   ...props
 }: ArtifactContentProps) => (
   <div
-    className={cn("dcb:flex-1 dcb:overflow-auto dcb:p-4", className)}
+    className={cn("dcb:flex-1 dcb:overflow-auto dcb:p-3", className)}
     {...props}
   />
 );

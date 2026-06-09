@@ -44,6 +44,10 @@
       .help-button.show {
         display: flex;
       }
+      .chatbot-panel {
+        max-width: 48rem;
+        height: 600px;
+      }
     </style>
   </head>
   <body>
@@ -64,6 +68,7 @@
         <div class="mode-buttons">
           <button id="default-btn" class="active">Default Trigger</button>
           <button id="custom-btn">Custom Trigger</button>
+          <button id="embedded-btn">Embedded Panel</button>
         </div>
       </div>
 
@@ -80,10 +85,12 @@
     <script>
       const defaultBtn = document.getElementById("default-btn");
       const customBtn = document.getElementById("custom-btn");
+      const embeddedBtn = document.getElementById("embedded-btn");
       const helpBtn = document.getElementById("help-btn");
       const container = document.getElementById("chatbot-container");
+      const persistenceVersion = "v2";
 
-      let currentMode = "default";
+      let currentMode = "embedded";
       let chatbot = null;
 
       function initChatbot(mode) {
@@ -99,8 +106,15 @@
         chatbot.setAttribute("empty-state-description", "Get help with SQLite Cloud documentation");
         chatbot.setAttribute("search-url", window.ChatbotConfig.searchUrl);
         chatbot.setAttribute("api-key", window.ChatbotConfig.apiKey);
+        chatbot.setAttribute("persistence-key", `docs-vanilla-${mode}-${persistenceVersion}`);
 
-        if (mode === "custom") {
+        if (mode === "embedded") {
+          chatbot.setAttribute("variant", "embedded");
+          chatbot.setAttribute("show-clear-button", "");
+          chatbot.setAttribute("result-snippet-max-lines", "10");
+          chatbot.setAttribute("result-snippet-max-chars", "900");
+          chatbot.classList.add("chatbot-panel");
+        } else if (mode === "custom") {
           chatbot.setAttribute("trigger", "custom");
 
           // Listen to open state changes
@@ -117,6 +131,7 @@
         currentMode = "default";
         defaultBtn.classList.add("active");
         customBtn.classList.remove("active");
+        embeddedBtn.classList.remove("active");
         helpBtn.classList.remove("show");
         initChatbot("default");
       });
@@ -125,8 +140,18 @@
         currentMode = "custom";
         customBtn.classList.add("active");
         defaultBtn.classList.remove("active");
+        embeddedBtn.classList.remove("active");
         helpBtn.classList.add("show");
         initChatbot("custom");
+      });
+
+      embeddedBtn.addEventListener("click", () => {
+        currentMode = "embedded";
+        embeddedBtn.classList.add("active");
+        defaultBtn.classList.remove("active");
+        customBtn.classList.remove("active");
+        helpBtn.classList.remove("show");
+        initChatbot("embedded");
       });
 
       // Help button (only for custom mode)
@@ -134,8 +159,9 @@
         chatbot.open = true;
       });
 
-      // Initialize with default mode
-      initChatbot("default");
+      embeddedBtn.classList.add("active");
+      defaultBtn.classList.remove("active");
+      initChatbot("embedded");
     </script>
   </body>
 </html>

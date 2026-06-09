@@ -1,6 +1,7 @@
 // Chatbot configuration
-// Copy this file to config.js and update with actual values
+// Copy this file to config.js and update with actual values if needed.
+// The default mock endpoint works without any backend setup.
 window.ChatbotConfig = {
-  searchUrl: "https://your-endpoint.sqlite.cloud/v2/functions/aisearch-docs",
-  apiKey: "your-api-key-here"
+  searchUrl: "mock://docs-chatbot",
+  apiKey: "demo-key"
 };

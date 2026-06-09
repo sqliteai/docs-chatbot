@@ -1,8 +1,13 @@
 import React from "react";
-import { DocsChatbot, type DocsChatbotProps } from "./DocsChatbot";
+import {
+  DocsChatbot,
+  type DocsChatbotPersistence,
+  type DocsChatbotProps,
+} from "./DocsChatbot";
 import createShadowRoot from "./createShadowRoot";
 import cssText from "../src/index.css?inline";
 import { ShadowRootProvider } from "@/providers/ShadowRootProvider";
+import type { DocumentSearchResult } from "@/types/chat";
 
 class DocsChatbotElement extends HTMLElement {
   private root: ReturnType<typeof createShadowRoot>["root"] | null = null;
@@ -16,6 +21,12 @@ class DocsChatbotElement extends HTMLElement {
       "title",
       "empty-state-title",
       "empty-state-description",
+      "persistence-key",
+      "persistence-storage",
+      "result-snippet-max-lines",
+      "result-snippet-max-chars",
+      "show-clear-button",
+      "variant",
       "trigger",
     ];
   }
@@ -76,6 +87,12 @@ class DocsChatbotElement extends HTMLElement {
     const title = this.getAttribute("title");
     const emptyStateTitle = this.getAttribute("empty-state-title");
     const emptyStateDescription = this.getAttribute("empty-state-description");
+    const persistenceKey = this.getAttribute("persistence-key");
+    const persistenceStorage = this.getAttribute("persistence-storage");
+    const resultSnippetMaxLines = this.getAttribute("result-snippet-max-lines");
+    const resultSnippetMaxChars = this.getAttribute("result-snippet-max-chars");
+    const showClearButton = this.getAttribute("show-clear-button");
+    const variant = this.getAttribute("variant");
     const trigger = this.getAttribute("trigger") as "default" | "custom" | null;
 
     if (!searchUrl || !apiKey || !title) {
@@ -85,38 +102,98 @@ class DocsChatbotElement extends HTMLElement {
       return;
     }
 
-    const isCustomTrigger = trigger === "custom";
+    const emptyState =
+      emptyStateTitle && emptyStateDescription
+        ? {
+            title: emptyStateTitle,
+            description: emptyStateDescription,
+          }
+        : undefined;
 
-    const chatbotProps: DocsChatbotProps = isCustomTrigger
+    const persistence: DocsChatbotPersistence | undefined = persistenceKey
       ? {
-          searchUrl,
-          apiKey,
-          title,
-          trigger: "custom",
-          open: this._open,
-          onOpenChange: (open: boolean) => {
-            this.open = open;
-          },
-          ...(emptyStateTitle &&
-            emptyStateDescription && {
-              emptyState: {
-                title: emptyStateTitle,
-                description: emptyStateDescription,
-              },
-            }),
+          key: persistenceKey,
+          storage: persistenceStorage === "local" ? "local" : "session",
         }
-      : {
-          searchUrl,
-          apiKey,
-          title,
-          ...(emptyStateTitle &&
-            emptyStateDescription && {
-              emptyState: {
-                title: emptyStateTitle,
-                description: emptyStateDescription,
+      : undefined;
+
+    const header =
+      showClearButton === null
+        ? undefined
+        : {
+            showClearButton:
+              showClearButton === "" || showClearButton === "true",
+          };
+
+    const results = {
+      onSelect: (result: DocumentSearchResult) => {
+        const event = new CustomEvent("resultselect", {
+          detail: result,
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+        });
+
+        const shouldContinue = this.dispatchEvent(event);
+
+        if (shouldContinue && !event.defaultPrevented) {
+          window.open(result.url, "_blank");
+        }
+      },
+      ...(resultSnippetMaxLines !== null &&
+        Number.isFinite(Number(resultSnippetMaxLines)) && {
+          snippetMaxLines: Number(resultSnippetMaxLines),
+        }),
+      ...(resultSnippetMaxChars !== null &&
+        Number.isFinite(Number(resultSnippetMaxChars)) && {
+          snippetMaxChars: Number(resultSnippetMaxChars),
+        }),
+    };
+
+    const chatbotProps: DocsChatbotProps =
+      variant === "embedded"
+        ? {
+            search: {
+              url: searchUrl,
+              apiKey,
+            },
+            title,
+            variant: "embedded",
+            emptyState,
+            persistence,
+            header,
+            results,
+          }
+        : trigger === "custom"
+          ? {
+              search: {
+                url: searchUrl,
+                apiKey,
               },
-            }),
-        };
+              title,
+              dialog: {
+                trigger: "custom",
+                open: this._open,
+                onOpenChange: (open: boolean) => {
+                  this.open = open;
+                },
+              },
+              emptyState,
+              persistence,
+              header,
+              results,
+            }
+          : {
+              search: {
+                url: searchUrl,
+                apiKey,
+              },
+              title,
+              emptyState,
+              persistence,
+              header,
+              results,
+            };
 
     this.root.render(
       React.createElement(

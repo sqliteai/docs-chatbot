@@ -3,7 +3,9 @@ import "./styles.css";
 import { useState } from "react";
 
 function App() {
-  const [mode, setMode] = useState<"default" | "custom">("default");
+  const [mode, setMode] = useState<"default" | "custom" | "embedded">(
+    "embedded"
+  );
   const [open, setOpen] = useState(false);
 
   return (
@@ -46,6 +48,20 @@ function App() {
             >
               Custom Trigger
             </button>
+            <button
+              onClick={() => setMode("embedded")}
+              style={{
+                padding: "0.5rem 1rem",
+                border:
+                  mode === "embedded" ? "2px solid #000" : "1px solid #ccc",
+                background: mode === "embedded" ? "#000" : "#fff",
+                color: mode === "embedded" ? "#fff" : "#000",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Embedded Panel
+            </button>
           </div>
         </div>
 
@@ -81,7 +97,7 @@ function App() {
             description: "Get help with SQLite Cloud documentation",
           }}
         />
-      ) : (
+      ) : mode === "custom" ? (
         <DocsChatbot
           searchUrl={import.meta.env.VITE_SEARCH_API_URL}
           apiKey={import.meta.env.VITE_SEARCH_API_KEY}
@@ -89,6 +105,18 @@ function App() {
           trigger="custom"
           open={open}
           onOpenChange={setOpen}
+          emptyState={{
+            title: "Ask questions about SQLite Cloud",
+            description: "Get help with SQLite Cloud documentation",
+          }}
+        />
+      ) : (
+        <DocsChatbot
+          searchUrl={import.meta.env.VITE_SEARCH_API_URL}
+          apiKey={import.meta.env.VITE_SEARCH_API_KEY}
+          title="SQLite Cloud Docs"
+          variant="embedded"
+          style={{ maxWidth: "48rem" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",

@@ -16,6 +16,7 @@ class DocsChatbotElement extends HTMLElement {
       "title",
       "empty-state-title",
       "empty-state-description",
+      "variant",
       "trigger",
     ];
   }
@@ -76,6 +77,7 @@ class DocsChatbotElement extends HTMLElement {
     const title = this.getAttribute("title");
     const emptyStateTitle = this.getAttribute("empty-state-title");
     const emptyStateDescription = this.getAttribute("empty-state-description");
+    const variant = this.getAttribute("variant");
     const trigger = this.getAttribute("trigger") as "default" | "custom" | null;
 
     if (!searchUrl || !apiKey || !title) {
@@ -85,38 +87,43 @@ class DocsChatbotElement extends HTMLElement {
       return;
     }
 
-    const isCustomTrigger = trigger === "custom";
+    const emptyState =
+      emptyStateTitle && emptyStateDescription
+        ? {
+            emptyState: {
+              title: emptyStateTitle,
+              description: emptyStateDescription,
+            },
+          }
+        : {};
 
-    const chatbotProps: DocsChatbotProps = isCustomTrigger
-      ? {
-          searchUrl,
-          apiKey,
-          title,
-          trigger: "custom",
-          open: this._open,
-          onOpenChange: (open: boolean) => {
-            this.open = open;
-          },
-          ...(emptyStateTitle &&
-            emptyStateDescription && {
-              emptyState: {
-                title: emptyStateTitle,
-                description: emptyStateDescription,
+    const chatbotProps: DocsChatbotProps =
+      variant === "embedded"
+        ? {
+            searchUrl,
+            apiKey,
+            title,
+            variant: "embedded",
+            ...emptyState,
+          }
+        : trigger === "custom"
+          ? {
+              searchUrl,
+              apiKey,
+              title,
+              trigger: "custom",
+              open: this._open,
+              onOpenChange: (open: boolean) => {
+                this.open = open;
               },
-            }),
-        }
-      : {
-          searchUrl,
-          apiKey,
-          title,
-          ...(emptyStateTitle &&
-            emptyStateDescription && {
-              emptyState: {
-                title: emptyStateTitle,
-                description: emptyStateDescription,
-              },
-            }),
-        };
+              ...emptyState,
+            }
+          : {
+              searchUrl,
+              apiKey,
+              title,
+              ...emptyState,
+            };
 
     this.root.render(
       React.createElement(

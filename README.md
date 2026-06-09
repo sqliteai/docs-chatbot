@@ -29,6 +29,7 @@ function App() {
       searchUrl="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
       apiKey="your-api-key"
       title="Help Center"
+      variant="embedded"
     />
   );
 }
@@ -56,6 +57,31 @@ function App() {
 </html>
 ```
 
+## Display Modes
+
+### Embedded Panel
+
+Render the chatbot inline inside your layout. This is the mode to use when you want the chat UI to live inside an existing panel, sidebar, or page section.
+
+```tsx
+<DocsChatbot
+  searchUrl="your-edge-function-url"
+  apiKey="your-api-key"
+  title="Help Center"
+  variant="embedded"
+  className="max-w-2xl"
+/>
+```
+
+```html
+<docs-chatbot
+  search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
+  api-key="your-api-key"
+  title="Help Center"
+  variant="embedded"
+></docs-chatbot>
+```
+
 ## Trigger Modes
 
 ### Default Trigger
@@ -69,6 +95,7 @@ Adds a floating button in the bottom-right corner that opens the chatbot when cl
   searchUrl="your-edge-function-url"
   apiKey="your-api-key"
   title="Help Center"
+  variant="dialog"
 />
 ```
 
@@ -152,9 +179,12 @@ function App() {
 | `emptyState`             | `object`                  | No                          | Customizes the initial empty state of the chatbot                                                                          |
 | `emptyState.title`       | `string`                  | No                          | Main heading shown before the first message                                                                                |
 | `emptyState.description` | `string`                  | No                          | Subtext shown below the empty state title                                                                                  |
+| `variant`                | `"dialog" \| "embedded"`  | No                          | Rendering mode: `"dialog"` keeps the popup widget behavior, `"embedded"` renders the chatbot inline (default: `"dialog"`) |
 | `trigger`                | `"default" \| "custom"`   | No                          | Trigger mode: `"default"` uses floating button, `"custom"` requires you to control `open` state (default: `"default"`)     |
 | `open`                   | `boolean`                 | Yes when `trigger="custom"` | Control the chatbot open state (only used with `trigger="custom"`)                                                         |
 | `onOpenChange`           | `(open: boolean) => void` | Yes when `trigger="custom"` | Callback fired when the open state changes (only used with `trigger="custom"`)                                             |
+| `className`              | `string`                  | No                          | Extra classes applied to the root chatbot panel                                                                            |
+| `style`                  | `CSSProperties`           | No                          | Inline styles applied to the root chatbot panel                                                                            |
 
 ### Web Component
 
@@ -167,6 +197,7 @@ function App() {
 | `title`                   | Yes      | Title displayed in the chatbot header                                                                                      |
 | `empty-state-title`       | No       | Main heading shown before the first message                                                                                |
 | `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |
+| `variant`                 | No       | Rendering mode: `"dialog"` for the popup widget or `"embedded"` for an inline panel                                      |
 | `trigger`                 | No       | Trigger mode: `"default"` uses floating button, `"custom"` requires controlling `open` property (default: `"default"`)     |
 
 #### Properties

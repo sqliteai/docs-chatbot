@@ -82,6 +82,7 @@
 }
 
 :host {
+  display: block;
   --tw-divide-y-reverse: 0;
   --tw-border-style: solid;
   --tw-font-weight: initial;

@@ -4,7 +4,9 @@ import { Button } from "./components/ui/button";
 import { CircleHelp } from "lucide-react";
 
 function App() {
-  const [mode, setMode] = useState<"default" | "custom">("default");
+  const [mode, setMode] = useState<"default" | "custom" | "embedded">(
+    "embedded"
+  );
   const [open, setOpen] = useState(false);
 
   return (
@@ -24,6 +26,12 @@ function App() {
               variant={mode === "custom" ? "default" : "outline"}
             >
               Custom Trigger
+            </Button>
+            <Button
+              onClick={() => setMode("embedded")}
+              variant={mode === "embedded" ? "default" : "outline"}
+            >
+              Embedded Panel
             </Button>
           </div>
         </div>
@@ -46,7 +54,7 @@ function App() {
             description: "Get help with SQLite Cloud documentation",
           }}
         />
-      ) : (
+      ) : mode === "custom" ? (
         <DocsChatbot
           searchUrl={import.meta.env.VITE_SEARCH_API_URL as string}
           apiKey={import.meta.env.VITE_SEARCH_API_KEY as string}
@@ -54,6 +62,18 @@ function App() {
           trigger="custom"
           open={open}
           onOpenChange={setOpen}
+          emptyState={{
+            title: "Ask questions about SQLite Cloud",
+            description: "Get help with SQLite Cloud documentation",
+          }}
+        />
+      ) : (
+        <DocsChatbot
+          searchUrl={import.meta.env.VITE_SEARCH_API_URL as string}
+          apiKey={import.meta.env.VITE_SEARCH_API_KEY as string}
+          title="SQLite Cloud Docs"
+          variant="embedded"
+          className="dcb:max-w-2xl"
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",

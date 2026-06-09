@@ -9,6 +9,7 @@ const searchUrl = useRealSearch
 const apiKey = useRealSearch
   ? import.meta.env.VITE_SEARCH_API_KEY || "demo-key"
   : "demo-key";
+const demoPersistenceVersion = "v2";
 
 const demoFiles = [
   {
@@ -150,10 +151,9 @@ function App() {
       {/* Chatbot */}
       {mode === "default" ? (
         <DocsChatbot
-          searchUrl={searchUrl}
-          apiKey={apiKey}
+          search={{ url: searchUrl, apiKey }}
           title="SQLite Cloud Docs"
-          conversationPersistence={{ key: "docs-example-default" }}
+          persistence={{ key: `docs-example-default-${demoPersistenceVersion}` }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",
@@ -161,13 +161,10 @@ function App() {
         />
       ) : mode === "custom" ? (
         <DocsChatbot
-          searchUrl={searchUrl}
-          apiKey={apiKey}
+          search={{ url: searchUrl, apiKey }}
           title="SQLite Cloud Docs"
-          trigger="custom"
-          open={open}
-          onOpenChange={setOpen}
-          conversationPersistence={{ key: "docs-example-custom" }}
+          dialog={{ trigger: "custom", open, onOpenChange: setOpen }}
+          persistence={{ key: `docs-example-custom-${demoPersistenceVersion}` }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",
@@ -266,19 +263,22 @@ function App() {
           </div>
 
           <DocsChatbot
-            searchUrl={searchUrl}
-            apiKey={apiKey}
+            search={{ url: searchUrl, apiKey }}
             title="Memory Assistant"
             variant="embedded"
             style={{ height: "600px" }}
-            conversationPersistence={{ key: "docs-example-embedded" }}
-            showClearButton
-            onResultSelect={(result) => {
-              setLastSelectedResult(result.title);
-              const nextFileId = result.id;
-              if (demoFiles.some((file) => file.id === nextFileId)) {
-                setSelectedFileId(nextFileId);
-              }
+            persistence={{ key: `docs-example-embedded-${demoPersistenceVersion}` }}
+            header={{ showClearButton: true }}
+            results={{
+              snippetMaxLines: 10,
+              snippetMaxChars: 900,
+              onSelect: (result) => {
+                setLastSelectedResult(result.title);
+                const nextFileId = result.id;
+                if (demoFiles.some((file) => file.id === nextFileId)) {
+                  setSelectedFileId(nextFileId);
+                }
+              },
             }}
             emptyState={{
               title: "Ask questions about indexed memory",

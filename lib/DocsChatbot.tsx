@@ -46,19 +46,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import type { DocumentSearchResult } from "@/types/chat";
 
-type DocsChatbotBaseProps = {
-  searchUrl: string;
+export type DocsChatbotSearch = {
+  url: string;
   apiKey: string;
-  title: string;
-  emptyState?: {
-    title: string;
-    description: string;
-  };
-  className?: string;
-  style?: CSSProperties;
-  conversationPersistence?: DocsChatbotPersistence;
-  showClearButton?: boolean;
-  onResultSelect?: (result: DocumentSearchResult) => void;
 };
 
 export type DocsChatbotPersistence = {
@@ -66,33 +56,61 @@ export type DocsChatbotPersistence = {
   storage?: "session" | "local";
 };
 
-type DocsChatbotDefaultTriggerProps = DocsChatbotBaseProps & {
-  variant?: "dialog";
-  trigger?: "default";
-  open?: never;
-  onOpenChange?: never;
+export type DocsChatbotHeader = {
+  showClearButton?: boolean;
 };
 
-type DocsChatbotCustomTriggerProps = DocsChatbotBaseProps & {
-  variant?: "dialog";
+export type DocsChatbotResults = {
+  onSelect?: (result: DocumentSearchResult) => void;
+  snippetMaxLines?: number;
+  snippetMaxChars?: number;
+};
+
+export type DocsChatbotDialogDefault = {
+  trigger?: "default";
+};
+
+export type DocsChatbotDialogCustom = {
   trigger: "custom";
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
-type DocsChatbotEmbeddedProps = DocsChatbotBaseProps & {
+type DocsChatbotSharedProps = {
+  search: DocsChatbotSearch;
+  title: string;
+  emptyState?: {
+    title: string;
+    description: string;
+  };
+  persistence?: DocsChatbotPersistence;
+  header?: DocsChatbotHeader;
+  results?: DocsChatbotResults;
+  className?: string;
+  style?: CSSProperties;
+};
+
+type DocsChatbotDialogDefaultProps = DocsChatbotSharedProps & {
+  variant?: "dialog";
+  dialog?: DocsChatbotDialogDefault;
+};
+
+type DocsChatbotDialogCustomProps = DocsChatbotSharedProps & {
+  variant?: "dialog";
+  dialog: DocsChatbotDialogCustom;
+};
+
+type DocsChatbotEmbeddedProps = DocsChatbotSharedProps & {
   variant: "embedded";
-  trigger?: never;
-  open?: never;
-  onOpenChange?: never;
+  dialog?: never;
 };
 
 export type DocsChatbotProps =
-  | DocsChatbotDefaultTriggerProps
-  | DocsChatbotCustomTriggerProps
+  | DocsChatbotDialogDefaultProps
+  | DocsChatbotDialogCustomProps
   | DocsChatbotEmbeddedProps;
 
-type DocsChatbotPanelProps = DocsChatbotBaseProps & {
+type DocsChatbotPanelProps = DocsChatbotSharedProps & {
   variant: "dialog" | "embedded";
   onRequestClose?: () => void;
 };
@@ -173,25 +191,41 @@ function persistConversation(
   }
 }
 
+function truncateSnippet(snippet: string, maxChars?: number) {
+  if (
+    typeof maxChars !== "number" ||
+    !Number.isFinite(maxChars) ||
+    maxChars <= 0 ||
+    snippet.length <= maxChars
+  ) {
+    return snippet;
+  }
+
+  return `${snippet.slice(0, Math.max(0, maxChars - 1)).trimEnd()}…`;
+}
+
 const DocsChatbotPanel = ({
-  searchUrl,
-  apiKey,
+  search,
   title,
   emptyState = DEFAULT_EMPTY_STATE,
+  persistence,
+  header,
+  results,
   className,
   style,
   variant,
   onRequestClose,
-  conversationPersistence,
-  showClearButton = false,
-  onResultSelect,
 }: DocsChatbotPanelProps) => {
   const initialPersistedConversation = loadPersistedConversation(
-    conversationPersistence
+    persistence
   );
-  const persistenceId = conversationPersistence
-    ? `${conversationPersistence.storage ?? "session"}:${conversationPersistence.key}`
+  const persistenceId = persistence
+    ? `${persistence.storage ?? "session"}:${persistence.key}`
     : null;
+  const showClearButton = header?.showClearButton ?? false;
+  const onResultSelect = results?.onSelect;
+  const resultSnippetMaxLines = results?.snippetMaxLines;
+  const resultSnippetMaxChars = results?.snippetMaxChars;
 
   const [inputValue, setInputValue] = useState(
     initialPersistedConversation.inputValue
@@ -207,8 +241,8 @@ const DocsChatbotPanel = ({
         fetch: (_, init) =>
           docSearch({
             request: JSON.parse(init?.body as string) as SendMessageRequest,
-            searchUrl: new URL(searchUrl),
-            apiKey,
+            searchUrl: new URL(search.url),
+            apiKey: search.apiKey,
           }),
       }),
     });
@@ -219,26 +253,26 @@ const DocsChatbotPanel = ({
     }
 
     const persistedConversation =
-      loadPersistedConversation(conversationPersistence);
+      loadPersistedConversation(persistence);
 
     lastLoadedPersistenceId.current = persistenceId;
     setHydratedPersistenceId(persistenceId);
     clearError();
     setInputValue(persistedConversation.inputValue);
     setMessages(persistedConversation.messages);
-  }, [clearError, conversationPersistence, persistenceId, setMessages]);
+  }, [clearError, persistence, persistenceId, setMessages]);
 
   useEffect(() => {
-    if (!conversationPersistence || hydratedPersistenceId !== persistenceId) {
+    if (!persistence || hydratedPersistenceId !== persistenceId) {
       return;
     }
 
-    persistConversation(conversationPersistence, {
+    persistConversation(persistence, {
       inputValue,
       messages,
     });
   }, [
-    conversationPersistence,
+    persistence,
     hydratedPersistenceId,
     inputValue,
     messages,
@@ -389,6 +423,10 @@ const DocsChatbotPanel = ({
                           typeof metadata?.snippet === "string"
                             ? metadata.snippet
                             : "";
+                        const displayedSnippet = truncateSnippet(
+                          resultSnippet,
+                          resultSnippetMaxChars
+                        );
                         const result: DocumentSearchResult = {
                           ...(metadata ?? {}),
                           id: part.sourceId,
@@ -425,9 +463,24 @@ const DocsChatbotPanel = ({
                               </ArtifactActions>
                             </ArtifactHeader>
 
-                            {resultSnippet && (
+                            {displayedSnippet && (
                               <ArtifactContent>
-                                <ResponseLight>{resultSnippet}</ResponseLight>
+                                <ResponseLight
+                                  style={
+                                    typeof resultSnippetMaxLines === "number" &&
+                                    Number.isFinite(resultSnippetMaxLines) &&
+                                    resultSnippetMaxLines > 0
+                                      ? {
+                                          display: "-webkit-box",
+                                          overflow: "hidden",
+                                          WebkitBoxOrient: "vertical",
+                                          WebkitLineClamp: resultSnippetMaxLines,
+                                        }
+                                      : undefined
+                                  }
+                                >
+                                  {displayedSnippet}
+                                </ResponseLight>
                               </ArtifactContent>
                             )}
                           </Artifact>
@@ -477,30 +530,33 @@ const DocsChatbotPanel = ({
 };
 
 export const DocsChatbot = (props: DocsChatbotProps) => {
-  const { searchUrl, apiKey, title, emptyState, className } = props;
+  const { search, title, emptyState, persistence, header, results, className } =
+    props;
   const [internalOpen, setInternalOpen] = useState(false);
-  const basePanelProps: DocsChatbotBaseProps = {
-    searchUrl,
-    apiKey,
+  const basePanelProps: DocsChatbotPanelProps = {
+    search,
     title,
     emptyState,
+    persistence,
+    header,
+    results,
     className,
     style: props.style,
-    conversationPersistence: props.conversationPersistence,
-    showClearButton: props.showClearButton,
-    onResultSelect: props.onResultSelect,
+    variant: props.variant ?? "dialog",
   };
 
   if (props.variant === "embedded") {
-    return <DocsChatbotPanel variant="embedded" {...basePanelProps} />;
+    return <DocsChatbotPanel {...basePanelProps} />;
   }
 
-  const isCustomTrigger = props.trigger === "custom";
-  const open = isCustomTrigger ? props.open : internalOpen;
+  const customDialog =
+    props.dialog?.trigger === "custom" ? props.dialog : undefined;
+  const isCustomTrigger = customDialog !== undefined;
+  const open = customDialog?.open ?? internalOpen;
 
   const setOpen = (nextOpen: boolean) => {
-    if (isCustomTrigger) {
-      props.onOpenChange(nextOpen);
+    if (customDialog) {
+      customDialog.onOpenChange(nextOpen);
       return;
     }
 
@@ -533,7 +589,6 @@ export const DocsChatbot = (props: DocsChatbotProps) => {
           {title}
         </DialogTitle>
         <DocsChatbotPanel
-          variant="dialog"
           {...basePanelProps}
           onRequestClose={() => setOpen(false)}
         />

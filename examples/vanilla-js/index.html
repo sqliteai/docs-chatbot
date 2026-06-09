@@ -88,6 +88,7 @@
       const embeddedBtn = document.getElementById("embedded-btn");
       const helpBtn = document.getElementById("help-btn");
       const container = document.getElementById("chatbot-container");
+      const persistenceVersion = "v2";
 
       let currentMode = "embedded";
       let chatbot = null;
@@ -105,11 +106,13 @@
         chatbot.setAttribute("empty-state-description", "Get help with SQLite Cloud documentation");
         chatbot.setAttribute("search-url", window.ChatbotConfig.searchUrl);
         chatbot.setAttribute("api-key", window.ChatbotConfig.apiKey);
-        chatbot.setAttribute("persistence-key", `docs-vanilla-${mode}`);
+        chatbot.setAttribute("persistence-key", `docs-vanilla-${mode}-${persistenceVersion}`);
 
         if (mode === "embedded") {
           chatbot.setAttribute("variant", "embedded");
           chatbot.setAttribute("show-clear-button", "");
+          chatbot.setAttribute("result-snippet-max-lines", "10");
+          chatbot.setAttribute("result-snippet-max-chars", "900");
           chatbot.classList.add("chatbot-panel");
         } else if (mode === "custom") {
           chatbot.setAttribute("trigger", "custom");

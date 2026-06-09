@@ -1,5 +1,9 @@
 import React from "react";
-import { DocsChatbot, type DocsChatbotProps } from "./DocsChatbot";
+import {
+  DocsChatbot,
+  type DocsChatbotPersistence,
+  type DocsChatbotProps,
+} from "./DocsChatbot";
 import createShadowRoot from "./createShadowRoot";
 import cssText from "../src/index.css?inline";
 import { ShadowRootProvider } from "@/providers/ShadowRootProvider";
@@ -19,6 +23,8 @@ class DocsChatbotElement extends HTMLElement {
       "empty-state-description",
       "persistence-key",
       "persistence-storage",
+      "result-snippet-max-lines",
+      "result-snippet-max-chars",
       "show-clear-button",
       "variant",
       "trigger",
@@ -83,6 +89,8 @@ class DocsChatbotElement extends HTMLElement {
     const emptyStateDescription = this.getAttribute("empty-state-description");
     const persistenceKey = this.getAttribute("persistence-key");
     const persistenceStorage = this.getAttribute("persistence-storage");
+    const resultSnippetMaxLines = this.getAttribute("result-snippet-max-lines");
+    const resultSnippetMaxChars = this.getAttribute("result-snippet-max-chars");
     const showClearButton = this.getAttribute("show-clear-button");
     const variant = this.getAttribute("variant");
     const trigger = this.getAttribute("trigger") as "default" | "custom" | null;
@@ -97,105 +105,94 @@ class DocsChatbotElement extends HTMLElement {
     const emptyState =
       emptyStateTitle && emptyStateDescription
         ? {
-            emptyState: {
-              title: emptyStateTitle,
-              description: emptyStateDescription,
-            },
+            title: emptyStateTitle,
+            description: emptyStateDescription,
           }
-        : {};
+        : undefined;
 
-    const conversationPersistence = persistenceKey
+    const persistence: DocsChatbotPersistence | undefined = persistenceKey
       ? {
-          conversationPersistence: {
-            key: persistenceKey,
-            storage:
-              persistenceStorage === "local" ? "local" : "session",
-          } as const,
+          key: persistenceKey,
+          storage: persistenceStorage === "local" ? "local" : "session",
         }
-      : {};
+      : undefined;
 
-    const clearButtonProps =
+    const header =
       showClearButton === null
-        ? {}
+        ? undefined
         : {
             showClearButton:
               showClearButton === "" || showClearButton === "true",
           };
 
+    const results = {
+      onSelect: (result: DocumentSearchResult) => {
+        const event = new CustomEvent("resultselect", {
+          detail: result,
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+        });
+
+        const shouldContinue = this.dispatchEvent(event);
+
+        if (shouldContinue && !event.defaultPrevented) {
+          window.open(result.url, "_blank");
+        }
+      },
+      ...(resultSnippetMaxLines !== null &&
+        Number.isFinite(Number(resultSnippetMaxLines)) && {
+          snippetMaxLines: Number(resultSnippetMaxLines),
+        }),
+      ...(resultSnippetMaxChars !== null &&
+        Number.isFinite(Number(resultSnippetMaxChars)) && {
+          snippetMaxChars: Number(resultSnippetMaxChars),
+        }),
+    };
+
     const chatbotProps: DocsChatbotProps =
       variant === "embedded"
         ? {
-            searchUrl,
-            apiKey,
+            search: {
+              url: searchUrl,
+              apiKey,
+            },
             title,
             variant: "embedded",
-            ...emptyState,
-            ...conversationPersistence,
-            ...clearButtonProps,
-            onResultSelect: (result: DocumentSearchResult) => {
-              const event = new CustomEvent("resultselect", {
-                detail: result,
-                bubbles: true,
-                composed: true,
-                cancelable: true,
-              });
-
-              const shouldContinue = this.dispatchEvent(event);
-
-              if (shouldContinue && !event.defaultPrevented) {
-                window.open(result.url, "_blank");
-              }
-            },
+            emptyState,
+            persistence,
+            header,
+            results,
           }
         : trigger === "custom"
           ? {
-              searchUrl,
-              apiKey,
+              search: {
+                url: searchUrl,
+                apiKey,
+              },
               title,
-              trigger: "custom",
-              open: this._open,
-              onOpenChange: (open: boolean) => {
-                this.open = open;
+              dialog: {
+                trigger: "custom",
+                open: this._open,
+                onOpenChange: (open: boolean) => {
+                  this.open = open;
+                },
               },
-              ...emptyState,
-              ...conversationPersistence,
-              ...clearButtonProps,
-              onResultSelect: (result: DocumentSearchResult) => {
-                const event = new CustomEvent("resultselect", {
-                  detail: result,
-                  bubbles: true,
-                  composed: true,
-                  cancelable: true,
-                });
-
-                const shouldContinue = this.dispatchEvent(event);
-
-                if (shouldContinue && !event.defaultPrevented) {
-                  window.open(result.url, "_blank");
-                }
-              },
+              emptyState,
+              persistence,
+              header,
+              results,
             }
           : {
-              searchUrl,
-              apiKey,
-              title,
-              ...emptyState,
-              ...conversationPersistence,
-              ...clearButtonProps,
-              onResultSelect: (result: DocumentSearchResult) => {
-                const event = new CustomEvent("resultselect", {
-                  detail: result,
-                  bubbles: true,
-                  composed: true,
-                  cancelable: true,
-                });
-
-                const shouldContinue = this.dispatchEvent(event);
-
-                if (shouldContinue && !event.defaultPrevented) {
-                  window.open(result.url, "_blank");
-                }
+              search: {
+                url: searchUrl,
+                apiKey,
               },
+              title,
+              emptyState,
+              persistence,
+              header,
+              results,
             };
 
     this.root.render(

@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
@@ -24,7 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { ResponseLight } from "@/components/response-light";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { docSearch } from "@/services/docSearch";
 import type { SendMessageRequest } from "@/types/chat";
 import {
@@ -55,6 +55,12 @@ type DocsChatbotBaseProps = {
   };
   className?: string;
   style?: CSSProperties;
+  conversationPersistence?: DocsChatbotPersistence;
+};
+
+export type DocsChatbotPersistence = {
+  key: string;
+  storage?: "session" | "local";
 };
 
 type DocsChatbotDefaultTriggerProps = DocsChatbotBaseProps & {
@@ -93,6 +99,77 @@ const DEFAULT_EMPTY_STATE = {
   description: "Search your indexed documentation and review relevant results.",
 };
 
+type PersistedConversationState = {
+  inputValue: string;
+  messages: UIMessage[];
+};
+
+const EMPTY_PERSISTED_CONVERSATION: PersistedConversationState = {
+  inputValue: "",
+  messages: [],
+};
+
+function getPersistenceStorage(
+  persistence?: DocsChatbotPersistence
+): Storage | null {
+  if (typeof window === "undefined" || !persistence) {
+    return null;
+  }
+
+  try {
+    return persistence.storage === "local"
+      ? window.localStorage
+      : window.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
+function loadPersistedConversation(
+  persistence?: DocsChatbotPersistence
+): PersistedConversationState {
+  const storage = getPersistenceStorage(persistence);
+
+  if (!storage || !persistence?.key) {
+    return EMPTY_PERSISTED_CONVERSATION;
+  }
+
+  try {
+    const raw = storage.getItem(persistence.key);
+
+    if (!raw) {
+      return EMPTY_PERSISTED_CONVERSATION;
+    }
+
+    const parsed = JSON.parse(raw) as Partial<PersistedConversationState>;
+
+    return {
+      inputValue:
+        typeof parsed.inputValue === "string" ? parsed.inputValue : "",
+      messages: Array.isArray(parsed.messages) ? parsed.messages : [],
+    };
+  } catch {
+    return EMPTY_PERSISTED_CONVERSATION;
+  }
+}
+
+function persistConversation(
+  persistence: DocsChatbotPersistence | undefined,
+  state: PersistedConversationState
+) {
+  const storage = getPersistenceStorage(persistence);
+
+  if (!storage || !persistence?.key) {
+    return;
+  }
+
+  try {
+    storage.setItem(persistence.key, JSON.stringify(state));
+  } catch {
+    // Ignore storage quota and serialization issues.
+  }
+}
+
 const DocsChatbotPanel = ({
   searchUrl,
   apiKey,
@@ -102,11 +179,25 @@ const DocsChatbotPanel = ({
   style,
   variant,
   onRequestClose,
+  conversationPersistence,
 }: DocsChatbotPanelProps) => {
-  const [inputValue, setInputValue] = useState("");
+  const initialPersistedConversation = loadPersistedConversation(
+    conversationPersistence
+  );
+  const persistenceId = conversationPersistence
+    ? `${conversationPersistence.storage ?? "session"}:${conversationPersistence.key}`
+    : null;
+
+  const [inputValue, setInputValue] = useState(
+    initialPersistedConversation.inputValue
+  );
+  const [hydratedPersistenceId, setHydratedPersistenceId] =
+    useState<string | null>(persistenceId);
+  const lastLoadedPersistenceId = useRef<string | null>(persistenceId);
 
   const { messages, sendMessage, status, error, clearError, setMessages } =
     useChat({
+      messages: initialPersistedConversation.messages,
       transport: new DefaultChatTransport({
         fetch: (_, init) =>
           docSearch({
@@ -116,6 +207,38 @@ const DocsChatbotPanel = ({
           }),
       }),
     });
+
+  useEffect(() => {
+    if (persistenceId === lastLoadedPersistenceId.current) {
+      return;
+    }
+
+    const persistedConversation =
+      loadPersistedConversation(conversationPersistence);
+
+    lastLoadedPersistenceId.current = persistenceId;
+    setHydratedPersistenceId(persistenceId);
+    clearError();
+    setInputValue(persistedConversation.inputValue);
+    setMessages(persistedConversation.messages);
+  }, [clearError, conversationPersistence, persistenceId, setMessages]);
+
+  useEffect(() => {
+    if (!conversationPersistence || hydratedPersistenceId !== persistenceId) {
+      return;
+    }
+
+    persistConversation(conversationPersistence, {
+      inputValue,
+      messages,
+    });
+  }, [
+    conversationPersistence,
+    hydratedPersistenceId,
+    inputValue,
+    messages,
+    persistenceId,
+  ]);
 
   useEffect(() => {
     if (!error || messages.length === 0) {
@@ -308,28 +431,20 @@ const DocsChatbotPanel = ({
 };
 
 export const DocsChatbot = (props: DocsChatbotProps) => {
-  const {
+  const { searchUrl, apiKey, title, emptyState, className } = props;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const basePanelProps: DocsChatbotBaseProps = {
     searchUrl,
     apiKey,
     title,
     emptyState,
     className,
-    style,
-  } = props;
-  const [internalOpen, setInternalOpen] = useState(false);
+    style: props.style,
+    conversationPersistence: props.conversationPersistence,
+  };
 
   if (props.variant === "embedded") {
-    return (
-      <DocsChatbotPanel
-        variant="embedded"
-        searchUrl={searchUrl}
-        apiKey={apiKey}
-        title={title}
-        emptyState={emptyState}
-        className={className}
-        style={style}
-      />
-    );
+    return <DocsChatbotPanel variant="embedded" {...basePanelProps} />;
   }
 
   const isCustomTrigger = props.trigger === "custom";
@@ -359,6 +474,8 @@ export const DocsChatbot = (props: DocsChatbotProps) => {
 
       <DialogContent
         showCloseButton={false}
+        showOverlay={false}
+        onInteractOutside={(event) => event.preventDefault()}
         className={cn(
           "dcb:fixed dcb:bottom-20 dcb:left-auto dcb:right-4 dcb:top-auto dcb:h-[min(600px,calc(100vh-7rem))] dcb:w-[calc(100vw-2rem)] dcb:max-w-md dcb:translate-x-0 dcb:translate-y-0 dcb:gap-0 dcb:p-0 sm:dcb:max-w-[425px]",
           isCustomTrigger ? "dcb:bottom-4" : "dcb:bottom-20"
@@ -369,12 +486,7 @@ export const DocsChatbot = (props: DocsChatbotProps) => {
         </DialogTitle>
         <DocsChatbotPanel
           variant="dialog"
-          searchUrl={searchUrl}
-          apiKey={apiKey}
-          title={title}
-          emptyState={emptyState}
-          className={className}
-          style={style}
+          {...basePanelProps}
           onRequestClose={() => setOpen(false)}
         />
       </DialogContent>

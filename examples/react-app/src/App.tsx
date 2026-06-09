@@ -2,6 +2,14 @@ import { DocsChatbot } from "../../../dist/esm/index.esm.js";
 import "./styles.css";
 import { useState } from "react";
 
+const useRealSearch = import.meta.env.VITE_USE_REAL_SEARCH === "true";
+const searchUrl = useRealSearch
+  ? import.meta.env.VITE_SEARCH_API_URL || "mock://docs-chatbot"
+  : "mock://docs-chatbot";
+const apiKey = useRealSearch
+  ? import.meta.env.VITE_SEARCH_API_KEY || "demo-key"
+  : "demo-key";
+
 function App() {
   const [mode, setMode] = useState<"default" | "custom" | "embedded">(
     "embedded"
@@ -89,9 +97,10 @@ function App() {
       {/* Chatbot */}
       {mode === "default" ? (
         <DocsChatbot
-          searchUrl={import.meta.env.VITE_SEARCH_API_URL}
-          apiKey={import.meta.env.VITE_SEARCH_API_KEY}
+          searchUrl={searchUrl}
+          apiKey={apiKey}
           title="SQLite Cloud Docs"
+          conversationPersistence={{ key: "docs-example-default" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",
@@ -99,12 +108,13 @@ function App() {
         />
       ) : mode === "custom" ? (
         <DocsChatbot
-          searchUrl={import.meta.env.VITE_SEARCH_API_URL}
-          apiKey={import.meta.env.VITE_SEARCH_API_KEY}
+          searchUrl={searchUrl}
+          apiKey={apiKey}
           title="SQLite Cloud Docs"
           trigger="custom"
           open={open}
           onOpenChange={setOpen}
+          conversationPersistence={{ key: "docs-example-custom" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",
@@ -112,11 +122,12 @@ function App() {
         />
       ) : (
         <DocsChatbot
-          searchUrl={import.meta.env.VITE_SEARCH_API_URL}
-          apiKey={import.meta.env.VITE_SEARCH_API_KEY}
+          searchUrl={searchUrl}
+          apiKey={apiKey}
           title="SQLite Cloud Docs"
           variant="embedded"
           style={{ maxWidth: "48rem", height: "600px" }}
+          conversationPersistence={{ key: "docs-example-embedded" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",

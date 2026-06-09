@@ -4,6 +4,12 @@
 
 Embeddable AI chatbot for documentation, powered by SQLite Cloud.
 
+## Local Testing
+
+For local testing, the package includes a built-in mock endpoint: `mock://docs-chatbot`.
+
+The repo demos and examples now prefer that mock endpoint by default, even if `VITE_SEARCH_API_URL` exists.
+
 ## Quick Start
 
 ### Prerequisites
@@ -34,6 +40,10 @@ function App() {
   );
 }
 ```
+
+For local-only testing, replace `searchUrl` with `mock://docs-chatbot` and use any placeholder API key such as `demo-key`.
+
+If you want the demos to use a real backend instead, set `VITE_USE_REAL_SEARCH=true`.
 
 ### Vanilla JavaScript
 
@@ -70,6 +80,7 @@ Render the chatbot inline inside your layout. This is the mode to use when you w
   title="Help Center"
   variant="embedded"
   className="max-w-2xl h-[600px]"
+  conversationPersistence={{ key: "help-center" }}
 />
 ```
 
@@ -83,6 +94,36 @@ Render the chatbot inline inside your layout. This is the mode to use when you w
 ```
 
 In embedded mode, the host layout should provide height. The component no longer renders its own outer frame.
+
+## Conversation Persistence
+
+To preserve chat history across unmounts or context switches, pass a persistence key. In dashboard-style layouts, use a different key per database or per workspace.
+
+```tsx
+<DocsChatbot
+  searchUrl="your-edge-function-url"
+  apiKey="your-api-key"
+  title="Memory Assistant"
+  variant="embedded"
+  className="h-full"
+  conversationPersistence={{
+    key: `memory:${projectId}:${databaseName}`,
+    storage: "session",
+  }}
+/>
+```
+
+```html
+<docs-chatbot
+  search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
+  api-key="your-api-key"
+  title="Help Center"
+  persistence-key="help-center"
+  persistence-storage="session"
+></docs-chatbot>
+```
+
+The floating dialog modes also keep running when you click outside the widget. They no longer dismiss on background clicks.
 
 ## Trigger Modes
 
@@ -187,6 +228,7 @@ function App() {
 | `onOpenChange`           | `(open: boolean) => void` | Yes when `trigger="custom"` | Callback fired when the open state changes (only used with `trigger="custom"`)                                             |
 | `className`              | `string`                  | No                          | Extra classes applied to the root chatbot panel                                                                            |
 | `style`                  | `CSSProperties`           | No                          | Inline styles applied to the root chatbot panel                                                                            |
+| `conversationPersistence`| `{ key: string; storage?: "session" \| "local" }` | No | Persists messages and composer input under the provided key                                                               |
 
 ### Web Component
 
@@ -199,6 +241,8 @@ function App() {
 | `title`                   | Yes      | Title displayed in the chatbot header                                                                                      |
 | `empty-state-title`       | No       | Main heading shown before the first message                                                                                |
 | `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |
+| `persistence-key`         | No       | Storage key used to persist messages and composer input                                                                    |
+| `persistence-storage`     | No       | Storage backend for persistence: `"session"` or `"local"` (default: `"session"`)                                        |
 | `variant`                 | No       | Rendering mode: `"dialog"` for the popup widget or `"embedded"` for an inline panel                                      |
 | `trigger`                 | No       | Trigger mode: `"default"` uses floating button, `"custom"` requires controlling `open` property (default: `"default"`)     |
 

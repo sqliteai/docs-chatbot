@@ -16,6 +16,8 @@ class DocsChatbotElement extends HTMLElement {
       "title",
       "empty-state-title",
       "empty-state-description",
+      "persistence-key",
+      "persistence-storage",
       "variant",
       "trigger",
     ];
@@ -77,6 +79,8 @@ class DocsChatbotElement extends HTMLElement {
     const title = this.getAttribute("title");
     const emptyStateTitle = this.getAttribute("empty-state-title");
     const emptyStateDescription = this.getAttribute("empty-state-description");
+    const persistenceKey = this.getAttribute("persistence-key");
+    const persistenceStorage = this.getAttribute("persistence-storage");
     const variant = this.getAttribute("variant");
     const trigger = this.getAttribute("trigger") as "default" | "custom" | null;
 
@@ -97,6 +101,16 @@ class DocsChatbotElement extends HTMLElement {
           }
         : {};
 
+    const conversationPersistence = persistenceKey
+      ? {
+          conversationPersistence: {
+            key: persistenceKey,
+            storage:
+              persistenceStorage === "local" ? "local" : "session",
+          } as const,
+        }
+      : {};
+
     const chatbotProps: DocsChatbotProps =
       variant === "embedded"
         ? {
@@ -105,6 +119,7 @@ class DocsChatbotElement extends HTMLElement {
             title,
             variant: "embedded",
             ...emptyState,
+            ...conversationPersistence,
           }
         : trigger === "custom"
           ? {
@@ -117,12 +132,14 @@ class DocsChatbotElement extends HTMLElement {
                 this.open = open;
               },
               ...emptyState,
+              ...conversationPersistence,
             }
           : {
               searchUrl,
               apiKey,
               title,
               ...emptyState,
+              ...conversationPersistence,
             };
 
     this.root.render(

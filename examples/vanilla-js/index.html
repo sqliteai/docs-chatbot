@@ -105,6 +105,7 @@
         chatbot.setAttribute("empty-state-description", "Get help with SQLite Cloud documentation");
         chatbot.setAttribute("search-url", window.ChatbotConfig.searchUrl);
         chatbot.setAttribute("api-key", window.ChatbotConfig.apiKey);
+        chatbot.setAttribute("persistence-key", `docs-vanilla-${mode}`);
 
         if (mode === "embedded") {
           chatbot.setAttribute("variant", "embedded");

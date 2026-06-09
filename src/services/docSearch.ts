@@ -1,6 +1,7 @@
 import type { SearchResponse, SendMessageRequest } from "@/types/chat";
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import { nanoid } from "nanoid";
+import { isMockSearchUrl, runMockSearch } from "@/services/mockSearch";
 
 /**
  * Performs document search using SQLite Cloud AI search API and streams results back to the chat.
@@ -44,22 +45,32 @@ export async function docSearch({
       );
     }
 
-    searchUrl.searchParams.set("query", query.trim());
+    let searchResult: SearchResponse;
 
-    const searchResponse = await fetch(searchUrl.toString(), {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
+    if (isMockSearchUrl(searchUrl)) {
+      searchResult = {
+        data: {
+          search: await runMockSearch(query.trim()),
+        },
+      };
+    } else {
+      searchUrl.searchParams.set("query", query.trim());
 
-    if (!searchResponse.ok) {
-      throw new Error(
-        `Failed to complete the search. Please check your connection and try again.`
-      );
+      const searchResponse = await fetch(searchUrl.toString(), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!searchResponse.ok) {
+        throw new Error(
+          `Failed to complete the search. Please check your connection and try again.`
+        );
+      }
+
+      searchResult = (await searchResponse.json()) as SearchResponse;
     }
-
-    const searchResult = (await searchResponse.json()) as SearchResponse;
 
     return createUIMessageStreamResponse({
       status: 200,

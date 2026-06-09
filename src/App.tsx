@@ -3,6 +3,15 @@ import { useState } from "react";
 import { Button } from "./components/ui/button";
 import { CircleHelp } from "lucide-react";
 
+const useRealSearch = import.meta.env.VITE_USE_REAL_SEARCH === "true";
+const searchUrl = useRealSearch
+  ? ((import.meta.env.VITE_SEARCH_API_URL as string | undefined) ??
+    "mock://docs-chatbot")
+  : "mock://docs-chatbot";
+const apiKey = useRealSearch
+  ? ((import.meta.env.VITE_SEARCH_API_KEY as string | undefined) ?? "demo-key")
+  : "demo-key";
+
 function App() {
   const [mode, setMode] = useState<"default" | "custom" | "embedded">(
     "embedded"
@@ -46,9 +55,10 @@ function App() {
 
       {mode === "default" ? (
         <DocsChatbot
-          searchUrl={import.meta.env.VITE_SEARCH_API_URL as string}
-          apiKey={import.meta.env.VITE_SEARCH_API_KEY as string}
+          searchUrl={searchUrl}
+          apiKey={apiKey}
           title="SQLite Cloud Docs"
+          conversationPersistence={{ key: "docs-demo-default" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",
@@ -56,12 +66,13 @@ function App() {
         />
       ) : mode === "custom" ? (
         <DocsChatbot
-          searchUrl={import.meta.env.VITE_SEARCH_API_URL as string}
-          apiKey={import.meta.env.VITE_SEARCH_API_KEY as string}
+          searchUrl={searchUrl}
+          apiKey={apiKey}
           title="SQLite Cloud Docs"
           trigger="custom"
           open={open}
           onOpenChange={setOpen}
+          conversationPersistence={{ key: "docs-demo-custom" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",
@@ -69,11 +80,12 @@ function App() {
         />
       ) : (
         <DocsChatbot
-          searchUrl={import.meta.env.VITE_SEARCH_API_URL as string}
-          apiKey={import.meta.env.VITE_SEARCH_API_KEY as string}
+          searchUrl={searchUrl}
+          apiKey={apiKey}
           title="SQLite Cloud Docs"
           variant="embedded"
           className="dcb:h-[600px] dcb:max-w-2xl"
+          conversationPersistence={{ key: "docs-demo-embedded" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",

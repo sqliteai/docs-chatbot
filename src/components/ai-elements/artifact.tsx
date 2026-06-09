@@ -117,7 +117,7 @@ export const ArtifactAction = ({
   const button = (
     <Button
       className={cn(
-        "dcb:size-8 dcb:p-0 dcb:text-muted-foreground hover:dcb:text-foreground",
+        "dcb:size-8 dcb:cursor-pointer dcb:p-0 dcb:text-muted-foreground hover:dcb:text-foreground",
         className
       )}
       size={size}

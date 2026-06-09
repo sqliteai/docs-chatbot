@@ -3,6 +3,7 @@ import { DocsChatbot, type DocsChatbotProps } from "./DocsChatbot";
 import createShadowRoot from "./createShadowRoot";
 import cssText from "../src/index.css?inline";
 import { ShadowRootProvider } from "@/providers/ShadowRootProvider";
+import type { DocumentSearchResult } from "@/types/chat";
 
 class DocsChatbotElement extends HTMLElement {
   private root: ReturnType<typeof createShadowRoot>["root"] | null = null;
@@ -131,6 +132,20 @@ class DocsChatbotElement extends HTMLElement {
             ...emptyState,
             ...conversationPersistence,
             ...clearButtonProps,
+            onResultSelect: (result: DocumentSearchResult) => {
+              const event = new CustomEvent("resultselect", {
+                detail: result,
+                bubbles: true,
+                composed: true,
+                cancelable: true,
+              });
+
+              const shouldContinue = this.dispatchEvent(event);
+
+              if (shouldContinue && !event.defaultPrevented) {
+                window.open(result.url, "_blank");
+              }
+            },
           }
         : trigger === "custom"
           ? {
@@ -145,6 +160,20 @@ class DocsChatbotElement extends HTMLElement {
               ...emptyState,
               ...conversationPersistence,
               ...clearButtonProps,
+              onResultSelect: (result: DocumentSearchResult) => {
+                const event = new CustomEvent("resultselect", {
+                  detail: result,
+                  bubbles: true,
+                  composed: true,
+                  cancelable: true,
+                });
+
+                const shouldContinue = this.dispatchEvent(event);
+
+                if (shouldContinue && !event.defaultPrevented) {
+                  window.open(result.url, "_blank");
+                }
+              },
             }
           : {
               searchUrl,
@@ -153,6 +182,20 @@ class DocsChatbotElement extends HTMLElement {
               ...emptyState,
               ...conversationPersistence,
               ...clearButtonProps,
+              onResultSelect: (result: DocumentSearchResult) => {
+                const event = new CustomEvent("resultselect", {
+                  detail: result,
+                  bubbles: true,
+                  composed: true,
+                  cancelable: true,
+                });
+
+                const shouldContinue = this.dispatchEvent(event);
+
+                if (shouldContinue && !event.defaultPrevented) {
+                  window.open(result.url, "_blank");
+                }
+              },
             };
 
     this.root.render(

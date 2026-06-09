@@ -17,7 +17,7 @@ export type SendMessageRequest = {
  * A single document search result returned by the AI search API.
  * Contains the document content, location, and relevance scoring.
  */
-export type DocumentSearchResult = {
+export type DocumentSearchResult = Record<string, unknown> & {
   /** Unique identifier for this document chunk */
   id: string;
   /** File path or URL to the source document */

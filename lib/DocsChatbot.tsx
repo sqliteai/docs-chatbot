@@ -44,6 +44,7 @@ import {
 import { cn } from "@/utils/cn";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import type { DocumentSearchResult } from "@/types/chat";
 
 type DocsChatbotBaseProps = {
   searchUrl: string;
@@ -57,6 +58,7 @@ type DocsChatbotBaseProps = {
   style?: CSSProperties;
   conversationPersistence?: DocsChatbotPersistence;
   showClearButton?: boolean;
+  onResultSelect?: (result: DocumentSearchResult) => void;
 };
 
 export type DocsChatbotPersistence = {
@@ -182,6 +184,7 @@ const DocsChatbotPanel = ({
   onRequestClose,
   conversationPersistence,
   showClearButton = false,
+  onResultSelect,
 }: DocsChatbotPanelProps) => {
   const initialPersistedConversation = loadPersistedConversation(
     conversationPersistence
@@ -266,6 +269,15 @@ const DocsChatbotPanel = ({
     clearError();
     setInputValue("");
     setMessages([]);
+  };
+
+  const handleResultSelect = (result: DocumentSearchResult) => {
+    if (onResultSelect) {
+      onResultSelect(result);
+      return;
+    }
+
+    window.open(result.url, "_blank");
   };
 
   return (
@@ -364,32 +376,63 @@ const DocsChatbotPanel = ({
                       case "text":
                       case "reasoning":
                         return part.text;
-                      case "source-url":
+                      case "source-url": {
+                        const rawMetadata = part.providerMetadata?.result;
+                        const metadata =
+                          rawMetadata &&
+                          typeof rawMetadata === "object" &&
+                          !Array.isArray(rawMetadata)
+                            ? (rawMetadata as DocumentSearchResult)
+                            : undefined;
+                        const resultTitle = part.title ?? "Untitled Document";
+                        const resultSnippet =
+                          typeof metadata?.snippet === "string"
+                            ? metadata.snippet
+                            : "";
+                        const result: DocumentSearchResult = {
+                          ...(metadata ?? {}),
+                          id: part.sourceId,
+                          title: resultTitle,
+                          url: part.url,
+                          snippet: resultSnippet,
+                        };
+
                         return (
-                          <Artifact key={part.sourceId}>
-                            <ArtifactHeader
-                              className="dcb:cursor-pointer dcb:transition-colors hover:dcb:bg-muted/70"
-                              onClick={() => window.open(part.url, "_blank")}
-                            >
-                              <ArtifactTitle>{part.title}</ArtifactTitle>
+                          <Artifact
+                            key={part.sourceId}
+                            aria-label={`Open result ${resultTitle}`}
+                            className="dcb:cursor-pointer dcb:transition-colors hover:dcb:border-primary/40"
+                            onClick={() => handleResultSelect(result)}
+                            onKeyDown={(event) => {
+                              if (
+                                event.key === "Enter" ||
+                                event.key === " "
+                              ) {
+                                event.preventDefault();
+                                handleResultSelect(result);
+                              }
+                            }}
+                            role="button"
+                            tabIndex={0}
+                          >
+                            <ArtifactHeader className="dcb:transition-colors hover:dcb:bg-muted/70">
+                              <ArtifactTitle>{resultTitle}</ArtifactTitle>
                               <ArtifactActions>
                                 <ArtifactAction
                                   icon={ExternalLink}
-                                  tooltip="Go to source"
-                                  className="dcb:cursor-pointer"
+                                  tooltip="Open result"
                                 />
                               </ArtifactActions>
                             </ArtifactHeader>
 
-                            {part.providerMetadata?.result && (
+                            {resultSnippet && (
                               <ArtifactContent>
-                                <ResponseLight>
-                                  {part.providerMetadata.result.snippet as string}
-                                </ResponseLight>
+                                <ResponseLight>{resultSnippet}</ResponseLight>
                               </ArtifactContent>
                             )}
                           </Artifact>
                         );
+                      }
                     }
                   })}
                 </MessageContent>
@@ -445,6 +488,7 @@ export const DocsChatbot = (props: DocsChatbotProps) => {
     style: props.style,
     conversationPersistence: props.conversationPersistence,
     showClearButton: props.showClearButton,
+    onResultSelect: props.onResultSelect,
   };
 
   if (props.variant === "embedded") {
@@ -481,7 +525,7 @@ export const DocsChatbot = (props: DocsChatbotProps) => {
         showOverlay={false}
         onInteractOutside={(event) => event.preventDefault()}
         className={cn(
-          "dcb:fixed dcb:bottom-20 dcb:left-auto dcb:right-4 dcb:top-auto dcb:h-[min(600px,calc(100vh-7rem))] dcb:w-[calc(100vw-2rem)] dcb:max-w-md dcb:translate-x-0 dcb:translate-y-0 dcb:gap-0 dcb:border-border/80 dcb:p-0 sm:dcb:max-w-[425px]",
+          "dcb:fixed dcb:bottom-20 dcb:left-auto dcb:right-4 dcb:top-auto dcb:h-[min(600px,calc(100vh-7rem))] dcb:w-[calc(100vw-2rem)] dcb:max-w-md dcb:translate-x-0 dcb:translate-y-0 dcb:gap-0 dcb:overflow-hidden dcb:border-border dcb:ring-1 dcb:ring-border/70 dcb:p-0 sm:dcb:max-w-[425px]",
           isCustomTrigger ? "dcb:bottom-4" : "dcb:bottom-20"
         )}
       >

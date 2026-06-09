@@ -125,6 +125,40 @@ To preserve chat history across unmounts or context switches, pass a persistence
 
 The floating dialog modes also keep running when you click outside the widget. They no longer dismiss on background clicks.
 
+## Result Selection
+
+To intercept result clicks and route them into your own UI, use `onResultSelect` in React or listen for the `resultselect` event on the web component.
+
+```tsx
+<DocsChatbot
+  searchUrl="your-edge-function-url"
+  apiKey="your-api-key"
+  title="Memory Assistant"
+  variant="embedded"
+  onResultSelect={(result) => {
+    // Example: select the matching file in your tree/editor
+    console.log("Selected result", result);
+  }}
+/>
+```
+
+```html
+<docs-chatbot
+  search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
+  api-key="your-api-key"
+  title="Help Center"
+></docs-chatbot>
+
+<script>
+  const chatbot = document.querySelector("docs-chatbot");
+
+  chatbot.addEventListener("resultselect", (event) => {
+    event.preventDefault();
+    console.log("Selected result", event.detail);
+  });
+</script>
+```
+
 ## Trigger Modes
 
 ### Default Trigger
@@ -230,6 +264,7 @@ function App() {
 | `style`                  | `CSSProperties`           | No                          | Inline styles applied to the root chatbot panel                                                                            |
 | `conversationPersistence`| `{ key: string; storage?: "session" \| "local" }` | No | Persists messages and composer input under the provided key                                                               |
 | `showClearButton`        | `boolean`                 | No                          | Shows the `Clear` action in the header when there is conversation history (default: `false`)                             |
+| `onResultSelect`         | `(result: DocumentSearchResult) => void` | No | Called when a result card is selected. When provided, default link navigation is suppressed |
 
 ### Web Component
 
@@ -259,6 +294,7 @@ function App() {
 | Event        | Detail              | Description                               |
 | ------------ | ------------------- | ----------------------------------------- |
 | `openchange` | `{ open: boolean }` | Fired when the chatbot open state changes |
+| `resultselect` | `DocumentSearchResult` | Fired when a result card is selected. Call `preventDefault()` to suppress default link navigation |
 
 ## Theming
 

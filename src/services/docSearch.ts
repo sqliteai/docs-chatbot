@@ -3,6 +3,31 @@ import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import { nanoid } from "nanoid";
 import { isMockSearchUrl, runMockSearch } from "@/services/mockSearch";
 
+type SerializableSearchResultMetadata = Record<
+  string,
+  string | number | boolean | null
+>;
+
+function serializeSearchResultMetadata(
+  result: SearchResponse["data"]["search"][number]
+): SerializableSearchResultMetadata {
+  return Object.entries(result).reduce<SerializableSearchResultMetadata>(
+    (accumulator, [key, value]) => {
+      if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean" ||
+        value === null
+      ) {
+        accumulator[key] = value;
+      }
+
+      return accumulator;
+    },
+    {}
+  );
+}
+
 /**
  * Performs document search using SQLite Cloud AI search API and streams results back to the chat.
  *
@@ -102,9 +127,7 @@ export async function docSearch({
                 title: result.title ?? "Untitled Document",
                 url: result.url,
                 providerMetadata: {
-                  result: {
-                    snippet: result.snippet,
-                  },
+                  result: serializeSearchResultMetadata(result),
                 },
               })
             );

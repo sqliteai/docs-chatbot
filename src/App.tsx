@@ -12,11 +12,64 @@ const apiKey = useRealSearch
   ? ((import.meta.env.VITE_SEARCH_API_KEY as string | undefined) ?? "demo-key")
   : "demo-key";
 
+const demoFiles = [
+  {
+    id: "getting-started",
+    title: "Getting Started",
+    path: "docs/getting-started.md",
+    content:
+      "Create a project, add a database, and connect with the SQLite Cloud dashboard or client SDKs.",
+  },
+  {
+    id: "edge-functions",
+    title: "Edge Functions",
+    path: "docs/edge-functions.md",
+    content:
+      "Deploy edge functions close to your data and call them securely with API keys or project-scoped credentials.",
+  },
+  {
+    id: "vector-search",
+    title: "Vector Search",
+    path: "docs/vector-search.md",
+    content:
+      "Store embeddings in SQLite tables and run similarity search for semantic retrieval and AI-powered features.",
+  },
+  {
+    id: "cloudsync",
+    title: "CloudSync",
+    path: "docs/cloudsync.md",
+    content:
+      "Sync local databases with SQLite Cloud, resolve conflicts, and keep offline-first apps up to date.",
+  },
+  {
+    id: "auth-api-keys",
+    title: "API Keys and Auth",
+    path: "docs/auth/api-keys.md",
+    content:
+      "Generate API keys, scope access to projects, and rotate credentials for secure production deployments.",
+  },
+  {
+    id: "memory-chat",
+    title: "Memory Chat",
+    path: "docs/memory/chat.md",
+    content:
+      "Index your content with sqlite-memory and expose a searchable chatbot experience with persistent conversation context.",
+  },
+] as const;
+
 function App() {
   const [mode, setMode] = useState<"default" | "custom" | "embedded">(
     "embedded"
   );
   const [open, setOpen] = useState(false);
+  const [selectedFileId, setSelectedFileId] = useState<string>(
+    demoFiles[0].id
+  );
+  const [lastSelectedResult, setLastSelectedResult] = useState<string | null>(
+    null
+  );
+  const selectedFile =
+    demoFiles.find((file) => file.id === selectedFileId) ?? demoFiles[0];
 
   return (
     <div className="dcb:min-h-screen dcb:p-8">
@@ -79,19 +132,75 @@ function App() {
           }}
         />
       ) : (
-        <DocsChatbot
-          searchUrl={searchUrl}
-          apiKey={apiKey}
-          title="SQLite Cloud Docs"
-          variant="embedded"
-          className="dcb:h-[600px] dcb:max-w-2xl"
-          conversationPersistence={{ key: "docs-demo-embedded" }}
-          showClearButton
-          emptyState={{
-            title: "Ask questions about SQLite Cloud",
-            description: "Get help with SQLite Cloud documentation",
-          }}
-        />
+        <div className="dcb:overflow-x-auto">
+          <div className="dcb:grid dcb:min-w-[1120px] dcb:grid-cols-[220px_minmax(0,1fr)_420px] dcb:gap-4">
+            <div className="dcb:overflow-hidden dcb:rounded-xl dcb:border dcb:border-border/80 dcb:bg-background">
+              <div className="dcb:border-b dcb:border-border/80 dcb:px-3 dcb:py-2.5 dcb:text-sm dcb:font-semibold">
+                Files
+              </div>
+              <div className="dcb:flex dcb:flex-col dcb:p-2">
+                {demoFiles.map((file) => (
+                  <button
+                    key={file.id}
+                    className={`dcb:rounded-lg dcb:px-3 dcb:py-2 dcb:text-left dcb:text-sm ${
+                      file.id === selectedFile.id
+                        ? "dcb:bg-secondary dcb:text-foreground"
+                        : "dcb:text-muted-foreground hover:dcb:bg-muted/50"
+                    }`}
+                    onClick={() => setSelectedFileId(file.id)}
+                    type="button"
+                  >
+                    <div className="dcb:font-medium">{file.title}</div>
+                    <div className="dcb:mt-1 dcb:text-xs">{file.path}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="dcb:overflow-hidden dcb:rounded-xl dcb:border dcb:border-border/80 dcb:bg-background">
+              <div className="dcb:border-b dcb:border-border/80 dcb:px-4 dcb:py-3">
+                <div className="dcb:text-sm dcb:font-semibold">{selectedFile.title}</div>
+                <div className="dcb:mt-1 dcb:text-xs dcb:text-muted-foreground">
+                  {selectedFile.path}
+                </div>
+              </div>
+              <div className="dcb:space-y-4 dcb:p-4">
+                {lastSelectedResult && (
+                  <div className="dcb:rounded-lg dcb:border dcb:border-primary/20 dcb:bg-primary/5 dcb:px-3 dcb:py-2 dcb:text-sm">
+                    Opened from chatbot result:{" "}
+                    <span className="dcb:font-medium">{lastSelectedResult}</span>
+                  </div>
+                )}
+                <div className="dcb:text-3xl dcb:font-semibold">{selectedFile.title}</div>
+                <div className="dcb:max-w-2xl dcb:text-sm dcb:leading-7 dcb:text-muted-foreground">
+                  {selectedFile.content}
+                </div>
+              </div>
+            </div>
+
+            <DocsChatbot
+              searchUrl={searchUrl}
+              apiKey={apiKey}
+              title="Memory Assistant"
+              variant="embedded"
+              className="dcb:h-[600px]"
+              conversationPersistence={{ key: "docs-demo-embedded" }}
+              showClearButton
+              onResultSelect={(result) => {
+                setLastSelectedResult(result.title);
+                const nextFileId = result.id;
+                if (demoFiles.some((file) => file.id === nextFileId)) {
+                  setSelectedFileId(nextFileId);
+                }
+              }}
+              emptyState={{
+                title: "Ask questions about indexed memory",
+                description:
+                  "Selecting a result opens the matching file in the demo editor.",
+              }}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

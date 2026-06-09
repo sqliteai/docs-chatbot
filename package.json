@@ -6,11 +6,11 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sqliteai/chatbot.git"
+    "url": "git+https://github.com/sqliteai/docs-chatbot.git"
   },
-  "homepage": "https://github.com/sqliteai/chatbot#readme",
+  "homepage": "https://github.com/sqliteai/docs-chatbot#readme",
   "bugs": {
-    "url": "https://github.com/sqliteai/chatbot/issues"
+    "url": "https://github.com/sqliteai/docs-chatbot/issues"
   },
   "keywords": [
     "chatbot",

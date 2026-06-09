@@ -69,7 +69,7 @@ Render the chatbot inline inside your layout. This is the mode to use when you w
   apiKey="your-api-key"
   title="Help Center"
   variant="embedded"
-  className="max-w-2xl"
+  className="max-w-2xl h-[600px]"
 />
 ```
 
@@ -81,6 +81,8 @@ Render the chatbot inline inside your layout. This is the mode to use when you w
   variant="embedded"
 ></docs-chatbot>
 ```
+
+In embedded mode, the host layout should provide height. The component no longer renders its own outer frame.
 
 ## Trigger Modes
 

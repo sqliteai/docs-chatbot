@@ -73,7 +73,7 @@ function App() {
           apiKey={import.meta.env.VITE_SEARCH_API_KEY as string}
           title="SQLite Cloud Docs"
           variant="embedded"
-          className="dcb:max-w-2xl"
+          className="dcb:h-[600px] dcb:max-w-2xl"
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",

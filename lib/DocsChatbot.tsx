@@ -148,19 +148,19 @@ const DocsChatbotPanel = ({
       className={cn(
         "dcb:flex dcb:w-full dcb:min-h-0 dcb:flex-col dcb:overflow-hidden dcb:text-foreground",
         variant === "embedded"
-          ? "dcb:h-[600px] dcb:rounded-lg dcb:border dcb:bg-background dcb:shadow-sm"
+          ? "dcb:h-full dcb:bg-background"
           : "dcb:h-full",
         className
       )}
       style={style}
     >
-      <div className="dcb:flex dcb:items-start dcb:justify-between dcb:gap-3 dcb:border-b dcb:bg-background dcb:px-4 dcb:py-3">
+      <div className="dcb:flex dcb:items-start dcb:justify-between dcb:gap-3 dcb:border-b dcb:bg-background dcb:px-3.5 dcb:py-3">
         <div className="dcb:min-w-0">
           <div className="dcb:flex dcb:items-center dcb:gap-2 dcb:text-sm dcb:font-semibold dcb:font-sans">
             <MessageSquare className="dcb:h-4 dcb:w-4 dcb:text-primary" />
             <span className="dcb:truncate">{title}</span>
           </div>
-          <p className="dcb:mt-1 dcb:text-xs dcb:text-muted-foreground dcb:font-sans">
+          <p className="dcb:mt-1 dcb:text-[11px] dcb:leading-4 dcb:text-muted-foreground dcb:font-sans">
             {emptyState.description}
           </p>
         </div>
@@ -196,7 +196,7 @@ const DocsChatbotPanel = ({
 
       <Conversation className="dcb:relative dcb:w-full dcb:flex-1 dcb:overflow-hidden">
         {error && (
-          <div className="dcb:absolute dcb:left-4 dcb:right-4 dcb:top-4 dcb:z-10">
+          <div className="dcb:absolute dcb:left-3 dcb:right-3 dcb:top-3 dcb:z-10">
             <Alert variant="destructive" className="dcb:shadow-lg">
               <AlertCircle className="dcb:h-4 dcb:w-4" />
 
@@ -275,7 +275,7 @@ const DocsChatbotPanel = ({
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="dcb:border-t dcb:bg-background dcb:px-4 dcb:py-2 dcb:flex-shrink-0">
+      <div className="dcb:border-t dcb:bg-background dcb:px-3.5 dcb:py-3 dcb:flex-shrink-0">
         <PromptInput
           onSubmit={(message: PromptInputMessage) => {
             if (!message.text?.trim()) {
@@ -289,7 +289,7 @@ const DocsChatbotPanel = ({
           <PromptInputBody>
             <PromptInputTextarea
               placeholder="Ask a question..."
-              className="dcb:max-h-32 dcb:min-h-8"
+              className="dcb:max-h-32"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />

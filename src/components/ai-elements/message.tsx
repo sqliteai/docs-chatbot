@@ -11,7 +11,7 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> & {
 export const Message = ({ className, from, ...props }: MessageProps) => (
   <div
     className={cn(
-      "dcb:group dcb:flex dcb:w-full dcb:items-end dcb:justify-end dcb:gap-2 dcb:py-4",
+      "dcb:group dcb:flex dcb:w-full dcb:items-end dcb:justify-end dcb:gap-2 dcb:py-2.5",
       from === "user"
         ? "is-user"
         : "is-assistant dcb:flex-row-reverse dcb:justify-end",
@@ -27,12 +27,12 @@ const messageContentVariants = cva(
     variants: {
       variant: {
         contained: [
-          "dcb:max-w-[80%] dcb:px-4 dcb:py-3",
+          "dcb:max-w-[82%] dcb:px-3.5 dcb:py-2.5",
           "dcb:group-[.is-user]:bg-primary dcb:group-[.is-user]:text-primary-foreground",
           "dcb:group-[.is-assistant]:bg-secondary dcb:group-[.is-assistant]:text-foreground",
         ],
         flat: [
-          "dcb:group-[.is-user]:max-w-[80%] dcb:group-[.is-user]:bg-secondary dcb:group-[.is-user]:px-4 dcb:group-[.is-user]:py-3 dcb:group-[.is-user]:text-foreground",
+          "dcb:group-[.is-user]:max-w-[82%] dcb:group-[.is-user]:bg-secondary dcb:group-[.is-user]:px-3.5 dcb:group-[.is-user]:py-2.5 dcb:group-[.is-user]:text-foreground",
           "dcb:group-[.is-assistant]:text-foreground",
         ],
       },

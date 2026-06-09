@@ -493,7 +493,7 @@ export const PromptInputTextarea = ({
       className={cn(
         "dcb:w-full dcb:resize-none dcb:rounded-none dcb:border-none dcb:p-3 dcb:shadow-none dcb:outline-none dcb:ring-0",
         "dcb:field-sizing-content dcb:bg-transparent dark:dcb:bg-transparent",
-        "dcb:max-h-48 dcb:min-h-16",
+        "dcb:max-h-48 dcb:min-h-14",
         "focus-visible:dcb:ring-0",
         "dcb:font-sans",
         className
@@ -517,7 +517,7 @@ export const PromptInputToolbar = ({
 }: PromptInputToolbarProps) => (
   <div
     className={cn(
-      "dcb:flex dcb:items-center dcb:justify-between dcb:p-1",
+      "dcb:flex dcb:items-center dcb:justify-between dcb:px-2 dcb:pb-2 dcb:pt-0.5",
       className
     )}
     {...props}

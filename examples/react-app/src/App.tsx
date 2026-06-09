@@ -116,7 +116,7 @@ function App() {
           apiKey={import.meta.env.VITE_SEARCH_API_KEY}
           title="SQLite Cloud Docs"
           variant="embedded"
-          style={{ maxWidth: "48rem" }}
+          style={{ maxWidth: "48rem", height: "600px" }}
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",

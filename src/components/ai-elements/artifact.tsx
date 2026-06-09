@@ -31,7 +31,7 @@ export const ArtifactHeader = ({
 }: ArtifactHeaderProps) => (
   <div
     className={cn(
-      "dcb:flex dcb:items-center dcb:justify-between dcb:border-b dcb:bg-muted/50 dcb:px-4 dcb:py-3",
+      "dcb:flex dcb:items-center dcb:justify-between dcb:border-b dcb:bg-muted/50 dcb:px-3 dcb:py-2.5",
       className
     )}
     {...props}
@@ -153,7 +153,7 @@ export const ArtifactContent = ({
   ...props
 }: ArtifactContentProps) => (
   <div
-    className={cn("dcb:flex-1 dcb:overflow-auto dcb:p-4", className)}
+    className={cn("dcb:flex-1 dcb:overflow-auto dcb:p-3", className)}
     {...props}
   />
 );

@@ -18,6 +18,7 @@ class DocsChatbotElement extends HTMLElement {
       "empty-state-description",
       "persistence-key",
       "persistence-storage",
+      "show-clear-button",
       "variant",
       "trigger",
     ];
@@ -81,6 +82,7 @@ class DocsChatbotElement extends HTMLElement {
     const emptyStateDescription = this.getAttribute("empty-state-description");
     const persistenceKey = this.getAttribute("persistence-key");
     const persistenceStorage = this.getAttribute("persistence-storage");
+    const showClearButton = this.getAttribute("show-clear-button");
     const variant = this.getAttribute("variant");
     const trigger = this.getAttribute("trigger") as "default" | "custom" | null;
 
@@ -111,6 +113,14 @@ class DocsChatbotElement extends HTMLElement {
         }
       : {};
 
+    const clearButtonProps =
+      showClearButton === null
+        ? {}
+        : {
+            showClearButton:
+              showClearButton === "" || showClearButton === "true",
+          };
+
     const chatbotProps: DocsChatbotProps =
       variant === "embedded"
         ? {
@@ -120,6 +130,7 @@ class DocsChatbotElement extends HTMLElement {
             variant: "embedded",
             ...emptyState,
             ...conversationPersistence,
+            ...clearButtonProps,
           }
         : trigger === "custom"
           ? {
@@ -133,6 +144,7 @@ class DocsChatbotElement extends HTMLElement {
               },
               ...emptyState,
               ...conversationPersistence,
+              ...clearButtonProps,
             }
           : {
               searchUrl,
@@ -140,6 +152,7 @@ class DocsChatbotElement extends HTMLElement {
               title,
               ...emptyState,
               ...conversationPersistence,
+              ...clearButtonProps,
             };
 
     this.root.render(

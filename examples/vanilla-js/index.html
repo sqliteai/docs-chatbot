@@ -109,6 +109,7 @@
 
         if (mode === "embedded") {
           chatbot.setAttribute("variant", "embedded");
+          chatbot.setAttribute("show-clear-button", "");
           chatbot.classList.add("chatbot-panel");
         } else if (mode === "custom") {
           chatbot.setAttribute("trigger", "custom");

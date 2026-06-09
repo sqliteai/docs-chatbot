@@ -229,6 +229,7 @@ function App() {
 | `className`              | `string`                  | No                          | Extra classes applied to the root chatbot panel                                                                            |
 | `style`                  | `CSSProperties`           | No                          | Inline styles applied to the root chatbot panel                                                                            |
 | `conversationPersistence`| `{ key: string; storage?: "session" \| "local" }` | No | Persists messages and composer input under the provided key                                                               |
+| `showClearButton`        | `boolean`                 | No                          | Shows the `Clear` action in the header when there is conversation history (default: `false`)                             |
 
 ### Web Component
 
@@ -243,6 +244,7 @@ function App() {
 | `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |
 | `persistence-key`         | No       | Storage key used to persist messages and composer input                                                                    |
 | `persistence-storage`     | No       | Storage backend for persistence: `"session"` or `"local"` (default: `"session"`)                                        |
+| `show-clear-button`       | No       | When present, shows the `Clear` action in the header                                                                       |
 | `variant`                 | No       | Rendering mode: `"dialog"` for the popup widget or `"embedded"` for an inline panel                                      |
 | `trigger`                 | No       | Trigger mode: `"default"` uses floating button, `"custom"` requires controlling `open` property (default: `"default"`)     |
 

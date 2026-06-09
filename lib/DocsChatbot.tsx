@@ -56,6 +56,7 @@ type DocsChatbotBaseProps = {
   className?: string;
   style?: CSSProperties;
   conversationPersistence?: DocsChatbotPersistence;
+  showClearButton?: boolean;
 };
 
 export type DocsChatbotPersistence = {
@@ -180,6 +181,7 @@ const DocsChatbotPanel = ({
   variant,
   onRequestClose,
   conversationPersistence,
+  showClearButton = false,
 }: DocsChatbotPanelProps) => {
   const initialPersistedConversation = loadPersistedConversation(
     conversationPersistence
@@ -277,7 +279,7 @@ const DocsChatbotPanel = ({
       )}
       style={style}
     >
-      <div className="dcb:flex dcb:items-start dcb:justify-between dcb:gap-3 dcb:border-b dcb:bg-background dcb:px-3.5 dcb:py-3">
+      <div className="dcb:flex dcb:items-start dcb:justify-between dcb:gap-3 dcb:border-b dcb:border-border/80 dcb:bg-background dcb:px-3.5 dcb:py-3">
         <div className="dcb:min-w-0">
           <div className="dcb:flex dcb:items-center dcb:gap-2 dcb:text-sm dcb:font-semibold dcb:font-sans">
             <MessageSquare className="dcb:h-4 dcb:w-4 dcb:text-primary" />
@@ -289,17 +291,18 @@ const DocsChatbotPanel = ({
         </div>
 
         <div className="dcb:flex dcb:items-center dcb:gap-2">
-          {messages.length > 0 && (
+          {showClearButton && messages.length > 0 && (
             <Button
-              variant="ghost"
-              size="icon"
+              variant="outline"
+              size="sm"
               type="button"
               onClick={clearConversation}
               disabled={status !== "ready"}
-              className="dcb:cursor-pointer"
+              className="dcb:h-8 dcb:cursor-pointer dcb:border-border/80 dcb:px-2.5 dcb:text-xs"
               aria-label="Clear conversation"
             >
               <RefreshCcw className="dcb:h-4 dcb:w-4" />
+              Clear
             </Button>
           )}
           {onRequestClose && (
@@ -398,7 +401,7 @@ const DocsChatbotPanel = ({
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="dcb:border-t dcb:bg-background dcb:px-3.5 dcb:py-3 dcb:flex-shrink-0">
+      <div className="dcb:border-t dcb:border-border/80 dcb:bg-background dcb:px-3.5 dcb:py-3 dcb:flex-shrink-0">
         <PromptInput
           onSubmit={(message: PromptInputMessage) => {
             if (!message.text?.trim()) {
@@ -441,6 +444,7 @@ export const DocsChatbot = (props: DocsChatbotProps) => {
     className,
     style: props.style,
     conversationPersistence: props.conversationPersistence,
+    showClearButton: props.showClearButton,
   };
 
   if (props.variant === "embedded") {
@@ -477,7 +481,7 @@ export const DocsChatbot = (props: DocsChatbotProps) => {
         showOverlay={false}
         onInteractOutside={(event) => event.preventDefault()}
         className={cn(
-          "dcb:fixed dcb:bottom-20 dcb:left-auto dcb:right-4 dcb:top-auto dcb:h-[min(600px,calc(100vh-7rem))] dcb:w-[calc(100vw-2rem)] dcb:max-w-md dcb:translate-x-0 dcb:translate-y-0 dcb:gap-0 dcb:p-0 sm:dcb:max-w-[425px]",
+          "dcb:fixed dcb:bottom-20 dcb:left-auto dcb:right-4 dcb:top-auto dcb:h-[min(600px,calc(100vh-7rem))] dcb:w-[calc(100vw-2rem)] dcb:max-w-md dcb:translate-x-0 dcb:translate-y-0 dcb:gap-0 dcb:border-border/80 dcb:p-0 sm:dcb:max-w-[425px]",
           isCustomTrigger ? "dcb:bottom-4" : "dcb:bottom-20"
         )}
       >

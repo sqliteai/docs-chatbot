@@ -86,6 +86,7 @@ function App() {
           variant="embedded"
           className="dcb:h-[600px] dcb:max-w-2xl"
           conversationPersistence={{ key: "docs-demo-embedded" }}
+          showClearButton
           emptyState={{
             title: "Ask questions about SQLite Cloud",
             description: "Get help with SQLite Cloud documentation",

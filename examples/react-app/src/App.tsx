@@ -287,12 +287,29 @@ function App() {
                     memory.sqlite
                   </span>
                 ),
-                closeButtonIcon: (
-                  <PanelRightClose
-                    style={{ width: "1.25rem", height: "1.25rem", color: "#6988b6" }}
-                  />
-                ),
                 onClose: () => setIsEmbeddedChatVisible(false),
+                closeButton: (
+                  <button
+                    type="button"
+                    style={{
+                      display: "flex",
+                      width: "2rem",
+                      height: "2rem",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "0.5rem",
+                      border: "1px solid #d6e2f4",
+                      background: "#fff",
+                      color: "#6988b6",
+                      cursor: "pointer",
+                    }}
+                    aria-label="Collapse memory assistant"
+                  >
+                    <PanelRightClose
+                      style={{ width: "1.25rem", height: "1.25rem" }}
+                    />
+                  </button>
+                ),
                 showClearButton: true,
               }}
               results={{

@@ -1,8 +1,11 @@
 import {
+  cloneElement,
+  isValidElement,
   useEffect,
   useRef,
   useState,
   type CSSProperties,
+  type MouseEvent,
   type ReactNode,
 } from "react";
 import { useChat } from "@ai-sdk/react";
@@ -66,6 +69,7 @@ export type DocsChatbotHeader = {
   showClearButton?: boolean;
   icon?: ReactNode;
   label?: ReactNode;
+  closeButton?: ReactNode;
   closeButtonIcon?: ReactNode;
   onClose?: () => void;
 };
@@ -240,6 +244,7 @@ const DocsChatbotPanel = ({
   const closeButtonIcon = header?.closeButtonIcon ?? (
     <X className="dcb:h-4 dcb:w-4" />
   );
+  const customCloseButton = header?.closeButton;
   const onClose = header?.onClose ?? onRequestClose;
   const onResultSelect = results?.onSelect;
   const resultSnippetMaxLines = results?.snippetMaxLines;
@@ -323,6 +328,48 @@ const DocsChatbotPanel = ({
     setMessages([]);
   };
 
+  const renderCloseButton = () => {
+    if (!onClose) {
+      return null;
+    }
+
+    if (
+      customCloseButton &&
+      isValidElement<{
+        onClick?: (event: MouseEvent<HTMLElement>) => void;
+        "aria-label"?: string;
+      }>(customCloseButton)
+    ) {
+      const originalOnClick = customCloseButton.props.onClick;
+
+      return cloneElement(customCloseButton, {
+        onClick: (event: MouseEvent<HTMLElement>) => {
+          originalOnClick?.(event);
+          onClose();
+        },
+        "aria-label":
+          customCloseButton.props["aria-label"] ?? "Close chatbot",
+      });
+    }
+
+    if (customCloseButton) {
+      return customCloseButton;
+    }
+
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        type="button"
+        onClick={onClose}
+        className="dcb:h-8 dcb:w-8 dcb:cursor-pointer dcb:p-0 dcb:text-muted-foreground hover:dcb:text-foreground"
+        aria-label="Close chatbot"
+      >
+        {closeButtonIcon}
+      </Button>
+    );
+  };
+
   const handleResultSelect = (result: DocumentSearchResult) => {
     if (onResultSelect) {
       onResultSelect(result);
@@ -371,20 +418,7 @@ const DocsChatbotPanel = ({
               Clear
             </Button>
           )}
-          {onClose && (
-            <>
-              <Button
-                variant="ghost"
-                size="sm"
-                type="button"
-                onClick={onClose}
-                className="dcb:h-8 dcb:w-8 dcb:cursor-pointer dcb:p-0 dcb:text-muted-foreground hover:dcb:text-foreground"
-                aria-label="Close chatbot"
-              >
-                {closeButtonIcon}
-              </Button>
-            </>
-          )}
+          {renderCloseButton()}
         </div>
       </div>
 

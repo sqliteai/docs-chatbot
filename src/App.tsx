@@ -201,10 +201,16 @@ function App() {
                       memory.sqlite
                     </span>
                   ),
-                  closeButtonIcon: (
-                    <PanelRightClose className="dcb:h-5 dcb:w-5 dcb:text-[#6988b6]" />
-                  ),
                   onClose: () => setIsEmbeddedChatVisible(false),
+                  closeButton: (
+                    <button
+                      type="button"
+                      className="dcb:flex dcb:h-8 dcb:w-8 dcb:items-center dcb:justify-center dcb:rounded-md dcb:border dcb:border-[#d6e2f4] dcb:bg-background dcb:text-[#6988b6] dcb:transition-colors hover:dcb:bg-[#f7faff]"
+                      aria-label="Collapse memory assistant"
+                    >
+                      <PanelRightClose className="dcb:h-5 dcb:w-5" />
+                    </button>
+                  ),
                   showClearButton: true,
                 }}
                 results={{

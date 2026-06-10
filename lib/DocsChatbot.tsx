@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { useChat } from "@ai-sdk/react";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
@@ -58,6 +64,10 @@ export type DocsChatbotPersistence = {
 
 export type DocsChatbotHeader = {
   showClearButton?: boolean;
+  icon?: ReactNode;
+  label?: ReactNode;
+  closeButtonIcon?: ReactNode;
+  onClose?: () => void;
 };
 
 export type DocsChatbotResults = {
@@ -223,6 +233,14 @@ const DocsChatbotPanel = ({
     ? `${persistence.storage ?? "session"}:${persistence.key}`
     : null;
   const showClearButton = header?.showClearButton ?? false;
+  const headerIcon = header?.icon ?? (
+    <MessageSquare className="dcb:h-4 dcb:w-4 dcb:text-primary" />
+  );
+  const headerLabel = header?.label ?? title;
+  const closeButtonIcon = header?.closeButtonIcon ?? (
+    <X className="dcb:h-4 dcb:w-4" />
+  );
+  const onClose = header?.onClose ?? onRequestClose;
   const onResultSelect = results?.onSelect;
   const resultSnippetMaxLines = results?.snippetMaxLines;
   const resultSnippetMaxChars = results?.snippetMaxChars;
@@ -325,15 +343,17 @@ const DocsChatbotPanel = ({
       )}
       style={style}
     >
-      <div className="dcb:flex dcb:items-start dcb:justify-between dcb:gap-3 dcb:border-b dcb:border-border/80 dcb:bg-background dcb:px-3.5 dcb:py-3">
+      <div className="dcb:flex dcb:items-center dcb:justify-between dcb:gap-3 dcb:border-b dcb:border-border/80 dcb:bg-background dcb:px-3.5 dcb:py-3">
         <div className="dcb:min-w-0">
           <div className="dcb:flex dcb:items-center dcb:gap-2 dcb:text-sm dcb:font-semibold dcb:font-sans">
-            <MessageSquare className="dcb:h-4 dcb:w-4 dcb:text-primary" />
-            <span className="dcb:truncate">{title}</span>
+            {headerIcon}
+            <span className="dcb:truncate">{headerLabel}</span>
           </div>
-          <p className="dcb:mt-1 dcb:text-[11px] dcb:leading-4 dcb:text-muted-foreground dcb:font-sans">
-            {emptyState.description}
-          </p>
+          {emptyState.description ? (
+            <p className="dcb:mt-1 dcb:text-[11px] dcb:leading-4 dcb:text-muted-foreground dcb:font-sans">
+              {emptyState.description}
+            </p>
+          ) : null}
         </div>
 
         <div className="dcb:flex dcb:items-center dcb:gap-2">
@@ -344,24 +364,26 @@ const DocsChatbotPanel = ({
               type="button"
               onClick={clearConversation}
               disabled={status !== "ready"}
-              className="dcb:h-8 dcb:cursor-pointer dcb:border-border/80 dcb:px-2.5 dcb:text-xs"
+              className="dcb:h-8 dcb:cursor-pointer dcb:border-border/70 dcb:px-2.5 dcb:text-xs dcb:text-muted-foreground dcb:shadow-none hover:dcb:text-foreground"
               aria-label="Clear conversation"
             >
               <RefreshCcw className="dcb:h-4 dcb:w-4" />
               Clear
             </Button>
           )}
-          {onRequestClose && (
-            <Button
-              variant="ghost"
-              size="icon"
-              type="button"
-              onClick={onRequestClose}
-              className="dcb:cursor-pointer"
-              aria-label="Close chatbot"
-            >
-              <X className="dcb:h-4 dcb:w-4" />
-            </Button>
+          {onClose && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={onClose}
+                className="dcb:h-8 dcb:w-8 dcb:cursor-pointer dcb:p-0 dcb:text-muted-foreground hover:dcb:text-foreground"
+                aria-label="Close chatbot"
+              >
+                {closeButtonIcon}
+              </Button>
+            </>
           )}
         </div>
       </div>
@@ -466,6 +488,7 @@ const DocsChatbotPanel = ({
                             {displayedSnippet && (
                               <ArtifactContent>
                                 <ResponseLight
+                                  className="dcb:text-xs dcb:leading-5 dcb:[&_p]:mb-2"
                                   style={
                                     typeof resultSnippetMaxLines === "number" &&
                                     Number.isFinite(resultSnippetMaxLines) &&

@@ -1,6 +1,7 @@
 import { DocsChatbot } from "../../../dist/esm/index.esm.js";
 import "./styles.css";
 import { useState } from "react";
+import { MessageCircleMore, PanelRightClose } from "lucide-react";
 
 const useRealSearch = import.meta.env.VITE_USE_REAL_SEARCH === "true";
 const searchUrl = useRealSearch
@@ -61,6 +62,7 @@ function App() {
     "embedded"
   );
   const [open, setOpen] = useState(false);
+  const [isEmbeddedChatVisible, setIsEmbeddedChatVisible] = useState(true);
   const [selectedFileId, setSelectedFileId] = useState<string>(
     demoFiles[0].id
   );
@@ -111,7 +113,10 @@ function App() {
               Custom Trigger
             </button>
             <button
-              onClick={() => setMode("embedded")}
+              onClick={() => {
+                setMode("embedded");
+                setIsEmbeddedChatVisible(true);
+              }}
               style={{
                 padding: "0.5rem 1rem",
                 border:
@@ -175,7 +180,7 @@ function App() {
           style={{
             display: "grid",
             gap: "1rem",
-            gridTemplateColumns: "220px minmax(0, 1fr) 420px",
+            gridTemplateColumns: "220px minmax(0, 1fr) 520px",
           }}
         >
           <div
@@ -262,30 +267,76 @@ function App() {
             </div>
           </div>
 
-          <DocsChatbot
-            search={{ url: searchUrl, apiKey }}
-            title="Memory Assistant"
-            variant="embedded"
-            style={{ height: "600px" }}
-            persistence={{ key: `docs-example-embedded-${demoPersistenceVersion}` }}
-            header={{ showClearButton: true }}
-            results={{
-              snippetMaxLines: 10,
-              snippetMaxChars: 900,
-              onSelect: (result) => {
-                setLastSelectedResult(result.title);
-                const nextFileId = result.id;
-                if (demoFiles.some((file) => file.id === nextFileId)) {
-                  setSelectedFileId(nextFileId);
-                }
-              },
-            }}
-            emptyState={{
-              title: "Ask questions about indexed memory",
-              description:
-                "Selecting a result opens the matching file in the demo editor.",
-            }}
-          />
+          {isEmbeddedChatVisible ? (
+            <DocsChatbot
+              search={{ url: searchUrl, apiKey }}
+              title="Memory Assistant"
+              variant="embedded"
+              style={{ height: "600px" }}
+              persistence={{
+                key: `docs-example-embedded-${demoPersistenceVersion}`,
+              }}
+              header={{
+                icon: (
+                  <MessageCircleMore
+                    style={{ width: "1.25rem", height: "1.25rem", color: "#6988b6" }}
+                  />
+                ),
+                label: (
+                  <span style={{ fontSize: "15px", fontWeight: 600, color: "#22304a" }}>
+                    memory.sqlite
+                  </span>
+                ),
+                closeButtonIcon: (
+                  <PanelRightClose
+                    style={{ width: "1.25rem", height: "1.25rem", color: "#6988b6" }}
+                  />
+                ),
+                onClose: () => setIsEmbeddedChatVisible(false),
+                showClearButton: true,
+              }}
+              results={{
+                snippetMaxLines: 10,
+                snippetMaxChars: 900,
+                onSelect: (result) => {
+                  setLastSelectedResult(result.title);
+                  const nextFileId = result.id;
+                  if (demoFiles.some((file) => file.id === nextFileId)) {
+                    setSelectedFileId(nextFileId);
+                  }
+                },
+              }}
+              emptyState={{
+                title: "Ask questions about indexed memory",
+                description: "",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                height: "600px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px dashed #d9dee7",
+                borderRadius: "12px",
+                background: "#fff",
+              }}
+            >
+              <button
+                onClick={() => setIsEmbeddedChatVisible(true)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  border: "1px solid #d9dee7",
+                  background: "#fff",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                Reopen Memory Assistant
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

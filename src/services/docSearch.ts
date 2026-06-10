@@ -104,6 +104,8 @@ export async function docSearch({
         execute({ writer }) {
           if (searchResult.data.search.length > 0) {
             const searchResults = searchResult.data.search;
+            const resultLabel =
+              searchResults.length === 1 ? "result" : "results";
 
             const summaryId = nanoid();
             writer.write({
@@ -113,7 +115,7 @@ export async function docSearch({
             writer.write({
               type: "text-delta",
               id: summaryId,
-              delta: `I found ${searchResults.length} relevant result(s) for your query:`,
+              delta: `I found ${searchResults.length} relevant ${resultLabel} for your query:`,
             });
             writer.write({
               type: "text-end",

@@ -1,7 +1,11 @@
 import { DocsChatbot } from "../lib/DocsChatbot";
 import { useState } from "react";
 import { Button } from "./components/ui/button";
-import { CircleHelp } from "lucide-react";
+import {
+  CircleHelp,
+  MessageCircleMore,
+  PanelRightClose,
+} from "lucide-react";
 
 const useRealSearch = import.meta.env.VITE_USE_REAL_SEARCH === "true";
 const searchUrl = useRealSearch
@@ -63,6 +67,7 @@ function App() {
     "embedded"
   );
   const [open, setOpen] = useState(false);
+  const [isEmbeddedChatVisible, setIsEmbeddedChatVisible] = useState(true);
   const [selectedFileId, setSelectedFileId] = useState<string>(
     demoFiles[0].id
   );
@@ -91,7 +96,10 @@ function App() {
               Custom Trigger
             </Button>
             <Button
-              onClick={() => setMode("embedded")}
+              onClick={() => {
+                setMode("embedded");
+                setIsEmbeddedChatVisible(true);
+              }}
               variant={mode === "embedded" ? "default" : "outline"}
             >
               Embedded Panel
@@ -130,7 +138,7 @@ function App() {
         />
       ) : (
         <div className="dcb:overflow-x-auto">
-          <div className="dcb:grid dcb:min-w-[1120px] dcb:grid-cols-[220px_minmax(0,1fr)_420px] dcb:gap-4">
+          <div className="dcb:grid dcb:min-w-[1240px] dcb:grid-cols-[220px_minmax(0,1fr)_520px] dcb:gap-4">
             <div className="dcb:overflow-hidden dcb:rounded-xl dcb:border dcb:border-border/80 dcb:bg-background">
               <div className="dcb:border-b dcb:border-border/80 dcb:px-3 dcb:py-2.5 dcb:text-sm dcb:font-semibold">
                 Files
@@ -175,30 +183,57 @@ function App() {
               </div>
             </div>
 
-            <DocsChatbot
-              search={{ url: searchUrl, apiKey }}
-              title="Memory Assistant"
-              variant="embedded"
-              className="dcb:h-[600px]"
-              persistence={{ key: `docs-demo-embedded-${demoPersistenceVersion}` }}
-              header={{ showClearButton: true }}
-              results={{
-                snippetMaxLines: 10,
-                snippetMaxChars: 900,
-                onSelect: (result) => {
-                  setLastSelectedResult(result.title);
-                  const nextFileId = result.id;
-                  if (demoFiles.some((file) => file.id === nextFileId)) {
-                    setSelectedFileId(nextFileId);
-                  }
-                },
-              }}
-              emptyState={{
-                title: "Ask questions about indexed memory",
-                description:
-                  "Selecting a result opens the matching file in the demo editor.",
-              }}
-            />
+            {isEmbeddedChatVisible ? (
+              <DocsChatbot
+                search={{ url: searchUrl, apiKey }}
+                title="Memory Assistant"
+                variant="embedded"
+                className="dcb:h-[600px]"
+                persistence={{
+                  key: `docs-demo-embedded-${demoPersistenceVersion}`,
+                }}
+                header={{
+                  icon: (
+                    <MessageCircleMore className="dcb:h-5 dcb:w-5 dcb:text-[#6988b6]" />
+                  ),
+                  label: (
+                    <span className="dcb:text-[15px] dcb:font-semibold dcb:text-[#22304a]">
+                      memory.sqlite
+                    </span>
+                  ),
+                  closeButtonIcon: (
+                    <PanelRightClose className="dcb:h-5 dcb:w-5 dcb:text-[#6988b6]" />
+                  ),
+                  onClose: () => setIsEmbeddedChatVisible(false),
+                  showClearButton: true,
+                }}
+                results={{
+                  snippetMaxLines: 10,
+                  snippetMaxChars: 900,
+                  onSelect: (result) => {
+                    setLastSelectedResult(result.title);
+                    const nextFileId = result.id;
+                    if (demoFiles.some((file) => file.id === nextFileId)) {
+                      setSelectedFileId(nextFileId);
+                    }
+                  },
+                }}
+                emptyState={{
+                  title: "Ask questions about indexed memory",
+                  description: "",
+                }}
+              />
+            ) : (
+              <div className="dcb:flex dcb:h-[600px] dcb:items-center dcb:justify-center dcb:rounded-xl dcb:border dcb:border-dashed dcb:border-border/80 dcb:bg-background">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsEmbeddedChatVisible(true)}
+                >
+                  Reopen Memory Assistant
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -107,6 +107,10 @@ To preserve chat history across unmounts or context switches, pass a persistence
   title="Memory Assistant"
   variant="embedded"
   className="h-full"
+  header={{
+    label: "Memory Assistant",
+    showClearButton: true,
+  }}
   persistence={{
     key: `memory:${projectId}:${databaseName}`,
     storage: "session",
@@ -275,8 +279,12 @@ function App() {
 | `persistence` | `{ key: string; storage?: "session" \| "local" }` | No | Persists messages and composer input under the provided key |
 | `persistence.key` | `string` | No | Storage key used for persisted conversation state |
 | `persistence.storage` | `"session" \| "local"` | No | Storage backend for persistence (default: `"session"`) |
-| `header` | `{ showClearButton?: boolean }` | No | Header-specific controls |
+| `header` | `{ showClearButton?: boolean; icon?: ReactNode; label?: ReactNode; closeButtonIcon?: ReactNode; onClose?: () => void }` | No | Header-specific controls |
 | `header.showClearButton` | `boolean` | No | Shows the `Clear` action in the header when there is conversation history (default: `false`) |
+| `header.icon` | `ReactNode` | No | Visible header icon. Defaults to the chat icon |
+| `header.label` | `ReactNode` | No | Visible header label. Defaults to `title` |
+| `header.closeButtonIcon` | `ReactNode` | No | Icon rendered in the close button when the chatbot can be closed. Defaults to `X` |
+| `header.onClose` | `() => void` | No | Custom close action for the header. When provided, the close button is shown even in embedded mode |
 | `results` | `{ onSelect?: (result: DocumentSearchResult) => void; snippetMaxLines?: number; snippetMaxChars?: number }` | No | Result-card behavior and display settings |
 | `results.onSelect` | `(result: DocumentSearchResult) => void` | No | Called when a result card is selected. When provided, default link navigation is suppressed |
 | `results.snippetMaxLines` | `number` | No | Visually clamps result snippets to the given number of lines |

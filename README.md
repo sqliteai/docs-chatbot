@@ -61,7 +61,6 @@ If you want the demos to use a real backend instead, set `VITE_USE_REAL_SEARCH=t
 
     <docs-chatbot
       search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
-      api-key="your-api-key"
       title="Help Center"
     >
     </docs-chatbot>
@@ -268,9 +267,9 @@ function App() {
 
 | Property | Type | Required | Description |
 | -------- | ---- | -------- | ----------- |
-| `search` | `{ url: string; apiKey: string }` | Yes | Search transport configuration |
+| `search` | `{ url: string; apiKey?: string }` | Yes | Search transport configuration |
 | `search.url` | `string` | Yes | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
-| `search.apiKey` | `string` | Yes | SQLite Cloud API key with permissions to execute the edge function |
+| `search.apiKey` | `string` | No | SQLite Cloud API key with permissions to execute the edge function. When omitted or empty, no `Authorization` header is sent and the edge function must allow anonymous execution |
 | `title` | `string` | Yes | Title displayed in the chatbot header |
 | `variant` | `"dialog" \| "embedded"` | No | Rendering mode: `"dialog"` keeps the popup widget behavior, `"embedded"` renders the chatbot inline (default: `"dialog"`) |
 | `emptyState` | `{ title: string; description: string }` | No | Customizes the initial empty state of the chatbot |
@@ -304,7 +303,7 @@ function App() {
 | Attribute                 | Required | Description                                                                                                                |
 | ------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `search-url`              | Yes      | Full URL of your deployed SQLite Cloud edge function (e.g., `https://yourproject.sqlite.cloud/v2/functions/aisearch-docs`) |
-| `api-key`                 | Yes      | SQLite Cloud API key with permissions to execute the edge function                                                         |
+| `api-key`                 | No       | SQLite Cloud API key with permissions to execute the edge function. When omitted or empty, no `Authorization` header is sent and the edge function must allow anonymous execution |
 | `title`                   | Yes      | Title displayed in the chatbot header                                                                                      |
 | `empty-state-title`       | No       | Main heading shown before the first message                                                                                |
 | `empty-state-description` | No       | Subtext shown below the empty state title                                                                                  |

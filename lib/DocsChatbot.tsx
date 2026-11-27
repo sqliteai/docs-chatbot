@@ -57,7 +57,7 @@ import type { DocumentSearchResult } from "@/types/chat";
 
 export type DocsChatbotSearch = {
   url: string;
-  apiKey: string;
+  apiKey?: string;
 };
 
 export type DocsChatbotPersistence = {

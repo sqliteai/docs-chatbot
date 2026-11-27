@@ -36,7 +36,7 @@ function serializeSearchResultMetadata(
  *
  * @param params.request - Chat request containing user messages and metadata
  * @param params.searchUrl - URL of the SQLite Cloud AI search endpoint
- * @param params.apiKey - Bearer token for API authentication
+ * @param params.apiKey - Optional Bearer token. When missing or empty, no Authorization header is sent
  *
  * @returns Promise<Response> - Streaming response with search results formatted for the chat UI
  *
@@ -49,7 +49,7 @@ export async function docSearch({
 }: {
   request: SendMessageRequest;
   searchUrl: URL;
-  apiKey: string;
+  apiKey?: string;
 }) {
   try {
     const messages = request.messages;
@@ -83,9 +83,7 @@ export async function docSearch({
 
       const searchResponse = await fetch(searchUrl.toString(), {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
+        headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
       });
 
       if (!searchResponse.ok) {

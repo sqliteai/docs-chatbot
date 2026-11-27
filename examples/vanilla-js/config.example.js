@@ -3,5 +3,6 @@
 // The default mock endpoint works without any backend setup.
 window.ChatbotConfig = {
   searchUrl: "mock://docs-chatbot",
-  apiKey: "demo-key"
+  // Only needed when the edge function is not public:
+  // apiKey: "your-api-key"
 };

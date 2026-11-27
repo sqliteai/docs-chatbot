@@ -34,7 +34,6 @@ function App() {
     <DocsChatbot
       search={{
         url: "https://yourproject.sqlite.cloud/v2/functions/aisearch-docs",
-        apiKey: "your-api-key",
       }}
       title="Help Center"
       variant="embedded"
@@ -43,7 +42,7 @@ function App() {
 }
 ```
 
-For local-only testing, replace `search.url` with `mock://docs-chatbot` and use any placeholder API key such as `demo-key`.
+For local-only testing, replace `search.url` with `mock://docs-chatbot`. No API key is needed.
 
 If you want the demos to use a real backend instead, set `VITE_USE_REAL_SEARCH=true`.
 
@@ -68,6 +67,27 @@ If you want the demos to use a real backend instead, set `VITE_USE_REAL_SEARCH=t
 </html>
 ```
 
+## Authentication
+
+The examples above call a public edge function, so they send no API key. If your edge function is not public, pass a SQLite Cloud API key that can execute it. The chatbot then sends it as `Authorization: Bearer <key>`:
+
+```tsx
+<DocsChatbot
+  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  title="Help Center"
+/>
+```
+
+```html
+<docs-chatbot
+  search-url="your-edge-function-url"
+  api-key="your-api-key"
+  title="Help Center"
+></docs-chatbot>
+```
+
+Anything you put in the page, including this key, can be read by visitors. Use a key whose user can only read what the chatbot needs.
+
 ## Display Modes
 
 ### Embedded Panel
@@ -76,7 +96,7 @@ Render the chatbot inline inside your layout. This is the mode to use when you w
 
 ```tsx
 <DocsChatbot
-  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  search={{ url: "your-edge-function-url" }}
   title="Help Center"
   variant="embedded"
   className="max-w-2xl h-[600px]"
@@ -88,7 +108,6 @@ Render the chatbot inline inside your layout. This is the mode to use when you w
 ```html
 <docs-chatbot
   search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
-  api-key="your-api-key"
   title="Help Center"
   variant="embedded"
 ></docs-chatbot>
@@ -102,7 +121,7 @@ To preserve chat history across unmounts or context switches, pass a persistence
 
 ```tsx
 <DocsChatbot
-  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  search={{ url: "your-edge-function-url" }}
   title="Memory Assistant"
   variant="embedded"
   className="h-full"
@@ -120,7 +139,6 @@ To preserve chat history across unmounts or context switches, pass a persistence
 ```html
 <docs-chatbot
   search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
-  api-key="your-api-key"
   title="Help Center"
   persistence-key="help-center"
   persistence-storage="session"
@@ -135,7 +153,7 @@ To keep result cards compact, you can clamp snippet height visually and/or trunc
 
 ```tsx
 <DocsChatbot
-  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  search={{ url: "your-edge-function-url" }}
   title="Memory Assistant"
   variant="embedded"
   results={{
@@ -151,7 +169,7 @@ To intercept result clicks and route them into your own UI, use `results.onSelec
 
 ```tsx
 <DocsChatbot
-  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  search={{ url: "your-edge-function-url" }}
   title="Memory Assistant"
   variant="embedded"
   results={{
@@ -166,7 +184,6 @@ To intercept result clicks and route them into your own UI, use `results.onSelec
 ```html
 <docs-chatbot
   search-url="https://yourproject.sqlite.cloud/v2/functions/aisearch-docs"
-  api-key="your-api-key"
   title="Help Center"
 ></docs-chatbot>
 
@@ -190,7 +207,7 @@ Adds a floating button in the bottom-right corner that opens the chatbot when cl
 
 ```tsx
 <DocsChatbot
-  search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+  search={{ url: "your-edge-function-url" }}
   title="Help Center"
   variant="dialog"
 />
@@ -219,7 +236,7 @@ function App() {
 
       {/* Chatbot with custom trigger mode */}
       <DocsChatbot
-        search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+        search={{ url: "your-edge-function-url" }}
         title="Help Center"
         dialog={{ trigger: "custom", open, onOpenChange: setOpen }}
       />
@@ -239,7 +256,6 @@ function App() {
 <!-- Chatbot with custom trigger mode -->
 <docs-chatbot
   search-url="your-edge-function-url"
-  api-key="your-api-key"
   title="Help Center"
   trigger="custom"
 >
@@ -380,7 +396,7 @@ import "./styles.css"; // Your CSS file with overrides
 function App() {
   return (
     <DocsChatbot
-      search={{ url: "your-edge-function-url", apiKey: "your-api-key" }}
+      search={{ url: "your-edge-function-url" }}
       title="Help Center"
     />
   );
@@ -401,7 +417,6 @@ function App() {
 
 <docs-chatbot
   search-url="your-edge-function-url"
-  api-key="your-api-key"
   title="Help Center"
 >
 </docs-chatbot>

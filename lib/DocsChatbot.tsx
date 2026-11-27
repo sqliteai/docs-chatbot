@@ -257,6 +257,11 @@ const DocsChatbotPanel = ({
     useState<string | null>(persistenceId);
   const lastLoadedPersistenceId = useRef<string | null>(persistenceId);
 
+  // useChat builds its Chat (and transport) once, so read the latest search
+  // config through a ref. An api-key or search-url set after mount then applies.
+  const searchRef = useRef(search);
+  searchRef.current = search;
+
   const { messages, sendMessage, status, error, clearError, setMessages } =
     useChat({
       messages: initialPersistedConversation.messages,
@@ -264,8 +269,8 @@ const DocsChatbotPanel = ({
         fetch: (_, init) =>
           docSearch({
             request: JSON.parse(init?.body as string) as SendMessageRequest,
-            searchUrl: new URL(search.url),
-            apiKey: search.apiKey,
+            searchUrl: new URL(searchRef.current.url),
+            apiKey: searchRef.current.apiKey,
           }),
       }),
     });

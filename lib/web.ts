@@ -150,13 +150,12 @@ class DocsChatbotElement extends HTMLElement {
         }),
     };
 
+    const search = { url: searchUrl, apiKey };
+
     const chatbotProps: DocsChatbotProps =
       variant === "embedded"
         ? {
-            search: {
-              url: searchUrl,
-              apiKey,
-            },
+            search,
             title,
             variant: "embedded",
             emptyState,
@@ -166,10 +165,7 @@ class DocsChatbotElement extends HTMLElement {
           }
         : trigger === "custom"
           ? {
-              search: {
-                url: searchUrl,
-                apiKey,
-              },
+              search,
               title,
               dialog: {
                 trigger: "custom",
@@ -184,10 +180,7 @@ class DocsChatbotElement extends HTMLElement {
               results,
             }
           : {
-              search: {
-                url: searchUrl,
-                apiKey,
-              },
+              search,
               title,
               emptyState,
               persistence,

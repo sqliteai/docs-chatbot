@@ -2,6 +2,7 @@ import {
   cloneElement,
   isValidElement,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -57,7 +58,7 @@ import type { DocumentSearchResult } from "@/types/chat";
 
 export type DocsChatbotSearch = {
   url: string;
-  apiKey: string;
+  apiKey?: string;
 };
 
 export type DocsChatbotPersistence = {
@@ -257,17 +258,30 @@ const DocsChatbotPanel = ({
     useState<string | null>(persistenceId);
   const lastLoadedPersistenceId = useRef<string | null>(persistenceId);
 
-  const { messages, sendMessage, status, error, clearError, setMessages } =
-    useChat({
-      messages: initialPersistedConversation.messages,
-      transport: new DefaultChatTransport({
+  // useChat builds its Chat (and transport) once, so the transport is created
+  // once and reads the latest search config through a ref. An api-key or
+  // search-url set after mount then applies.
+  const searchRef = useRef(search);
+  useLayoutEffect(() => {
+    searchRef.current = search;
+  });
+
+  const [transport] = useState(
+    () =>
+      new DefaultChatTransport({
         fetch: (_, init) =>
           docSearch({
             request: JSON.parse(init?.body as string) as SendMessageRequest,
-            searchUrl: new URL(search.url),
-            apiKey: search.apiKey,
+            searchUrl: searchRef.current.url,
+            apiKey: searchRef.current.apiKey,
           }),
-      }),
+      })
+  );
+
+  const { messages, sendMessage, status, error, clearError, setMessages } =
+    useChat({
+      messages: initialPersistedConversation.messages,
+      transport,
     });
 
   useEffect(() => {

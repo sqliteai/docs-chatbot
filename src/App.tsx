@@ -13,8 +13,8 @@ const searchUrl = useRealSearch
     "mock://docs-chatbot")
   : "mock://docs-chatbot";
 const apiKey = useRealSearch
-  ? ((import.meta.env.VITE_SEARCH_API_KEY as string | undefined) ?? "demo-key")
-  : "demo-key";
+  ? (import.meta.env.VITE_SEARCH_API_KEY as string | undefined)
+  : undefined;
 const demoPersistenceVersion = "v2";
 
 const demoFiles = [

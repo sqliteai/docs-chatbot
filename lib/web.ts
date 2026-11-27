@@ -83,7 +83,7 @@ class DocsChatbotElement extends HTMLElement {
     if (!this.root || !this.portalContainer) return;
 
     const searchUrl = this.getAttribute("search-url");
-    const apiKey = this.getAttribute("api-key");
+    const apiKey = this.getAttribute("api-key") ?? undefined;
     const title = this.getAttribute("title");
     const emptyStateTitle = this.getAttribute("empty-state-title");
     const emptyStateDescription = this.getAttribute("empty-state-description");
@@ -95,9 +95,9 @@ class DocsChatbotElement extends HTMLElement {
     const variant = this.getAttribute("variant");
     const trigger = this.getAttribute("trigger") as "default" | "custom" | null;
 
-    if (!searchUrl || !apiKey || !title) {
+    if (!searchUrl || !title) {
       console.error(
-        "SqliteAi Chatbot: Missing required attributes (search-url, api-key, title)"
+        "SqliteAi Chatbot: Missing required attributes (search-url, title)"
       );
       return;
     }
@@ -150,13 +150,12 @@ class DocsChatbotElement extends HTMLElement {
         }),
     };
 
+    const search = { url: searchUrl, apiKey };
+
     const chatbotProps: DocsChatbotProps =
       variant === "embedded"
         ? {
-            search: {
-              url: searchUrl,
-              apiKey,
-            },
+            search,
             title,
             variant: "embedded",
             emptyState,
@@ -166,10 +165,7 @@ class DocsChatbotElement extends HTMLElement {
           }
         : trigger === "custom"
           ? {
-              search: {
-                url: searchUrl,
-                apiKey,
-              },
+              search,
               title,
               dialog: {
                 trigger: "custom",
@@ -184,10 +180,7 @@ class DocsChatbotElement extends HTMLElement {
               results,
             }
           : {
-              search: {
-                url: searchUrl,
-                apiKey,
-              },
+              search,
               title,
               emptyState,
               persistence,

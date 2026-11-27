@@ -35,8 +35,8 @@ function serializeSearchResultMetadata(
  * and streams formatted search results including document titles, URLs, and excerpts.
  *
  * @param params.request - Chat request containing user messages and metadata
- * @param params.searchUrl - URL of the SQLite Cloud AI search endpoint
- * @param params.apiKey - Bearer token for API authentication
+ * @param params.searchUrl - URL of the SQLite Cloud AI search endpoint, absolute or relative to the page
+ * @param params.apiKey - Optional Bearer token. When missing, empty or whitespace, no Authorization header is sent
  *
  * @returns Promise<Response> - Streaming response with search results formatted for the chat UI
  *
@@ -48,10 +48,11 @@ export async function docSearch({
   apiKey,
 }: {
   request: SendMessageRequest;
-  searchUrl: URL;
-  apiKey: string;
+  searchUrl: string;
+  apiKey?: string;
 }) {
   try {
+    const url = new URL(searchUrl, window.location.href);
     const messages = request.messages;
 
     const lastUserMessage = messages[messages.length - 1];
@@ -72,21 +73,28 @@ export async function docSearch({
 
     let searchResult: SearchResponse;
 
-    if (isMockSearchUrl(searchUrl)) {
+    if (isMockSearchUrl(url)) {
       searchResult = {
         data: {
           search: await runMockSearch(query.trim()),
         },
       };
     } else {
-      searchUrl.searchParams.set("query", query.trim());
+      url.searchParams.set("query", query.trim());
 
-      const searchResponse = await fetch(searchUrl.toString(), {
+      const token = apiKey?.trim();
+      const searchResponse = await fetch(url.toString(), {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
+
+      if (searchResponse.status === 401) {
+        const reason = token
+          ? "The API key is invalid or can't execute the search edge function."
+          : "No API key was set and the search edge function is not public.";
+        console.error(`SqliteAi Chatbot: The search endpoint returned 401. ${reason}`);
+        throw new Error(`The search service rejected the request. ${reason}`);
+      }
 
       if (!searchResponse.ok) {
         throw new Error(
